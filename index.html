@@ -1062,22 +1062,33 @@
 
     // ------------------- 請加在下方這段區塊 -------------------
     
-    // 1. 禁用右鍵選單
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-    });
+   // 1. 禁用右鍵選單
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+});
 
-    // 2. 禁用 F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U (檢視原始碼)
-    document.addEventListener('keydown', function(e) {
-      if (
-        e.key === 'F12' ||
-        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) ||
-        (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
-        (e.ctrlKey && (e.key === 's' || e.key === 'S')) // 順便禁用 Ctrl+S 儲存網頁
-      ) {
-        e.preventDefault();
-      }
-    });
+// 2. 禁用 F12, Ctrl/Cmd+Shift+I, Ctrl/Cmd+U, Ctrl/Cmd+S, Cmd+Option+I 等
+document.addEventListener('keydown', function(e) {
+  // 檢查是否按下了 Control (Windows) 或 Command (Mac)
+  const isCmdOrCtrl = e.ctrlKey || e.metaKey;
+
+  if (
+    // 禁用 F12
+    e.key === 'F12' ||
+    // 禁用 Ctrl+S 或 Cmd+S (儲存網頁)
+    (isCmdOrCtrl && (e.key === 's' || e.key === 'S')) ||
+    // 禁用 Ctrl+U 或 Cmd+U (檢視網頁原始碼)
+    (isCmdOrCtrl && (e.key === 'u' || e.key === 'U')) ||
+    // 禁用 Ctrl+Shift+I / Cmd+Shift+I / Cmd+Option+I (開啟開發者工具)
+    (isCmdOrCtrl && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
+    (isCmdOrCtrl && e.altKey && (e.key === 'I' || e.key === 'i')) || // Mac 常用 Cmd+Option+I
+    // 禁用 Ctrl+Shift+J / Cmd+Shift+J / Cmd+Option+J (開啟 Console)
+    (isCmdOrCtrl && e.shiftKey && (e.key === 'J' || e.key === 'j')) ||
+    (isCmdOrCtrl && e.altKey && (e.key === 'J' || e.key === 'j'))
+  ) {
+    e.preventDefault();
+  }
+});
     
     // ---------------------------------------------------------
   </script>
