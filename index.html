@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>房東租稅與費率試算計算機 | 社會住宅、公益出租、一般出租三合一比較</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      background: #10b981;
+      cursor: pointer;
+    }
+    input[type="range"]::-moz-range-thumb {
+      background: #10b981;
+      cursor: pointer;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .print-card {
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: none !important;
+        background: white !important;
+        color: black !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+  <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <header class="mb-8 no-print">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-6">
+        <div>
+          <div class="flex items-center space-x-3">
+            <div class="bg-emerald-500 p-2.5 rounded-xl text-white shadow-md shadow-emerald-500/20">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">房東稅費試算計算機</h1>
+          </div>
+          <p class="mt-2 text-slate-500 text-sm sm:text-base">依據台灣最新政策與所得稅、房屋稅、地價稅等法規設計，評估社宅節稅效益。</p>
+        </div>
+        
+        <div class="mt-4 md:mt-0 flex items-center space-x-3">
+          <button onclick="resetDefaults()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18.2" />
+            </svg>
+            重設預設值
+          </button>
+          <button onclick="window.print()" class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 shadow-md shadow-emerald-600/10 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-3a2 2 0 00-2-2H9a2 2 0 00-2 2v3a2 2 0 002 2zm0 0v-4h10v4" />
+            </svg>
+            匯出報告
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Left Column: Interactive Inputs -->
+      <section class="lg:col-span-4 space-y-6 no-print">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <h2 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+            調整試算參數
+          </h2>
+          
+          <div class="space-y-5">
+            <!-- Monthly Rent Input -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label for="monthlyRentInput" class="text-sm font-semibold text-slate-700 flex items-center">
+                  每月租金收入
+                  <span class="group relative ml-1.5 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 hover:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 hidden group-hover:block bg-slate-900 text-white text-xs rounded p-2 shadow-lg z-50 pointer-events-none">
+                      輸入您預計向承租人收取的每月原始租金金額（不含管理費及車位）。
+                    </span>
+                  </span>
+                </label>
+                <span class="text-xs text-slate-400">範圍: 5,000 - 100,000</span>
+              </div>
+              <div class="relative rounded-lg shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="text-slate-400 sm:text-sm font-bold">NT$</span>
+                </div>
+                <input type="number" id="monthlyRentInput" value="25000" min="5000" max="150000" step="500" oninput="syncRentSlider(this.value)" class="block w-full pl-12 pr-3 py-2.5 border border-slate-300 rounded-lg text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-base">
+              </div>
+              <input type="range" id="monthlyRentSlider" min="5000" max="100000" value="25000" step="500" oninput="syncRentInput(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer mt-3 accent-emerald-500">
+            </div>
+
+            <!-- Marginal Income Tax Bracket -->
+            <div>
+              <label for="taxRateSelect" class="block text-sm font-semibold text-slate-700 mb-2 flex items-center">
+                個人綜所稅邊際稅率
+                <span class="group relative ml-1.5 cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 hover:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 hidden group-hover:block bg-slate-900 text-white text-xs rounded p-2 shadow-lg z-50 pointer-events-none">
+                    申報綜合所得稅時，租金所得會併入綜合所得，適用個人邊際稅率級距（5% ~ 40%）。
+                  </span>
+                </span>
+              </label>
+              <select id="taxRateSelect" onchange="calculateTax()" class="block w-full px-3 py-2.5 border border-slate-300 bg-white rounded-lg text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm">
+                <option value="0.05" selected>5% (綜合所得 0 - 59 萬)</option>
+                <option value="0.12">12% (綜合所得 59 - 133 萬)</option>
+                <option value="0.20">20% (綜合所得 133 - 266 萬)</option>
+                <option value="0.30">30% (綜合所得 266 - 498 萬)</option>
+                <option value="0.40">40% (綜合所得 498 萬以上)</option>
+              </select>
+            </div>
+
+            <!-- House Tax Assessment Value -->
+            <div>
+              <label for="houseValueInput" class="block text-sm font-semibold text-slate-700 mb-2 flex items-center">
+                房屋課稅現值
+                <span class="group relative ml-1.5 cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 hover:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 hidden group-hover:block bg-slate-900 text-white text-xs rounded p-2 shadow-lg z-50 pointer-events-none">
+                    非房屋市價，是指每年房屋稅單上的「房屋現值」或「課稅現值」。
+                  </span>
+                </span>
+              </label>
+              <div class="relative rounded-lg shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="text-slate-400 sm:text-sm">NT$</span>
+                </div>
+                <input type="number" id="houseValueInput" value="1137300" oninput="calculateTax()" class="block w-full pl-12 pr-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm">
+              </div>
+            </div>
+
+            <!-- Land Tax Assessment Value -->
+            <div>
+              <label for="landValueInput" class="block text-sm font-semibold text-slate-700 mb-2 flex items-center">
+                地價稅課稅地價
+                <span class="group relative ml-1.5 cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 hover:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 hidden group-hover:block bg-slate-900 text-white text-xs rounded p-2 shadow-lg z-50 pointer-events-none">
+                    非土地市價，是指地價稅單上的「課稅地價」或申報地價總額。
+                  </span>
+                </span>
+              </label>
+              <div class="relative rounded-lg shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="text-slate-400 sm:text-sm">NT$</span>
+                </div>
+                <input type="number" id="landValueInput" value="370950" oninput="calculateTax()" class="block w-full pl-12 pr-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm">
+              </div>
+            </div>
+
+            <!-- Sublease Supplementary Health Insurance Premium Trigger -->
+            <div class="border-t border-slate-100 pt-4 mt-4">
+              <div class="flex items-start">
+                <div class="flex items-center h-5">
+                  <input id="subleaseCheckbox" type="checkbox" onchange="calculateTax()" class="focus:ring-emerald-500 h-4 w-4 text-emerald-600 border-slate-300 rounded cursor-pointer">
+                </div>
+                <div class="ml-3 text-sm">
+                  <label for="subleaseCheckbox" class="font-medium text-slate-800 cursor-pointer flex items-center">
+                    評估「包租包管」二代健保
+                    <span class="group relative ml-1.5 cursor-pointer">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 hover:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 hidden group-hover:block bg-slate-900 text-white text-xs rounded p-2 shadow-lg z-50 pointer-events-none">
+                        若參加「包租包管計劃」，因給付租金對象是法人，單次付租達2萬元（含）以上會依法扣繳 2.11% 二代健保補充保費。
+                      </span>
+                    </span>
+                  </label>
+                  <p class="text-slate-500 text-xs mt-0.5">單月租金達 2 萬元以上會代扣 2.11% 補充保費</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Advanced Tax Rate Adjustments -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center justify-between">
+            <span>進階法定稅率設定</span>
+            <span class="text-xs font-normal text-slate-400">可自訂微調</span>
+          </h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="regularHouseTaxRate" class="block text-xs font-medium text-slate-500 mb-1">一般房屋稅率</label>
+              <input type="number" id="regularHouseTaxRate" value="1.5" min="1" max="10" step="0.1" oninput="calculateTax()" class="block w-full px-2 py-1.5 border border-slate-300 rounded text-xs text-slate-950 font-bold focus:outline-none focus:ring-1 focus:ring-emerald-500">
+            </div>
+            <div>
+              <label for="regularLandTaxRate" class="block text-xs font-medium text-slate-500 mb-1">一般地價稅率</label>
+              <input type="number" id="regularLandTaxRate" value="1.0" min="0.1" max="10" step="0.1" oninput="calculateTax()" class="block w-full px-2 py-1.5 border border-slate-300 rounded text-xs text-slate-950 font-bold focus:outline-none focus:ring-1 focus:ring-emerald-500">
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2">※ 預設一般出租「房屋稅1.5%」及「地價稅率1%(10‰)」為非自住基本稅率。公益出租人及社宅包租代管之「房屋稅1.2%」與「地價稅0.2%(2‰)」皆自動帶入法定最優惠自住稅率。</p>
+        </div>
+      </section>
+
+      <!-- Right Column: Dashboard & Interactive Charts -->
+      <main class="lg:col-span-8 space-y-6">
+        
+        <!-- Hero Benefit Banner -->
+        <div id="savingsBanner" class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-emerald-500/10 flex flex-col sm:flex-row justify-between items-start sm:items-center relative overflow-hidden">
+          <div class="absolute right-0 top-0 opacity-10 -mr-6 -mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-64 w-64" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="relative z-10">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-sm mb-3">
+              政府大推・房東減稅神隊友
+            </span>
+            <h2 class="text-xl sm:text-2xl font-black">加入社會住宅，預估每年能省下</h2>
+            <p class="text-3xl sm:text-4xl font-black tracking-tight mt-1" id="maxSavingsValue">NT$ 12,530</p>
+          </div>
+          <div class="mt-4 sm:mt-0 relative z-10 bg-white/10 backdrop-blur-md rounded-2xl p-4 text-center border border-white/20 self-stretch sm:self-auto flex flex-col justify-center">
+            <span class="text-xs text-emerald-100 font-medium">相較於「一般出租」省稅</span>
+            <span class="text-lg sm:text-xl font-bold mt-1" id="maxSavingsPercent">高達 42.7% 稅金</span>
+          </div>
+        </div>
+
+        <!-- Visualization Charts & Tabs -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm no-print">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-4 mb-6">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">三大出租類型稅費總額比較</h3>
+              <p class="text-xs text-slate-400 mt-0.5">所得稅 + 房屋稅 + 地價稅 + 二代健保之年度應納金額（越低越省稅）</p>
+            </div>
+            <div class="mt-3 sm:mt-0 flex space-x-1 bg-slate-100 p-1 rounded-lg">
+              <button id="tabChart" onclick="switchVisualTab('chart')" class="px-3 py-1.5 text-xs font-bold rounded-md bg-white text-slate-800 shadow-sm transition-all">圖表分析</button>
+              <button id="tabSummary" onclick="switchVisualTab('summary')" class="px-3 py-1.5 text-xs font-bold rounded-md text-slate-500 hover:text-slate-800 transition-all">減免效益摘要</button>
+            </div>
+          </div>
+
+          <!-- Chart Area -->
+          <div id="chartContainer" class="h-64 sm:h-72 w-full relative">
+            <canvas id="taxComparisonChart"></canvas>
+          </div>
+
+          <!-- Table Summary Area -->
+          <div id="summaryContainer" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Regular vs Social Housing savings -->
+              <div class="bg-emerald-50/50 rounded-2xl p-5 border border-emerald-100">
+                <h4 class="text-sm font-bold text-emerald-950 flex items-center">
+                  <span class="p-1 rounded-lg bg-emerald-500 text-white mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                  </span>
+                  一般出租人 vs 社宅出租人
+                </h4>
+                <div class="mt-4 space-y-2">
+                  <div class="flex justify-between text-xs text-slate-500">
+                    <span>一般出租應納稅：</span>
+                    <span id="regTotalText1" class="font-bold text-slate-700">NT$ 29,319</span>
+                  </div>
+                  <div class="flex justify-between text-xs text-slate-500">
+                    <span>社宅出租應納稅：</span>
+                    <span id="socTotalText1" class="font-bold text-emerald-600">NT$ 16,789</span>
+                  </div>
+                  <div class="border-t border-dashed border-slate-200 pt-2 flex justify-between text-sm font-extrabold text-emerald-700">
+                    <span>每年可省下：</span>
+                    <span id="savingsRegSoc">NT$ 12,530 / 年</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Benevolent vs Social Housing savings -->
+              <div class="bg-amber-50/50 rounded-2xl p-5 border border-amber-100">
+                <h4 class="text-sm font-bold text-amber-950 flex items-center">
+                  <span class="p-1 rounded-lg bg-amber-500 text-white mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                  </span>
+                  公益出租人 vs 社宅出租人
+                </h4>
+                <div class="mt-4 space-y-2">
+                  <div class="flex justify-between text-xs text-slate-500">
+                    <span>公益出租應納稅：</span>
+                    <span id="beneTotalText1" class="font-bold text-slate-700">NT$ 17,809</span>
+                  </div>
+                  <div class="flex justify-between text-xs text-slate-500">
+                    <span>社宅出租應納稅：</span>
+                    <span id="socTotalText2" class="font-bold text-emerald-600">NT$ 16,789</span>
+                  </div>
+                  <div class="border-t border-dashed border-slate-200 pt-2 flex justify-between text-sm font-extrabold text-amber-700">
+                    <span>每年多省下：</span>
+                    <span id="savingsBeneSoc">NT$ 1,020 / 年</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-4 p-4 bg-slate-50 rounded-xl text-xs text-slate-500 leading-relaxed border border-slate-100">
+              💡 <strong>為什麼社宅最省稅？</strong> 因為政府大力支持社會住宅，不僅提供相同的每月 1.5 萬元免稅額、房屋地價稅最優自住稅率外，其所得稅之必要費用率更高達 60%（高於一般與公益出租的 43%），這使得應課稅所得大幅降低！
+            </div>
+          </div>
+        </div>
+
+        <!-- Three Columns Comparison Cards (Detail Breakdown) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Card 1: 一般出租人 -->
+          <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow print-card flex flex-col">
+            <div class="bg-slate-50 px-5 py-4 border-b border-slate-200/80">
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">
+                傳統出租
+              </span>
+              <h3 class="text-base font-black text-slate-900 mt-1.5 flex items-center">
+                一般出租人
+                <span class="ml-1 text-xs font-normal text-slate-400">自行刊登自租</span>
+              </h3>
+            </div>
+            <div class="p-5 flex-1 flex flex-col justify-between">
+              <div class="space-y-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">所得稅 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5" id="regFormula">費用率 43% | 無免稅額</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="regIncomeTax">NT$ 8,550</span>
+                </div>
+                
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">房屋稅 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5" id="regHouseRateText">稅率 1.5%</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="regHouseTax">NT$ 17,060</span>
+                </div>
+
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">地價稅 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5" id="regLandRateText">稅率 1.0%</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="regLandTax">NT$ 3,709</span>
+                </div>
+
+                <div id="regNhiRow" class="hidden justify-between items-start pt-2 border-t border-dashed border-slate-100">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">二代健保 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5">費率 2.11% (僅一般法人)</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="regNhiTax">NT$ 0</span>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-slate-200">
+                <div class="flex justify-between items-end">
+                  <span class="text-xs font-bold text-slate-400">預估應繳稅費</span>
+                  <span class="text-xl font-black text-rose-600" id="regGrandTotal">NT$ 29,319</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: 公益出租人 -->
+          <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow print-card flex flex-col">
+            <div class="bg-amber-50/20 px-5 py-4 border-b border-slate-200/80">
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
+                租金補貼對象
+              </span>
+              <h3 class="text-base font-black text-slate-900 mt-1.5 flex items-center">
+                公益出租人
+                <span class="ml-1 text-xs font-normal text-slate-400">房客領取租補</span>
+              </h3>
+            </div>
+            <div class="p-5 flex-1 flex flex-col justify-between">
+              <div class="space-y-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">所得稅 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5" id="beneFormula">免稅 1.5 萬 | 費用率 43%</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="beneIncomeTax">NT$ 3,420</span>
+                </div>
+                
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">房屋稅 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5">優惠自住稅率 1.2%</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="beneHouseTax">NT$ 13,648</span>
+                </div>
+
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">地價稅 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5">優惠自住稅率 0.2%(2‰)</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="beneLandTax">NT$ 741</span>
+                </div>
+
+                <div id="beneNhiRow" class="hidden justify-between items-start pt-2 border-t border-dashed border-slate-100">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">二代健保 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5" id="beneNhiFormula">費率 2.11% (單月達2萬)</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="beneNhiTax">NT$ 0</span>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-slate-200">
+                <div class="flex justify-between items-end">
+                  <span class="text-xs font-bold text-slate-400">預估應繳稅費</span>
+                  <span class="text-xl font-black text-amber-600" id="beneGrandTotal">NT$ 17,809</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: 社宅出租人 (Most Recommended) -->
+          <div class="bg-white rounded-3xl border-2 border-emerald-500 overflow-hidden shadow-lg shadow-emerald-500/5 relative print-card flex flex-col">
+            <div class="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-bl-xl">
+              最推薦
+            </div>
+            
+            <div class="bg-emerald-50/30 px-5 py-4 border-b border-emerald-100">
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                包租代管計畫
+              </span>
+              <h3 class="text-base font-black text-slate-900 mt-1.5 flex items-center">
+                社宅出租人
+                <span class="ml-1 text-xs font-normal text-slate-400">政府包租代管</span>
+              </h3>
+            </div>
+            <div class="p-5 flex-1 flex flex-col justify-between">
+              <div class="space-y-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">所得稅 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5" id="socFormula">免稅 1.5 萬 | 費用率 60%</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-emerald-600" id="socIncomeTax">NT$ 2,400</span>
+                </div>
+                
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">房屋稅 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5">優惠自住稅率 1.2%</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="socHouseTax">NT$ 13,648</span>
+                </div>
+
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">地價稅 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5">優惠自住稅率 0.2%(2‰)</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="socLandTax">NT$ 741</span>
+                </div>
+
+                <div id="socNhiRow" class="hidden justify-between items-start pt-2 border-t border-dashed border-slate-100">
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-500">二代健保 (年度)</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5" id="socNhiFormula">費率 2.11% (依包租方案)</p>
+                  </div>
+                  <span class="text-sm font-extrabold text-slate-800" id="socNhiTax">NT$ 6,336</span>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-emerald-100">
+                <div class="flex justify-between items-end">
+                  <span class="text-xs font-bold text-slate-400">預估應繳稅費</span>
+                  <span class="text-xl font-black text-emerald-600" id="socGrandTotal">NT$ 16,789</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Single Month Second-Generation NHI Premium Info -->
+        <div id="nhiDetailBox" class="hidden bg-blue-50 border border-blue-100 rounded-2xl p-5 no-print">
+          <div class="flex">
+            <div class="flex-shrink-0 text-blue-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-bold text-blue-900">包租二代健保費說明：補充保費預估</h3>
+              <div class="mt-2 text-xs text-blue-700 space-y-1">
+                <p>因「包租」方案之給付主體為法人業者（例如包租代管公司），依法須扣繳二代健保補充保費（目前費率 2.11%）：</p>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                  <li><strong>單月應納健保費：</strong> NT$ <span id="nhiMonthlyVal" class="font-extrabold text-blue-950">528</span> / 月</li>
+                  <li><strong>整年應納健保費：</strong> NT$ <span id="nhiYearlyVal" class="font-extrabold text-blue-950">6,336</span> / 年</li>
+                </ul>
+                <p class="mt-2 text-[11px] text-blue-500 italic">💡小提醒：若選擇「代租代管」方案（由業者媒合，房東與房客個人簽約），由於租金是房客直接支付給房東，因此<strong>不需要</strong>扣繳二代健保補充保費喔！</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- Regulatory Explanations Area -->
+    <section class="mt-12 border-t border-slate-200 pt-8 no-print">
+      <h3 class="text-xl font-black text-slate-900 mb-6">中華民國房東減稅法規科普指南</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!--所得稅-->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div class="bg-emerald-50 text-emerald-700 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm mb-3">1</div>
+          <h4 class="text-base font-bold text-slate-900 mb-2">綜合所得稅優惠</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            房東加入社宅包租代管計劃皆享有以下優惠：
+          </p>
+          <ul class="list-disc pl-4 mt-2 space-y-1 text-xs text-slate-500">
+            <li><strong>免稅額：</strong> 每屋每月租金收入免稅額最高 <strong>15,000 元</strong>（整年高達 18 萬元）。</li>
+            <li><strong>必要費用率：</strong> 扣除免稅額後的租金，必要費用扣除額從原本的 <strong>43%</strong> 提高至 <strong>60%</strong>，扣除後之剩餘所得才需合併綜合所得稅，直接省了近 30%！</li>
+            <li><strong>加入社宅所得稅不溯及既往：</strong>若先前有出租行爲但未申報所得稅，將有機率被追稅，而社宅包租代管計劃則不追稅。</li>
+          </ul>
+        </div>
+
+        <!--房屋稅-->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div class="bg-sky-50 text-sky-700 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm mb-3">2</div>
+          <h4 class="text-base font-bold text-slate-900 mb-2">房屋稅優待（每年3/22前申報完成）</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            依照房屋稅條例 §7：房屋稅每年5月開徵，在開徵前40天要申報優惠稅率，否則依然會按照舊稅率計算。但只要加入社會住宅計劃：
+          </p>
+          <ul class="list-disc pl-4 mt-2 space-y-1 text-xs text-slate-500">
+            <li><strong>稅率降至 1.2%：</strong> 可比照「自住用住宅」之最低優惠稅率，由原本的 1.5% 甚至更高直接降至 <strong>1.2%</strong>，直接省了<strong>20%</strong>。</li>
+          </ul>
+        </div>
+
+        <!--地價稅-->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div class="bg-indigo-50 text-indigo-700 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm mb-3">3</div>
+          <h4 class="text-base font-bold text-slate-900 mb-2">地價稅優待（每年9/22前申報完成）</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            依照土地稅法 §41：地價稅每年11月開徵，在開徵前40天要申報優惠稅率，否則依然會按照舊稅率計算。一般出租房屋適用一般地價稅率 1%(10‰) 起（依累進地價計算），然而政府為鼓勵房東：
+          </p>
+          <ul class="list-disc pl-4 mt-2 space-y-1 text-xs text-slate-500">
+            <li><strong>稅率降至 0.2%：</strong> 只要申報公益出租人或加入社會住宅包租代管計畫，即可減徵至自住稅率的 <strong>0.2% (2‰)</strong>，稅金直接大幅萎縮成五分之一。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 品牌介紹：為什麼要選擇新智來服務？ -->
+    <section class="mt-12 border-t border-slate-200 pt-8 no-print">
+      <div class="bg-[#8C8EB8] rounded-3xl p-6 sm:p-8 text-slate-900 shadow-md shadow-indigo-100/50 mb-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-900 text-white mb-3 shadow-sm">
+              專業・用心・有經驗
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">為什麼要選擇新智來服務？</h3>
+            <p class="mt-3 text-slate-900 text-sm sm:text-base leading-relaxed max-w-3xl">
+              租賃服務經歷超過 <strong class="text-slate-950 font-black underline underline-offset-4 decoration-slate-900">3 年</strong>，累積服務過 <strong class="text-slate-950 font-black underline underline-offset-4 decoration-slate-900">1,000 組</strong> 房東房客經驗，並具備<strong>不動產營業員</strong>及<strong>租賃管理人員證照</strong>。
+            </p>
+          </div>
+          <div class="flex flex-wrap md:flex-col gap-2.5 shrink-0">
+            <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-black bg-white/80 text-slate-900 border border-slate-900/20 shadow-sm">
+              ✓ 不動產營業員證照
+            </span>
+            <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-black bg-white/80 text-slate-900 border border-slate-900/20 shadow-sm">
+              ✓ 租賃管理人員證照
+            </span>
+          </div>
+        </div>
+
+        <hr class="border-slate-900/20 my-6">
+
+        <p class="text-xs sm:text-sm text-slate-900 font-medium leading-relaxed">
+          💡 房屋管理最重要就是找一個夠專業且用心服務的專員；無論是在<strong class="text-slate-950 font-bold">修繕報修</strong>、<strong class="text-slate-950 font-bold">補助申請問題</strong>、<strong class="text-slate-950 font-bold">租賃報稅</strong>、<strong class="text-slate-950 font-bold">租屋糾紛</strong>，都能隨時讓你找得到專業人員諮詢！
+        </p>
+      </div>
+
+      <!-- 選擇新智送好康 -->
+      <div class="space-y-6">
+        <h4 class="text-xl font-black text-slate-900 flex items-center">
+          <span class="bg-[#8C8EB8] text-white rounded-lg p-1.5 mr-2.5 flex items-center justify-center shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5 5a3 3 0 013-3h4a3 3 0 013 3v10a2 2 0 01-2 2H7a2 2 0 01-2-2V5zm2 0a1 1 0 011-1h4a1 1 0 011 1v10H7V5z" clip-rule="evenodd" />
+            </svg>
+          </span>
+          選擇新智送好康 🎉
+        </h4>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- 好康 1 -->
+          <div class="lg:col-span-5 bg-indigo-50/40 border border-indigo-100 rounded-2xl p-6 flex flex-col justify-between shadow-sm">
+            <div>
+              <span class="inline-block px-2.5 py-1 bg-[#8C8EB8] text-white font-extrabold text-xs rounded-md mb-3">
+                🎁 好康 1
+              </span>
+              <h5 class="text-lg font-extrabold text-slate-900 mb-2">免費稅費試算工具 🏦 </h5>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                提供最新所得稅、房屋稅、地價稅精準計算及相較一般出租之完整比較報告，幫您一眼看穿最佳節稅方案。
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-indigo-100 text-xs font-bold text-[#72749E] flex items-center">
+              ✓ 隨時線上試算，試算結果一鍵列印報告
+            </div>
+          </div>
+
+          <!-- 好康 2 -->
+          <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <span class="inline-block px-2.5 py-1 bg-[#8C8EB8] text-white font-extrabold text-xs rounded-md mb-3">
+              好康 2 🎁
+            </span>
+            <h5 class="text-lg font-extrabold text-slate-900 mb-4">一站式全方位包租代管服務 🏠</h5>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="flex items-center mb-1">
+                  <span class="font-black text-[#72749E] text-sm mr-1">快出租</span>
+                  <span class="text-slate-300 text-xs">｜</span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">享免費廣告刊登，超快速對接優質租客</p>
+              </div>
+
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="flex items-center mb-1">
+                  <span class="font-black text-[#72749E] text-sm mr-1">嚴把關</span>
+                  <span class="text-slate-300 text-xs">｜</span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">憑專業多重篩選，確保安心、穩定收租</p>
+              </div>
+
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="flex items-center mb-1">
+                  <span class="font-black text-[#72749E] text-sm mr-1">免煩惱</span>
+                  <span class="text-slate-300 text-xs">｜</span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">整合修繕一條龍，包辦派工與補助申請</p>
+              </div>
+
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="flex items-center mb-1">
+                  <span class="font-black text-[#72749E] text-sm mr-1">全代管</span>
+                  <span class="text-slate-300 text-xs">｜</span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">主動催租提醒報稅，完整守護資產權益</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-16 text-center text-xs text-slate-400 border-t border-slate-200 pt-6 no-print">
+      <p>© 新智 (Eli) 制作 房東租稅與費率試算計算機. 所有計算結果僅供參考，實際申報稅額與優惠比例以各地方稅捐稽徵機關與財政部關貿國稅局核定為準。</p>
+    </footer>
+
+    <!-- Report Print Layout Container -->
+    <div class="hidden print:block mt-8 print-card p-6 rounded-none border-none">
+      <h1 class="text-xl font-bold text-center border-b pb-4 mb-4">房東稅費試算報告書</h1>
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="text-xs leading-loose">
+          <p><strong>試算日期：</strong> <span id="printDate"></span></p>
+          <p><strong>評估月租金：</strong> NT$ <span class="print-rent">25,000</span> (年租金 NT$ <span class="print-annual-rent">300,000</span>)</p>
+          <p><strong>綜所稅適用稅率：</strong> <span class="print-tax-rate">5%</span></p>
+        </div>
+        <div class="text-xs leading-loose">
+          <p><strong>房屋課稅現值：</strong> NT$ <span class="print-house">1,137,300</span></p>
+          <p><strong>地價稅課稅地價：</strong> NT$ <span class="print-land">370,950</span></p>
+          <p><strong>是否有二代健保：</strong> <span class="print-is-sublease">否</span></p>
+        </div>
+      </div>
+
+      <table class="w-full text-xs border-collapse border border-slate-300 text-left mb-6">
+        <thead>
+          <tr class="bg-slate-100">
+            <th class="border border-slate-300 p-2">稅費項目</th>
+            <th class="border border-slate-300 p-2">一般出租人</th>
+            <th class="border border-slate-300 p-2">公益出租人</th>
+            <th class="border border-slate-300 p-2">社宅出租人</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border border-slate-300 p-2 font-bold">1. 所得稅 (年度)</td>
+            <td class="border border-slate-300 p-2" id="printRegInc">NT$ 8,550</td>
+            <td class="border border-slate-300 p-2" id="printBeneInc">NT$ 3,420</td>
+            <td class="border border-slate-300 p-2" id="printSocInc">NT$ 2,400</td>
+          </tr>
+          <tr>
+            <td class="border border-slate-300 p-2 font-bold">2. 房屋稅 (年度)</td>
+            <td class="border border-slate-300 p-2" id="printRegHouse">NT$ 17,060</td>
+            <td class="border border-slate-300 p-2" id="printBeneHouse">NT$ 13,648</td>
+            <td class="border border-slate-300 p-2" id="printSocHouse">NT$ 13,648</td>
+          </tr>
+          <tr>
+            <td class="border border-slate-300 p-2 font-bold">3. 地價稅 (年度)</td>
+            <td class="border border-slate-300 p-2" id="printRegLand">NT$ 3,709</td>
+            <td class="border border-slate-300 p-2" id="printBeneLand">NT$ 741</td>
+            <td class="border border-slate-300 p-2" id="printSocLand">NT$ 741</td>
+          </tr>
+          <tr id="printNhiRow">
+            <td class="border border-slate-300 p-2 font-bold">4. 二代健保補充保費 (年度)</td>
+            <td class="border border-slate-300 p-2" id="printRegNhi">NT$ 0</td>
+            <td class="border border-slate-300 p-2" id="printBeneNhi">NT$ 0</td>
+            <td class="border border-slate-300 p-2" id="printSocNhi">NT$ 6,336</td>
+          </tr>
+          <tr class="bg-emerald-50 text-emerald-950 font-bold">
+            <td class="border border-slate-300 p-2">預估年度應繳稅金總計</td>
+            <td class="border border-slate-300 p-2 text-rose-600" id="printRegTotal">NT$ 29,319</td>
+            <td class="border border-slate-300 p-2 text-amber-600" id="printBeneTotal">NT$ 17,809</td>
+            <td class="border border-slate-300 p-2 text-emerald-600" id="printSocTotal">NT$ 16,789</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="border p-4 bg-emerald-50 rounded text-xs text-emerald-950 font-bold leading-relaxed">
+        🎉 <strong>結論摘要：</strong> 本物件委託政府推動之「社會住宅包租代管計畫」，每年最多能比一般出租省下 <strong>NT$ <span class="print-saved-val">12,530</span> 元</strong> 的稅費支出，高達 <strong><span class="print-saved-pct">42.7%</span></strong> 的節稅比例，在合規合法申報下享有資產最大化增值！
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let taxChart = null;
+
+    function formatCurrency(num) {
+      return 'NT$ ' + num.toLocaleString('zh-TW');
+    }
+
+    function resetDefaults() {
+      document.getElementById('monthlyRentInput').value = 25000;
+      document.getElementById('monthlyRentSlider').value = 25000;
+      document.getElementById('taxRateSelect').value = "0.05";
+      document.getElementById('houseValueInput').value = 1137300;
+      document.getElementById('landValueInput').value = 370950;
+      document.getElementById('regularHouseTaxRate').value = 1.5;
+      document.getElementById('regularLandTaxRate').value = 1.0;
+      document.getElementById('subleaseCheckbox').checked = false;
+      calculateTax();
+    }
+
+    function syncRentSlider(val) {
+      const slider = document.getElementById('monthlyRentSlider');
+      if (val >= 5000 && val <= 100000) {
+        slider.value = val;
+      }
+      calculateTax();
+    }
+
+    function syncRentInput(val) {
+      document.getElementById('monthlyRentInput').value = val;
+      calculateTax();
+    }
+
+    function switchVisualTab(tabType) {
+      const tabChart = document.getElementById('tabChart');
+      const tabSummary = document.getElementById('tabSummary');
+      const chartDiv = document.getElementById('chartContainer');
+      const summaryDiv = document.getElementById('summaryContainer');
+
+      if (tabType === 'chart') {
+        tabChart.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+        tabChart.classList.remove('text-slate-500');
+        tabSummary.classList.remove('bg-white', 'text-slate-800', 'shadow-sm');
+        tabSummary.classList.add('text-slate-500');
+
+        chartDiv.classList.remove('hidden');
+        summaryDiv.classList.add('hidden');
+      } else {
+        tabSummary.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+        tabSummary.classList.remove('text-slate-500');
+        tabChart.classList.remove('bg-white', 'text-slate-800', 'shadow-sm');
+        tabChart.classList.add('text-slate-500');
+
+        summaryDiv.classList.remove('hidden');
+        chartDiv.classList.add('hidden');
+      }
+    }
+
+    function calculateTax() {
+      const monthlyRent = parseFloat(document.getElementById('monthlyRentInput').value) || 0;
+      const marginalTaxRate = parseFloat(document.getElementById('taxRateSelect').value) || 0.05;
+      const houseValue = parseFloat(document.getElementById('houseValueInput').value) || 0;
+      const landValue = parseFloat(document.getElementById('landValueInput').value) || 0;
+      const regularHouseTaxRate = (parseFloat(document.getElementById('regularHouseTaxRate').value) || 1.5) / 100;
+      const regularLandTaxRate = (parseFloat(document.getElementById('regularLandTaxRate').value) || 1.0) / 100;
+      const isSubleaseChecked = document.getElementById('subleaseCheckbox').checked;
+
+      const annualRent = monthlyRent * 12;
+
+      let monthlyNhi = 0;
+      if (monthlyRent >= 20000) {
+        monthlyNhi = Math.round(monthlyRent * 0.0211);
+      }
+      const annualNhi = monthlyNhi * 12;
+
+      // 一般出租人
+      const regAllowance = 0;
+      const regTaxableRent = Math.max(0, annualRent - regAllowance);
+      const regExpense = regTaxableRent * 0.43;
+      const regTaxableIncome = regTaxableRent - regExpense;
+      const regIncomeTax = Math.round(regTaxableIncome * marginalTaxRate);
+      
+      const regHouseTax = Math.round(houseValue * regularHouseTaxRate);
+      const regLandTax = Math.floor(landValue * regularLandTaxRate);
+      
+      let regNhi = 0;
+      if (isSubleaseChecked && monthlyRent >= 20000) {
+        regNhi = annualNhi;
+      }
+      const regTotalTax = regIncomeTax + regHouseTax + regLandTax + regNhi;
+
+      // 公益出租人
+      const beneAllowance = Math.min(15000, monthlyRent) * 12;
+      const beneTaxableRent = Math.max(0, annualRent - beneAllowance);
+      const beneExpense = beneTaxableRent * 0.43;
+      const beneTaxableIncome = beneTaxableRent - beneExpense;
+      const beneIncomeTax = Math.round(beneTaxableIncome * marginalTaxRate);
+      
+      const beneHouseTax = Math.round(houseValue * 0.012);
+      const beneLandTax = Math.floor(landValue * 0.002);
+      
+      let beneNhi = 0;
+      if (isSubleaseChecked && monthlyRent >= 20000) {
+        beneNhi = annualNhi;
+      }
+      const beneTotalTax = beneIncomeTax + beneHouseTax + beneLandTax + beneNhi;
+
+      // 社宅出租人
+      const socAllowance = Math.min(15000, monthlyRent) * 12;
+      const socTaxableRent = Math.max(0, annualRent - socAllowance);
+      const socExpense = socTaxableRent * 0.60;
+      const socTaxableIncome = socTaxableRent - socExpense;
+      const socIncomeTax = Math.round(socTaxableIncome * marginalTaxRate);
+      
+      const socHouseTax = Math.round(houseValue * 0.012);
+      const socLandTax = Math.floor(landValue * 0.002);
+      
+      let socNhi = 0;
+      if (isSubleaseChecked && monthlyRent >= 20000) {
+        socNhi = annualNhi;
+      }
+      const socTotalTax = socIncomeTax + socHouseTax + socLandTax + socNhi;
+
+      // 更新畫面 UI
+      document.getElementById('regIncomeTax').innerText = formatCurrency(regIncomeTax);
+      document.getElementById('regHouseTax').innerText = formatCurrency(regHouseTax);
+      document.getElementById('regLandTax').innerText = formatCurrency(regLandTax);
+      document.getElementById('regGrandTotal').innerText = formatCurrency(regTotalTax);
+
+      document.getElementById('beneIncomeTax').innerText = formatCurrency(beneIncomeTax);
+      document.getElementById('beneHouseTax').innerText = formatCurrency(beneHouseTax);
+      document.getElementById('beneLandTax').innerText = formatCurrency(beneLandTax);
+      document.getElementById('beneGrandTotal').innerText = formatCurrency(beneTotalTax);
+
+      document.getElementById('socIncomeTax').innerText = formatCurrency(socIncomeTax);
+      document.getElementById('socHouseTax').innerText = formatCurrency(socHouseTax);
+      document.getElementById('socLandTax').innerText = formatCurrency(socLandTax);
+      document.getElementById('socGrandTotal').innerText = formatCurrency(socTotalTax);
+
+      document.getElementById('regFormula').innerText = `費用率 43% | 無免稅額`;
+      document.getElementById('beneFormula').innerText = `免稅 $${(Math.min(15000, monthlyRent)).toLocaleString()}/月 | 費用率 43%`;
+      document.getElementById('socFormula').innerText = `免稅 $${(Math.min(15000, monthlyRent)).toLocaleString()}/月 | 費用率 60%`;
+
+      document.getElementById('regHouseRateText').innerText = `稅率 ${(regularHouseTaxRate * 100).toFixed(1)}%`;
+      document.getElementById('regLandRateText').innerText = `稅率 ${(regularLandTaxRate * 100).toFixed(1)}%`;
+
+      const nhiDetailBox = document.getElementById('nhiDetailBox');
+      const regNhiRow = document.getElementById('regNhiRow');
+      const beneNhiRow = document.getElementById('beneNhiRow');
+      const socNhiRow = document.getElementById('socNhiRow');
+
+      if (isSubleaseChecked && monthlyRent >= 20000) {
+        nhiDetailBox.classList.remove('hidden');
+        regNhiRow.classList.remove('hidden');
+        beneNhiRow.classList.remove('hidden');
+        socNhiRow.classList.remove('hidden');
+
+        document.getElementById('regNhiTax').innerText = formatCurrency(regNhi);
+        document.getElementById('beneNhiTax').innerText = formatCurrency(beneNhi);
+        document.getElementById('printBeneNhi').innerText = formatCurrency(beneNhi);
+        document.getElementById('socNhiTax').innerText = formatCurrency(socNhi);
+        
+        document.getElementById('nhiMonthlyVal').innerText = monthlyNhi.toLocaleString();
+        document.getElementById('nhiYearlyVal').innerText = annualNhi.toLocaleString();
+        document.getElementById('socNhiFormula').innerText = `費率 2.11% | 月繳 $${monthlyNhi.toLocaleString()}`;
+      } else {
+        nhiDetailBox.classList.add('hidden');
+        regNhiRow.classList.add('hidden');
+        beneNhiRow.classList.add('hidden');
+        socNhiRow.classList.add('hidden');
+      }
+
+      const savingsValue = regTotalTax - socTotalTax;
+      let savingsPercent = 0;
+      if (regTotalTax > 0) {
+        savingsPercent = ((savingsValue / regTotalTax) * 100).toFixed(1);
+      }
+
+      const maxSavingsValElem = document.getElementById('maxSavingsValue');
+      const maxSavingsPctElem = document.getElementById('maxSavingsPercent');
+      
+      if (savingsValue >= 0) {
+        maxSavingsValElem.innerText = formatCurrency(savingsValue);
+        maxSavingsPctElem.innerText = `高達 ${savingsPercent}% 稅金`;
+        document.getElementById('savingsBanner').classList.remove('from-rose-500', 'to-red-600');
+        document.getElementById('savingsBanner').classList.add('from-emerald-500', 'to-teal-600');
+      } else {
+        maxSavingsValElem.innerText = formatCurrency(Math.abs(savingsValue)) + " (社宅溢額)";
+        maxSavingsPctElem.innerText = `請選擇「代管」方案避開二代健保`;
+        document.getElementById('savingsBanner').classList.add('from-rose-500', 'to-red-600');
+        document.getElementById('savingsBanner').classList.remove('from-emerald-500', 'to-teal-600');
+      }
+
+      document.getElementById('regTotalText1').innerText = formatCurrency(regTotalTax);
+      document.getElementById('socTotalText1').innerText = formatCurrency(socTotalTax);
+      document.getElementById('beneTotalText1').innerText = formatCurrency(beneTotalTax);
+      document.getElementById('socTotalText2').innerText = formatCurrency(socTotalTax);
+      document.getElementById('savingsRegSoc').innerText = `${formatCurrency(savingsValue)} / 年`;
+      document.getElementById('savingsBeneSoc').innerText = `${formatCurrency(beneTotalTax - socTotalTax)} / 年`;
+
+      // 列印版資訊更新
+      const today = new Date();
+      document.getElementById('printDate').innerText = `${today.getFullYear()}年 ${today.getMonth() + 1}月`;
+      document.querySelector('.print-rent').innerText = monthlyRent.toLocaleString();
+      document.querySelector('.print-annual-rent').innerText = annualRent.toLocaleString();
+      document.querySelector('.print-tax-rate').innerText = (marginalTaxRate * 100) + '%';
+      document.querySelector('.print-house').innerText = houseValue.toLocaleString();
+      document.querySelector('.print-land').innerText = landValue.toLocaleString();
+      document.querySelector('.print-is-sublease').innerText = isSubleaseChecked ? '是 (包租包管, 已含 2.11% 健保補充費)' : '否 (代租代管)';
+      
+      document.getElementById('printRegInc').innerText = formatCurrency(regIncomeTax);
+      document.getElementById('printBeneInc').innerText = formatCurrency(beneIncomeTax);
+      document.getElementById('printSocInc').innerText = formatCurrency(socIncomeTax);
+
+      document.getElementById('printRegHouse').innerText = formatCurrency(regHouseTax);
+      document.getElementById('printBeneHouse').innerText = formatCurrency(beneHouseTax);
+      document.getElementById('printSocHouse').innerText = formatCurrency(socHouseTax);
+
+      document.getElementById('printRegLand').innerText = formatCurrency(regLandTax);
+      document.getElementById('printBeneLand').innerText = formatCurrency(beneLandTax);
+      document.getElementById('printSocLand').innerText = formatCurrency(socLandTax);
+
+      const printNhiRow = document.getElementById('printNhiRow');
+      if (isSubleaseChecked && monthlyRent >= 20000) {
+        printNhiRow.style.display = 'table-row';
+        document.getElementById('printRegNhi').innerText = formatCurrency(regNhi);
+        document.getElementById('printBeneNhi').innerText = formatCurrency(0);
+        document.getElementById('printSocNhi').innerText = formatCurrency(socNhi);
+      } else {
+        printNhiRow.style.display = 'none';
+      }
+
+      document.getElementById('printRegTotal').innerText = formatCurrency(regTotalTax);
+      document.getElementById('printBeneTotal').innerText = formatCurrency(beneTotalTax);
+      document.getElementById('printSocTotal').innerText = formatCurrency(socTotalTax);
+      
+      document.querySelector('.print-saved-val').innerText = Math.max(0, savingsValue).toLocaleString();
+      document.querySelector('.print-saved-pct').innerText = savingsPercent + '%';
+
+      updateChart(regTotalTax, beneTotalTax, socTotalTax);
+    }
+
+    function updateChart(reg, bene, soc) {
+      const ctx = document.getElementById('taxComparisonChart').getContext('2d');
+      
+      const data = {
+        labels: ['一般出租人', '公益出租人', '社宅出租人'],
+        datasets: [{
+          label: '年度稅費總計 (NT$)',
+          data: [reg, bene, soc],
+          backgroundColor: [
+            'rgba(244, 63, 94, 0.85)',
+            'rgba(245, 158, 11, 0.85)',
+            'rgba(16, 185, 129, 0.9)'
+          ],
+          borderColor: [
+            'rgb(225, 29, 72)',
+            'rgb(217, 119, 6)',
+            'rgb(5, 150, 105)'
+          ],
+          borderWidth: 1.5,
+          borderRadius: 8,
+          barThickness: 36
+        }]
+      };
+
+      const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return ' ' + formatCurrency(context.raw);
+              }
+            },
+            titleFont: { fontfamily: "'Noto Sans TC', sans-serif" },
+            bodyFont: {
+              fontfamily: "'Noto Sans TC', sans-serif",
+              size: 13,
+              weight: 'bold'
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) { return '$' + value.toLocaleString(); },
+              font: { size: 10 }
+            },
+            grid: { color: '#f1f5f9' }
+          },
+          x: {
+            ticks: {
+              font: { weight: 'bold', size: 12 }
+            },
+            grid: { display: false }
+          }
+        }
+      };
+
+      if (taxChart) {
+        taxChart.data = data;
+        taxChart.update();
+      } else {
+        taxChart = new Chart(ctx, {
+          type: 'bar',
+          data: data,
+          options: options
+        });
+      }
+    }
+
+    window.onload = function() {
+      calculateTax();
+    };
+  </script>
+</body>
+</html>
