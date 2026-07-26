@@ -151,7 +151,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <span class="text-slate-400 sm:text-sm">NT$</span>
                 </div>
-                <input type="number" id="houseValueInput" value="1137300" oninput="calculateTax()" class="block w-full pl-12 pr-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm">
+                <input type="number" id="houseValueInput" value="1100000" oninput="calculateTax()" class="block w-full pl-12 pr-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm">
               </div>
             </div>
 
@@ -172,7 +172,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <span class="text-slate-400 sm:text-sm">NT$</span>
                 </div>
-                <input type="number" id="landValueInput" value="370950" oninput="calculateTax()" class="block w-full pl-12 pr-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm">
+                <input type="number" id="landValueInput" value="370000" oninput="calculateTax()" class="block w-full pl-12 pr-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm">
               </div>
             </div>
 
@@ -577,15 +577,15 @@
               專業・用心・有經驗
             </span>
             <h3 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">為什麼要選擇新智來服務？</h3>
-            <p class="mt-3 text-slate-900 text-sm sm:text-base leading-relaxed max-w-3xl">
+            <p class="mt-3 text-slate-800 text-sm sm:text-base leading-relaxed max-w-3xl">
               租賃服務經歷超過 <strong class="text-slate-950 font-black underline underline-offset-4 decoration-slate-900">3 年</strong>，累積服務逾 <strong class="text-slate-950 font-black underline underline-offset-4 decoration-slate-900">1,000 組</strong> 房東房客經驗，並具備<strong>不動產營業員</strong>及<strong>租賃管理人員證照</strong>。
             </p>
           </div>
           <div class="flex flex-wrap md:flex-col gap-2.5 shrink-0">
-            <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-black bg-white/80 text-slate-900 border border-slate-900/20 shadow-sm">
+            <span class="inline-flex items-center px-4 py-2 rounded-xl text-lg font-black bg-white/80 text-slate-900 border border-slate-900/20 shadow-sm">
               ✓ 不動產營業員證照
             </span>
-            <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-black bg-white/80 text-slate-900 border border-slate-900/20 shadow-sm">
+            <span class="inline-flex items-center px-4 py-2 rounded-xl text-lg font-black bg-white/80 text-slate-900 border border-slate-900/20 shadow-sm">
               ✓ 租賃管理人員證照
             </span>
           </div>
@@ -593,7 +593,7 @@
 
         <hr class="border-slate-900/20 my-6">
 
-        <p class="text-xs sm:text-sm text-slate-900 font-medium leading-relaxed">
+        <p class="text-[14px] sm:text-[16px] text-slate-900 font-medium leading-relaxed">
           💡 房屋管理最重要就是找一個夠專業且用心服務的專員；無論是在<strong class="text-slate-950 font-bold">修繕報修</strong>、<strong class="text-slate-950 font-bold">補助申請問題</strong>、<strong class="text-slate-950 font-bold">租賃報稅</strong>、<strong class="text-slate-950 font-bold">租屋糾紛</strong>，都能隨時讓你找得到專業人員諮詢！
         </p>
       </div>
@@ -613,22 +613,24 @@
           <!-- 好康 1 -->
           <div class="lg:col-span-5 bg-indigo-50/40 border border-indigo-100 rounded-2xl p-6 flex flex-col justify-between shadow-sm">
             <div>
-              <span class="inline-block px-2.5 py-1 bg-[#8C8EB8] text-white font-extrabold text-xs rounded-md mb-3">
+              <span class="inline-block px-2.5 py-1 bg-[#8C8EB8] text-white font-extrabold text-sm rounded-md mb-3">
                 🎁 好康 1
               </span>
-              <h5 class="text-lg font-extrabold text-slate-900 mb-2">免費稅費試算工具 🏦 </h5>
-              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                提供最新所得稅、房屋稅、地價稅精準計算及相較一般出租之完整比較報告，幫您一眼看穿最佳節稅方案。
+              <h5 class="text-lg font-extrabold text-slate-900 mb-2">免費稅費試算工具 🏦</h5>
+              <p>
+                <div class="mt-4 pt-3 text-[13pt] font-bold text-[#72749E] flex items-center">✓ 提供 2026年 所得稅、房屋稅、地價稅計算方式</div>
+<p><div class="mt-4 pt-3 text-[13pt] font-bold text-[#72749E] flex items-center">✓ 三大出租類型稅費總額比較，幫您找出最佳節稅方案。</div>
               </p>
-            </div>
-            <div class="mt-4 pt-3 border-t border-indigo-100 text-xs font-bold text-[#72749E] flex items-center">
-              ✓ 隨時線上試算，試算結果一鍵列印報告
-            </div>
+           
+            <div class="mt-4 pt-3 text-lg font-bold text-[#72749E] flex items-center">
+              ✓ 隨時線上試算，試算結果一鍵匯出評估報告。
+</div>            
+</div>
           </div>
 
           <!-- 好康 2 -->
           <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <span class="inline-block px-2.5 py-1 bg-[#8C8EB8] text-white font-extrabold text-xs rounded-md mb-3">
+            <span class="inline-block px-2.5 py-1 bg-[#8C8EB8] text-white font-extrabold text-sm rounded-md mb-3">
               好康 2 🎁
             </span>
             <h5 class="text-lg font-extrabold text-slate-900 mb-4">一站式全方位包租代管服務 🏠</h5>
@@ -636,39 +638,131 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
                 <div class="flex items-center mb-1">
-                  <span class="font-black text-[#72749E] text-sm mr-1">快出租</span>
+                  <span class="font-black text-[#72749E] text-lg mr-1">快出租</span>
                   <span class="text-slate-300 text-xs">｜</span>
                 </div>
-                <p class="text-xs text-slate-600 leading-relaxed">享免費廣告刊登，超快速對接優質租客</p>
+                <p class="text-m text-slate-600 leading-relaxed">享免費廣告刊登，超快速對接優質租客</p>
               </div>
 
               <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
                 <div class="flex items-center mb-1">
-                  <span class="font-black text-[#72749E] text-sm mr-1">嚴把關</span>
+                  <span class="font-black text-[#72749E] text-lg mr-1">嚴把關</span>
                   <span class="text-slate-300 text-xs">｜</span>
                 </div>
-                <p class="text-xs text-slate-600 leading-relaxed">憑專業多重篩選，確保安心、穩定收租</p>
+                <p class="text-m text-slate-600 leading-relaxed">憑專業多重篩選，確保安心、穩定收租</p>
               </div>
 
               <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
                 <div class="flex items-center mb-1">
-                  <span class="font-black text-[#72749E] text-sm mr-1">免煩惱</span>
+                  <span class="font-black text-[#72749E] text-lg mr-1">免煩惱</span>
                   <span class="text-slate-300 text-xs">｜</span>
                 </div>
-                <p class="text-xs text-slate-600 leading-relaxed">整合修繕一條龍，包辦派工與補助申請</p>
+                <p class="text-m text-slate-600 leading-relaxed">整合修繕一條龍，包辦派工與補助申請</p>
               </div>
 
               <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
                 <div class="flex items-center mb-1">
-                  <span class="font-black text-[#72749E] text-sm mr-1">全代管</span>
+                  <span class="font-black text-[#72749E] text-lg mr-1">全代管</span>
                   <span class="text-slate-300 text-xs">｜</span>
                 </div>
-                <p class="text-xs text-slate-600 leading-relaxed">主動催租提醒報稅，完整守護資產權益</p>
+                <p class="text-m text-slate-600 leading-relaxed">主動催租提醒報稅，完整守護資產權益</p>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- 新增區塊：房東加入社會住宅包租代管好處有哪些？ -->
+      <div class="mt-8 bg-amber-50/60 border border-amber-200/80 rounded-3xl p-6 sm:p-8 shadow-sm">
+        <h4 class="text-xl sm:text-2xl font-black text-amber-950 mb-6 flex items-center">
+          <span class="bg-amber-500 text-white p-1.5 rounded-xl mr-3 shadow-md shadow-amber-500/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
+          房東加入社會住宅包租代管好處有哪些？
+        </h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- 第一部分：3稅有減免 -->
+          <div class="bg-white rounded-2xl p-5 border border-amber-200/60 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="inline-block px-3 py-1 bg-amber-100 text-amber-900 font-black text-lg rounded-lg mb-3">
+                第一部分
+              </div>
+              <h5 class="text-xl font-black text-slate-900 mb-3 flex items-center">
+                <span class="text-amber-600 mr-1.5 font-black">3稅</span>有減免
+              </h5>
+              <ol class="list-decimal pl-5 text-s m:text-m font-bold text-slate-700 space-y-1 mb-4">
+                <li>租金所得稅</li>
+                <li>房屋稅</li>
+                <li>地價稅</li>
+              </ol>
+              <div class="border-t border-slate-100 pt-3 text-xs text-slate-600 space-y-2 leading-relaxed">
+                <p>• 每月租金收入免稅額度最高 <strong>15,000 元。</strong>
+                <p>• 必要費用減除率為 <strong>60%</strong>，而且不會作為查稅之依據。</p>
+                <p>• 地方政府得減徵房屋稅及地價稅。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第二部分：3費有補助 -->
+          <div class="bg-white rounded-2xl p-5 border border-amber-200/60 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="inline-block px-3 py-1 bg-amber-100 text-amber-900 font-black text-lg rounded-lg mb-3">
+                第二部分
+              </div>
+              <h5 class="text-xl font-black text-slate-900 mb-3 flex items-center">
+                <span class="text-amber-600 mr-1.5 font-black">3費</span>有補助
+              </h5>
+              <ol class="list-decimal pl-5 text-s m:text-m font-bold text-slate-700 space-y-1 mb-4">
+                <li>公證費</li>
+                <li>修繕費</li>
+                <li>居家安全相關保險費</li>
+              </ol>
+              <div class="border-t border-slate-100 pt-3 text-xs text-slate-600 space-y-2 leading-relaxed">
+                <p>• <strong>公證費：
+<div class="ml-8 space-y-1">
+</p></strong>雙北市補助最高 <strong>4,500元</strong> 件/次。
+</p>其他縣市補助最高 <strong>3,000元</strong> 件/次。</p>
+</div>
+                <p>• <strong>修繕費補助最高：</strong><br>
+                    <div class="ml-8 space-y-1"> <strong>10,000～15,000元</strong> 年/屋。<span class="text-[11.6px] text-slate-500 font-normal">（包租、租客是否弱勢身份）</span><br>
+                     <strong>8,000～10,000元</strong> 年/屋。<span class="text-[11.6px] text-slate-500 font-normal">（代管、租客是否弱勢身份）</span>
+</div>
+                </p>
+                <p>• <strong>保險費：
+<p>
+<div class="ml-8 space-y-1"></strong>補助最高 <strong>3,500元</strong> 年/屋。
+<p>（需包含火災、地震、特定事故跌價三險）</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第三部分：3年有服務 -->
+          <div class="bg-white rounded-2xl p-5 border border-amber-200/60 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="inline-block px-3 py-1 bg-amber-100 text-amber-900 font-black text-lg rounded-lg mb-3">
+                第三部分
+              </div>
+              <h5 class="text-xl font-black text-slate-900 mb-3 flex items-center">
+                <span class="text-amber-600 mr-1.5 font-black">3年</span>有服務
+              </h5>
+<ol class="list-decimal pl-5 text-s m:text-m font-bold text-slate-700 space-y-1 mb-4">
+                <li>免費招租</li>
+<li>免費管理</li>
+<li>免費諮詢</li>
+</ol>
+            
+              <div class="border-t border-slate-100 pt-3 text-xs text-slate-600 leading-relaxed">
+                <p>• <strong>3年合約期間：
+<p><div class="ml-8 space-y-1"></strong>交由專業租賃服業者管理，免付服務費，省時又省心。</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- Footer -->
@@ -1056,41 +1150,31 @@
       }
     }
 
-   window.onload = function() {
+    window.onload = function() {
       calculateTax();
     };
 
-    // ------------------- 請加在下方這段區塊 -------------------
-    
-   // 1. 禁用右鍵選單
-document.addEventListener('contextmenu', function(e) {
-  e.preventDefault();
-});
+    // 1. 禁用右鍵選單
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
 
-// 2. 禁用 F12, Ctrl/Cmd+Shift+I, Ctrl/Cmd+U, Ctrl/Cmd+S, Cmd+Option+I 等
-document.addEventListener('keydown', function(e) {
-  // 檢查是否按下了 Control (Windows) 或 Command (Mac)
-  const isCmdOrCtrl = e.ctrlKey || e.metaKey;
+    // 2. 禁用快捷鍵
+    document.addEventListener('keydown', function(e) {
+      const isCmdOrCtrl = e.ctrlKey || e.metaKey;
 
-  if (
-    // 禁用 F12
-    e.key === 'F12' ||
-    // 禁用 Ctrl+S 或 Cmd+S (儲存網頁)
-    (isCmdOrCtrl && (e.key === 's' || e.key === 'S')) ||
-    // 禁用 Ctrl+U 或 Cmd+U (檢視網頁原始碼)
-    (isCmdOrCtrl && (e.key === 'u' || e.key === 'U')) ||
-    // 禁用 Ctrl+Shift+I / Cmd+Shift+I / Cmd+Option+I (開啟開發者工具)
-    (isCmdOrCtrl && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
-    (isCmdOrCtrl && e.altKey && (e.key === 'I' || e.key === 'i')) || // Mac 常用 Cmd+Option+I
-    // 禁用 Ctrl+Shift+J / Cmd+Shift+J / Cmd+Option+J (開啟 Console)
-    (isCmdOrCtrl && e.shiftKey && (e.key === 'J' || e.key === 'j')) ||
-    (isCmdOrCtrl && e.altKey && (e.key === 'J' || e.key === 'j'))
-  ) {
-    e.preventDefault();
-  }
-});
-    
-    // ---------------------------------------------------------
+      if (
+        e.key === 'F12' ||
+        (isCmdOrCtrl && (e.key === 's' || e.key === 'S')) ||
+        (isCmdOrCtrl && (e.key === 'u' || e.key === 'U')) ||
+        (isCmdOrCtrl && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
+        (isCmdOrCtrl && e.altKey && (e.key === 'I' || e.key === 'i')) ||
+        (isCmdOrCtrl && e.shiftKey && (e.key === 'J' || e.key === 'j')) ||
+        (isCmdOrCtrl && e.altKey && (e.key === 'J' || e.key === 'j'))
+      ) {
+        e.preventDefault();
+      }
+    });
   </script>
 </body>
 </html>
