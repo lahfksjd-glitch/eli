@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>屋況設備點交單</title>
+    <!-- 引入 html2pdf.js 解決 iPad / 行動裝置列印跑版問題 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary-color: #1a365d;
@@ -26,7 +28,7 @@
             max-width: 1000px;
             margin: 0 auto;
             background-color: #ffffff;
-            padding: 15px;
+            padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border-radius: 8px;
             position: relative;
@@ -36,15 +38,15 @@
         /* 匯出 PDF 按鈕樣式 */
         .export-pdf-btn {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 8.5pt;
+            font-size: 9.5pt;
             font-weight: bold;
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
             transition: all 0.2s;
@@ -67,7 +69,7 @@
         }
 
         .doc-title {
-            font-size: 18pt;
+            font-size: 20pt;
             font-weight: bold;
             color: var(--primary-color);
             margin: 0;
@@ -75,13 +77,13 @@
         }
 
         .section-title {
-            font-size: 10pt;
+            font-size: 11pt;
             font-weight: bold;
             color: #ffffff;
             background-color: var(--primary-color);
-            padding: 6px 10px;
-            margin-top: 15px;
-            margin-bottom: 8px;
+            padding: 8px 12px;
+            margin-top: 18px;
+            margin-bottom: 10px;
             border-radius: 4px;
         }
 
@@ -95,9 +97,9 @@
 
         th, td {
             border: 1px solid var(--border-color);
-            padding: 5px 3px;
+            padding: 6px 4px;
             vertical-align: middle;
-            font-size: 8.5pt;
+            font-size: 9.5pt;
         }
 
         th {
@@ -110,28 +112,28 @@
         .info-label {
             background-color: var(--bg-light);
             font-weight: bold;
-            width: 22%;
+            width: 18%;
             color: var(--text-color);
-            font-size: 8.5pt;
+            font-size: 9.5pt;
         }
 
         input[type="text"], input[type="number"] {
             width: 100%;
-            padding: 4px;
+            padding: 5px;
             border: 1px solid #cbd5e0;
             border-radius: 4px;
             box-sizing: border-box;
-            font-size: 8.5pt;
+            font-size: 9.5pt;
         }
 
         textarea.note-input {
             width: 100%;
             min-height: 38px;
-            padding: 4px;
+            padding: 5px;
             border: 1px solid #cbd5e0;
             border-radius: 4px;
             box-sizing: border-box;
-            font-size: 8.5pt;
+            font-size: 9.5pt;
             font-family: inherit;
             resize: vertical;
             white-space: pre-wrap;
@@ -146,8 +148,8 @@
         }
 
         input[type="radio"], input[type="checkbox"] {
-            width: 14px;
-            height: 14px;
+            width: 15px;
+            height: 15px;
             cursor: pointer;
             vertical-align: middle;
         }
@@ -155,20 +157,20 @@
         .inline-input {
             display: inline-block;
             width: auto;
-            margin: 0 2px;
+            margin: 0 3px;
         }
 
         .radio-label {
-            margin-right: 8px;
+            margin-right: 10px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 3px;
-            font-size: 8.5pt;
+            gap: 4px;
+            font-size: 9.5pt;
         }
 
         .col-num { width: 8%; text-align: center; }
-        .col-item { width: 22%; text-align: center; font-size: 8.5pt; }
+        .col-item { width: 22%; text-align: center; font-size: 9.5pt; }
         .col-qty { width: 22%; text-align: center; }
         .col-note { width: 48%; text-align: center; }
 
@@ -177,15 +179,15 @@
             font-weight: bold;
             color: var(--secondary-color);
             text-align: left;
-            padding: 6px 8px;
-            font-size: 9pt;
+            padding: 6px 10px;
+            font-size: 10pt;
         }
 
         .fee-section {
             border: 1px solid var(--border-color);
-            padding: 10px;
-            line-height: 1.8;
-            font-size: 8.5pt;
+            padding: 12px;
+            line-height: 2;
+            font-size: 9.5pt;
             border-radius: 4px;
             word-wrap: break-word;
         }
@@ -194,16 +196,16 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 2px;
+            gap: 4px;
             margin-bottom: 6px;
         }
 
         .clause-box {
             border: 1px solid var(--border-color);
             background-color: var(--bg-light);
-            padding: 10px;
-            font-size: 8.5pt;
-            line-height: 1.5;
+            padding: 12px;
+            font-size: 9.5pt;
+            line-height: 1.6;
             color: #4a5568;
             margin-top: 12px;
             margin-bottom: 12px;
@@ -215,12 +217,12 @@
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 8.5pt;
-            margin-top: 4px;
-            margin-bottom: 12px;
+            font-size: 9.5pt;
+            margin-top: 6px;
+            margin-bottom: 15px;
             width: 100%;
         }
 
@@ -228,10 +230,10 @@
             background-color: #e53e3e;
             color: white;
             border: none;
-            padding: 3px 5px;
+            padding: 3px 6px;
             border-radius: 3px;
             cursor: pointer;
-            font-size: 7.5pt;
+            font-size: 8pt;
             margin-top: 2px;
         }
 
@@ -254,16 +256,16 @@
             background: #ffffff;
             width: 100%;
             max-width: 500px;
-            padding: 12px;
+            padding: 15px;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.25);
         }
 
         .modal-header {
-            font-size: 10pt;
+            font-size: 11pt;
             font-weight: bold;
             color: var(--primary-color);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -273,7 +275,7 @@
             border: 2px dashed #cbd5e0;
             border-radius: 6px;
             background: #fff;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         canvas.modal-sig-pad {
@@ -291,9 +293,9 @@
         }
 
         .btn-modal {
-            padding: 6px 10px;
+            padding: 6px 12px;
             border-radius: 4px;
-            font-size: 8.5pt;
+            font-size: 9pt;
             cursor: pointer;
             border: none;
         }
@@ -305,23 +307,23 @@
         .sig-preview-box {
             border: 1px dashed #cbd5e0;
             border-radius: 4px;
-            height: 80px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #fafafa;
-            margin-top: 4px;
+            margin-top: 6px;
             cursor: pointer;
         }
 
         .sig-preview-box img {
-            max-height: 70px;
+            max-height: 80px;
             max-width: 100%;
         }
 
         .sig-placeholder {
             color: #a0aec0;
-            font-size: 8pt;
+            font-size: 9pt;
         }
 
         .date-display {
@@ -331,82 +333,40 @@
 
         .copyright-footer {
             text-align: center;
-            margin-top: 20px;
-            padding-top: 10px;
+            margin-top: 25px;
+            padding-top: 12px;
             border-top: 1px solid var(--border-color);
-            font-size: 7.5pt;
+            font-size: 8pt;
             color: #718096;
         }
 
         @media (min-width: 768px) {
             body { padding: 30px; }
             .container { padding: 40px; }
-            .export-pdf-btn { top: 30px; right: 40px; padding: 10px 20px; font-size: 10pt; }
-            .doc-title { font-size: 20pt; }
-            .section-title { font-size: 11pt; padding: 8px 12px; }
-            .info-label { width: 15%; font-size: 10pt; }
-            th, td { padding: 8px 10px; font-size: 10pt; }
-            input[type="text"], input[type="number"], textarea.note-input { padding: 6px; font-size: 10pt; }
-            .col-item { width: 20%; font-size: 10pt; }
-            .col-qty { width: 22%; }
-            .col-note { width: 50%; }
-            .fee-section { font-size: 10pt; line-height: 2; padding: 14px; }
-            .add-btn { width: auto; font-size: 9.5pt; }
+            .add-btn { width: auto; }
             .sig-preview-box { height: 100px; }
-            .sig-placeholder { font-size: 9.5pt; }
         }
 
-        /* 順流輸出/不強制分頁 + 大字體設定 */
-        @media print {
-            @page {
-                size: A4 portrait;
-                margin: 10mm;
-            }
-            body {
-                background-color: #ffffff !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                -webkit-print-color-adjust: exact;
-            }
-            .container {
-                box-shadow: none !important;
-                padding: 0 !important;
-                width: 100% !important;
-                max-width: 100% !important;
-            }
-            
-            /* 僅防止「單一個表格橫列」內部被切斷，不強制任何大區塊換頁 */
-            tr {
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-            }
+        /* 匯出 PDF 狀態下的乾淨樣式（自動去除邊框與無用按鈕） */
+        .rendering-pdf .export-pdf-btn,
+        .rendering-pdf .add-btn,
+        .rendering-pdf .delete-btn,
+        .rendering-pdf .modal-overlay {
+            display: none !important;
+        }
 
-            .doc-title { font-size: 20pt !important; }
-            .section-title { font-size: 11pt !important; padding: 8px 12px !important; }
+        .rendering-pdf input[type="text"],
+        .rendering-pdf input[type="number"],
+        .rendering-pdf textarea.note-input {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            resize: none !important;
+        }
 
-            .export-pdf-btn, .add-btn, .delete-btn, .modal-overlay {
-                display: none !important;
-            }
-            .info-label { width: 15% !important; font-size: 10pt !important; }
-            th, td { padding: 8px 10px !important; font-size: 10.5pt !important; } /* 放大字體 */
-            .col-num { width: 8% !important; }
-            .col-item { width: 20% !important; font-size: 10.5pt !important; }
-            .col-qty { width: 22% !important; font-size: 10.5pt !important; }
-            .col-note { width: 50% !important; font-size: 10.5pt !important; }
-            .fee-section { font-size: 10.5pt !important; line-height: 2 !important; }
-            .clause-box { font-size: 9.5pt !important; }
-            
-            input[type="text"], input[type="number"], textarea.note-input {
-                border: none !important;
-                background: transparent !important;
-                padding: 0 !important;
-                resize: none !important;
-                font-size: 10.5pt !important; /* 放大輸入框字體 */
-            }
-            .sig-preview-box {
-                border: none !important;
-                background: transparent !important;
-            }
+        .rendering-pdf .sig-preview-box {
+            border: none !important;
+            background: transparent !important;
         }
     </style>
 </head>
@@ -426,12 +386,12 @@
     <table>
         <tr>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">點交類型</td>
-            <td style="width: 28%;">
+            <td style="width: 32%;">
                 <label class="radio-label"><input type="radio" name="handover_type" value="遷入點交"> 遷入點交</label>
                 <label class="radio-label"><input type="radio" name="handover_type" value="遷出點交"> 遷出點交</label>
             </td>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">點交日期</td>
-            <td style="width: 28%;">
+            <td style="width: 32%;">
                 <span class="date-display current-date-str"></span>
             </td>
         </tr>
@@ -459,19 +419,19 @@
         </thead>
         <tbody>
             <tr>
-                <td style="font-weight: bold; text-align: center; font-size: 8.5pt;">電錶 (總/分)</td>
+                <td style="font-weight: bold; text-align: center;">電錶 (總/分)</td>
                 <td><input type="text" placeholder="錶號"></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 60px; text-align:center;"> 度</td>
+                <td><input type="number" step="0.1" class="inline-input" style="width: 70px; text-align:center;"> 度</td>
             </tr>
             <tr>
-                <td style="font-weight: bold; text-align: center; font-size: 8.5pt;">水錶</td>
+                <td style="font-weight: bold; text-align: center;">水錶</td>
                 <td><input type="text" placeholder="錶號"></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 60px; text-align:center;"> 度</td>
+                <td><input type="number" step="0.1" class="inline-input" style="width: 70px; text-align:center;"> 度</td>
             </tr>
             <tr>
-                <td style="font-weight: bold; text-align: center; font-size: 8.5pt;">瓦斯錶</td>
+                <td style="font-weight: bold; text-align: center;">瓦斯錶</td>
                 <td><input type="text" placeholder="錶號"></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 60px; text-align:center;"> 度</td>
+                <td><input type="number" step="0.1" class="inline-input" style="width: 70px; text-align:center;"> 度</td>
             </tr>
         </tbody>
     </table>
@@ -484,20 +444,20 @@
             <label class="radio-label">
                 <input type="radio" name="mgmt_type" value="遷入確認"> <strong>遷入確認：</strong>前手已繳至民國
             </label>
-            <input type="number" class="inline-input" style="width: 45px; text-align:center;">年
-            <input type="number" class="inline-input" style="width: 35px; text-align:center;">月
-            <input type="number" class="inline-input" style="width: 35px; text-align:center;">日。
+            <input type="number" class="inline-input" style="width: 50px; text-align:center;">年
+            <input type="number" class="inline-input" style="width: 40px; text-align:center;">月
+            <input type="number" class="inline-input" style="width: 40px; text-align:center;">日。
         </div>
         <div class="fee-row">
             <label class="radio-label">
                 <input type="radio" name="mgmt_type" value="遷出結算"> <strong>遷出結算：</strong>本手已繳至民國
             </label>
-            <input type="number" class="inline-input" style="width: 45px; text-align:center;">年
-            <input type="number" class="inline-input" style="width: 35px; text-align:center;">月
-            <input type="number" class="inline-input" style="width: 35px; text-align:center;">日。
+            <input type="number" class="inline-input" style="width: 50px; text-align:center;">年
+            <input type="number" class="inline-input" style="width: 40px; text-align:center;">月
+            <input type="number" class="inline-input" style="width: 40px; text-align:center;">日。
         </div>
         <div class="fee-row">
-            每月管理費：NT$ <input type="number" class="inline-input" style="width: 70px; text-align:center;" placeholder=""> 元，後續由 
+            每月管理費：NT$ <input type="number" class="inline-input" style="width: 80px; text-align:center;" placeholder=""> 元，後續由 
             <label class="radio-label"><input type="radio" name="mgmt_payer" value="承租人"> 承租人</label>
             <label class="radio-label"><input type="radio" name="mgmt_payer" value="出租人"> 出租人</label> 負擔。
         </div>
@@ -509,7 +469,7 @@
             <label class="radio-label">
                 <input type="radio" name="utility_type" value="遷出扣押"> <strong>遷出時：</strong>預扣押金結算 NT$
             </label>
-            <input type="number" class="inline-input" style="width: 70px; text-align:center;" placeholder=""> 元（多退少補）。
+            <input type="number" class="inline-input" style="width: 80px; text-align:center;" placeholder=""> 元（多退少補）。
         </div>
     </div>
 
@@ -547,7 +507,7 @@
                     <span id="sig-placeholder-landlord" class="sig-placeholder">✍️ 點擊開啟簽名視窗</span>
                     <img id="sig-img-landlord" style="display:none;">
                 </div>
-                <div style="margin-top: 4px; font-size: 8.5pt;">日期：<span class="date-display current-date-str"></span></div>
+                <div style="margin-top: 6px; font-size: 9pt;">日期：<span class="date-display current-date-str"></span></div>
             </td>
             <td style="width: 50%; padding: 8px; vertical-align: top;">
                 <strong>承租人 (或代理人) 簽名：</strong>
@@ -555,7 +515,7 @@
                     <span id="sig-placeholder-tenant" class="sig-placeholder">✍️ 點擊開啟簽名視窗</span>
                     <img id="sig-img-tenant" style="display:none;">
                 </div>
-                <div style="margin-top: 4px; font-size: 8.5pt;">日期：<span class="date-display current-date-str"></span></div>
+                <div style="margin-top: 6px; font-size: 9pt;">日期：<span class="date-display current-date-str"></span></div>
             </td>
         </tr>
     </table>
@@ -638,7 +598,7 @@
                 <tr>
                     <td class="col-num">${itemCounter++}</td>
                     <td class="col-item">${item.name}</td>
-                    <td class="col-qty"><input type="number" style="width:55px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
+                    <td class="col-qty"><input type="number" style="width:60px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
                     <td class="col-note"><textarea class="note-input" placeholder="註記說明"></textarea></td>
                 </tr>
             `;
@@ -652,7 +612,7 @@
         tr.innerHTML = `
             <td class="col-num">${itemCounter++}</td>
             <td class="col-item"><input type="text" placeholder="名稱" style="text-align:center;"></td>
-            <td class="col-qty"><input type="number" style="width:55px; text-align:center;" value="" placeholder=""></td>
+            <td class="col-qty"><input type="number" style="width:60px; text-align:center;" value="" placeholder=""></td>
             <td class="col-note">
                 <textarea class="note-input" placeholder="註記說明" style="width:75%; display:inline-block;"></textarea>
                 <button type="button" class="delete-btn" onclick="this.closest('tr').remove()">刪除</button>
@@ -748,8 +708,26 @@
         closeSigModal();
     }
 
+    // 使用 html2pdf 直出 1:1 精準 PDF 檔案，徹底解決 iPad/Safari 列印跨頁切字 Bug
     function exportToPDF() {
-        window.print();
+        const element = document.getElementById('document-content');
+        element.classList.add('rendering-pdf');
+
+        const opt = {
+            margin:       [10, 10, 10, 10], // 上右下左邊距 (mm)
+            filename:     `屋況設備點交單_${rocYear}${month}${day}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, logging: false },
+            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            element.classList.remove('rendering-pdf');
+        }).catch(err => {
+            element.classList.remove('rendering-pdf');
+            window.print(); // 若瀏覽器限制則自動降級為原生列印
+        });
     }
 </script>
 
