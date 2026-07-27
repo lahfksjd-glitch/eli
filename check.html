@@ -124,7 +124,6 @@
             font-size: 8.5pt;
         }
 
-        /* 備註多行文字框 (Textarea) 樣式 */
         textarea.note-input {
             width: 100%;
             min-height: 38px;
@@ -168,10 +167,9 @@
             font-size: 8.5pt;
         }
 
-        /* 欄位寬度百分比分配 */
         .col-num { width: 8%; text-align: center; }
         .col-item { width: 22%; text-align: center; font-size: 8.5pt; }
-        .col-qty { width: 22%; text-align: center; } /* 手機版數量欄位寬度 */
+        .col-qty { width: 22%; text-align: center; }
         .col-note { width: 48%; text-align: center; }
 
         .cat-header {
@@ -237,7 +235,6 @@
             margin-top: 2px;
         }
 
-        /* 簽名彈窗 Modal 樣式 */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -341,7 +338,6 @@
             color: #718096;
         }
 
-        /* 平板與電腦螢幕寬度調寬 */
         @media (min-width: 768px) {
             body { padding: 30px; }
             .container { padding: 40px; }
@@ -352,7 +348,7 @@
             th, td { padding: 8px 10px; font-size: 10pt; }
             input[type="text"], input[type="number"], textarea.note-input { padding: 6px; font-size: 10pt; }
             .col-item { width: 20%; font-size: 10pt; }
-            .col-qty { width: 22%; } /* 電腦版數量欄位加寬 */
+            .col-qty { width: 22%; }
             .col-note { width: 50%; }
             .fee-section { font-size: 10pt; line-height: 2; padding: 14px; }
             .add-btn { width: auto; font-size: 9.5pt; }
@@ -360,41 +356,51 @@
             .sig-placeholder { font-size: 9.5pt; }
         }
 
-        /* 列印與匯出 PDF 專用版型 */
+        /* 針對 iPad 與各類行動裝置 PDF / 列印的極致防裁切設定 */
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 10mm;
+                margin: 8mm 10mm;
             }
-            body {
+            html, body {
+                width: 1000px !important; /* 強制 Viewport 為固定電腦版寬度，解決 iPad 縮放破版 */
                 background-color: #ffffff !important;
                 padding: 0 !important;
+                margin: 0 !important;
+                -webkit-print-color-adjust: exact;
             }
             .container {
                 box-shadow: none !important;
                 padding: 0 !important;
-                max-width: 100% !important;
-                width: 100% !important;
+                width: 1000px !important;
+                max-width: 1000px !important;
             }
             
-            tr {
+            /* 全局嚴格防止表格橫列、表格標題與單元格被拆斷裁切 */
+            table {
+                page-break-inside: auto !important;
+            }
+            tr, td, th {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
+                -webkit-region-break-inside: avoid;
             }
 
-            /* 第四點（房屋設備與屋況清單）增加列高 */
+            /* 確保四、房屋設備與屋況清單從第二頁頂端乾淨開始 */
+            .section-page-2 {
+                page-break-before: always !important;
+                break-before: page !important;
+            }
+
+            /* 行高設定保持高度彈性，防止跨頁裁切 */
             #checklist-main tr {
-                height: 48px !important;
+                height: auto !important;
+                min-height: 42px !important;
             }
 
             .cat-header, .section-title {
                 page-break-after: avoid !important;
                 break-after: avoid !important;
-            }
-
-            .section-page-2 {
-                page-break-before: always !important;
-                break-before: page !important;
             }
 
             .export-pdf-btn, .add-btn, .delete-btn, .modal-overlay {
@@ -404,8 +410,9 @@
             th, td { padding: 6px 8px !important; font-size: 9.5pt !important; }
             .col-num { width: 8% !important; }
             .col-item { width: 20% !important; font-size: 10pt !important; }
-            .col-qty { width: 22% !important; } /* PDF 匯出時加寬數量欄 */
+            .col-qty { width: 22% !important; }
             .col-note { width: 50% !important; }
+            
             input[type="text"], input[type="number"], textarea.note-input {
                 border: none !important;
                 background: transparent !important;
@@ -540,7 +547,7 @@
     <button type="button" class="add-btn" onclick="addCustomRow()">+ 新增自訂約定項目</button>
 
     <!-- 五、點交確認聲明與雙方簽章 -->
-    <div class="section-title section-final-page">五、點交確認聲明與雙方簽章</div>
+    <div class="section-title">五、點交確認聲明與雙方簽章</div>
     <div class="clause-box">
         <strong>確認聲明：</strong>
         <p style="margin: 4px 0;">經點交雙方現場會同清點，確認上列所述之建築物屋況現狀、附屬設備數量及其運作功能均屬確實，並已拍照存證。自點交完成日起，房屋之保管與日常維護責任正式移轉。</p>
@@ -643,11 +650,8 @@
     categories.forEach(cat => {
         tbody.innerHTML += `<tr><td colspan="4" class="cat-header">${cat.title}</td></tr>`;
         cat.items.forEach(item => {
-            const isTenthItem = (itemCounter % 10 === 0);
-            const rowClass = isTenthItem ? 'class="print-break-after"' : '';
-
             tbody.innerHTML += `
-                <tr ${rowClass}>
+                <tr>
                     <td class="col-num">${itemCounter++}</td>
                     <td class="col-item">${item.name}</td>
                     <td class="col-qty"><input type="number" style="width:55px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
