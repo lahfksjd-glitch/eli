@@ -354,20 +354,22 @@
         .rendering-pdf .modal-overlay {
             display: none !important;
         }
+.rendering-pdf input[type="text"],
+.rendering-pdf input[type="number"]:not(.underline-input), /* 排除有底線的輸入框 */
+.rendering-pdf textarea.note-input {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    resize: none !important;
+}
 
-        .rendering-pdf input[type="text"],
-        .rendering-pdf input[type="number"],
-        .rendering-pdf textarea.note-input {
-            border: none !important;
-            background: transparent !important;
-            padding: 0 !important;
-            resize: none !important;
-        }
-
-        .rendering-pdf .sig-preview-box {
-            border: none !important;
-            background: transparent !important;
-        }
+/* 確保匯出 PDF 時，底線輸入框保留底部線條 */
+.rendering-pdf input.underline-input {
+    border: none !important;
+    border-bottom: 1.5px solid var(--primary-color) !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+}
     </style>
 </head>
 <body>
@@ -378,7 +380,7 @@
     </button>
 
     <div class="header">
-        <div class="doc-title">屋況、設備點交單</div>
+        <div class="doc-title">屋況設備點交單</div>
     </div>
 
     <!-- 一、基本資料與點交類別 -->
@@ -388,7 +390,7 @@
             <td class="info-label" style="text-align: justify; text-align-last: justify;">點交類型</td>
             <td style="width: 32%;">
                 <label class="radio-label"><input type="radio" name="handover_type" value="遷入點交"> 遷入點交</label>
-                <label class="radio-label"><input type="radio" name="handover_type" value="遷出點交"> 遷出點交</label>
+                <label class="radio-label"><input type="radio" name="handover_type" value="遷出點退"> 遷出點退</label>
             </td>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">點交日期</td>
             <td style="width: 32%;">
@@ -396,14 +398,15 @@
             </td>
         </tr>
         <tr>
-            <td class="info-label" style="text-align: justify; text-align-last: justify;">物件地址</td>
-            <td colspan="3"><input type="text" placeholder="請輸入完整地址"></td>
-        </tr>
+    <td class="info-label" style="text-align: justify; text-align-last: justify;">物件地址</td>
+    <!-- 加上 id="address-input" -->
+    <td colspan="3"><input type="text" id="address-input" placeholder=""></td>
+</tr>
         <tr>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">出租人</td>
-            <td><input type="text" placeholder="姓名"></td>
+            <td><input type="text" placeholder=""></td>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">承租人</td>
-            <td><input type="text" placeholder="姓名"></td>
+            <td><input type="text" placeholder=""></td>
         </tr>
     </table>
 
@@ -419,45 +422,45 @@
         </thead>
         <tbody>
             <tr>
-                <td style="font-weight: bold; text-align: center;">電錶 (總/分)</td>
-                <td><input type="text" placeholder="錶號"></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 70px; text-align:center;"> 度</td>
+                <td style="font-weight: bold; text-align: center;">電錶 </td>
+                <td><input type="text" placeholder=""></td>
+                <td><input type="number" step="0.1" class="inline-input" style="width: 150px; text-align:center;"> 度</td>
             </tr>
             <tr>
                 <td style="font-weight: bold; text-align: center;">水錶</td>
-                <td><input type="text" placeholder="錶號"></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 70px; text-align:center;"> 度</td>
+                <td><input type="text" placeholder=""></td>
+                <td><input type="number" step="0.1" class="inline-input" style="width: 150px; text-align:center;"> 度</td>
             </tr>
             <tr>
                 <td style="font-weight: bold; text-align: center;">瓦斯錶</td>
-                <td><input type="text" placeholder="錶號"></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 70px; text-align:center;"> 度</td>
+                <td><input type="text" placeholder=""></td>
+                <td><input type="number" step="0.1" class="inline-input" style="width: 150px; text-align:center;"> 度</td>
             </tr>
         </tbody>
     </table>
 
     <!-- 三、費用與管理費結算確認 -->
-    <div class="section-title">三、費用與管理費結算確認</div>
+    <div class="section-title">三、各式費用與管理費結算確認</div>
     <div class="fee-section">
         <strong>【大樓管理費狀況】</strong><br>
         <div class="fee-row">
             <label class="radio-label">
                 <input type="radio" name="mgmt_type" value="遷入確認"> <strong>遷入確認：</strong>前手已繳至民國
             </label>
-            <input type="number" class="inline-input" style="width: 50px; text-align:center;">年
-            <input type="number" class="inline-input" style="width: 40px; text-align:center;">月
-            <input type="number" class="inline-input" style="width: 40px; text-align:center;">日。
-        </div>
+    <input type="number" class="inline-input underline-input" style="width: 50px; text-align:center;"> 年
+<input type="number" class="inline-input underline-input" style="width: 40px; text-align:center;"> 月
+<input type="number" class="inline-input underline-input" style="width: 40px; text-align:center;"> 日。
+   </div>
         <div class="fee-row">
             <label class="radio-label">
                 <input type="radio" name="mgmt_type" value="遷出結算"> <strong>遷出結算：</strong>本手已繳至民國
             </label>
-            <input type="number" class="inline-input" style="width: 50px; text-align:center;">年
-            <input type="number" class="inline-input" style="width: 40px; text-align:center;">月
-            <input type="number" class="inline-input" style="width: 40px; text-align:center;">日。
-        </div>
+<input type="number" class="inline-input underline-input" style="width: 50px; text-align:center;"> 年
+<input type="number" class="inline-input underline-input" style="width: 40px; text-align:center;"> 月
+<input type="number" class="inline-input underline-input" style="width: 40px; text-align:center;"> 日。
+       </div>
         <div class="fee-row">
-            每月管理費：NT$ <input type="number" class="inline-input" style="width: 80px; text-align:center;" placeholder=""> 元，後續由 
+            每月管理費：NT$ <input type="number" class="inline-input underline-input" style="width: 80px; text-align:center;" placeholder=""> 元，後續由 
             <label class="radio-label"><input type="radio" name="mgmt_payer" value="承租人"> 承租人</label>
             <label class="radio-label"><input type="radio" name="mgmt_payer" value="出租人"> 出租人</label> 負擔。
         </div>
@@ -469,7 +472,7 @@
             <label class="radio-label">
                 <input type="radio" name="utility_type" value="遷出扣押"> <strong>遷出時：</strong>預扣押金結算 NT$
             </label>
-            <input type="number" class="inline-input" style="width: 80px; text-align:center;" placeholder=""> 元（多退少補）。
+            <input type="number" class="inline-input underline-input" style="width: 80px; text-align:center;" placeholder=""> 元（多退少補）。
         </div>
     </div>
 
@@ -493,35 +496,36 @@
     <!-- 五、點交確認聲明與雙方簽章 -->
     <div class="section-title">五、點交確認聲明與雙方簽章</div>
     <div class="clause-box">
-        <strong>確認聲明：</strong>
-        <p style="margin: 4px 0;">經點交雙方現場會同清點，確認上列所述之建築物屋況現狀、附屬設備數量及其運作功能均屬確實，並已拍照存證。自點交完成日起，房屋之保管與日常維護責任正式移轉。</p>
-        <p style="margin: 4px 0;">若屬「遷入點交」，承租人如於點交後三日內發現隱蔽性非人為損壞之硬體，應立即拍照並通知代管專員處理，逾期視為以現狀良好點交；若屬「遷出點交」，雙方確認房屋已依約復原無誤後，得依約辦理返還押金手續。</p>
-        <p style="margin: 4px 0;">承租人知悉並同意，本清單所列之修繕或瑕疵項目，不必然符合政府社會住宅修繕費補助之申請條件；所有修繕補助之核准與否，均須依主管機關之審查規定為主。</p>
+        <div style="font-size: 10pt; font-weight: bold;"   <strong>確認聲明：</strong></div> 
+        <p style="margin: 6px 0; text-indent: 2em;">經點交雙方現場會同清點，確認上列所述之建築物屋況現狀、附屬設備數量及其運作功能均屬確實，並已拍照存證。自點交完成日起，房屋之保管與日常維護責任正式移轉。</p>
+        <p style="margin: 4px 0; text-indent: 2em">若屬「遷入點交」，承租人如於點交後三日內發現隱蔽性非人為損壞之硬體，應立即拍照並通知代管專員處理，逾期視為以現狀良好點交；
+	<p style="margin: 4px 0; text-indent: 2em">若屬「遷出點退」，雙方確認房屋已依約復原無誤後，得依約辦理返還押金手續。</p>
+        <p style="margin: 6px 0; text-indent: 2em">承租人知悉並同意，本清單所列之修繕或瑕疵項目，不必然符合政府社會住宅修繕費補助之申請條件；所有修繕補助之核准與否，均須依主管機關之審查規定為主。</p>
     </div>
 
     <table>
         <tr>
             <td style="width: 50%; padding: 8px; vertical-align: top;">
-                <strong>出租人 (或代理人) 簽名：</strong>
+               <div style="font-size: 11pt; font-weight: bold;"  </div> <strong>出租人 (或代理人) 簽名：</strong>
                 <div class="sig-preview-box" onclick="openSigModal('landlord')">
-                    <span id="sig-placeholder-landlord" class="sig-placeholder">✍️ 點擊開啟簽名視窗</span>
+                    <span id="sig-placeholder-landlord" class="sig-placeholder" style="font-size: 13pt; font-weight: bold;">✍️ 點擊開啟簽名視窗</span>
                     <img id="sig-img-landlord" style="display:none;">
                 </div>
-                <div style="margin-top: 6px; font-size: 9pt;">日期：<span class="date-display current-date-str"></span></div>
+                <div style="margin-top: 6px; font-size: 10pt;">日期：<span class="date-display current-date-str"></span></div>
             </td>
             <td style="width: 50%; padding: 8px; vertical-align: top;">
-                <strong>承租人 (或代理人) 簽名：</strong>
+               <div style="font-size: 11pt; font-weight: bold;"  </div>   <strong>承租人 (或代理人) 簽名：</strong>
                 <div class="sig-preview-box" onclick="openSigModal('tenant')">
-                    <span id="sig-placeholder-tenant" class="sig-placeholder">✍️ 點擊開啟簽名視窗</span>
+                    <span id="sig-placeholder-tenant" class="sig-placeholder" style="font-size: 13pt; font-weight: bold;">✍️ 點擊開啟簽名視窗</span>
                     <img id="sig-img-tenant" style="display:none;">
                 </div>
-                <div style="margin-top: 6px; font-size: 9pt;">日期：<span class="date-display current-date-str"></span></div>
+                <div style="margin-top: 6px; font-size: 10pt;">日期：<span class="date-display current-date-str"></span></div>
             </td>
         </tr>
     </table>
 
     <div class="copyright-footer">
-         © 新智 (Eli) 2026 制作 供租賃雙方屋況設備點交使用。
+         © 新智 (Eli) 2026 制作 此表作爲租賃雙方屋況設備點交及點退使用。
     </div>
 </div>
 
@@ -549,10 +553,10 @@
         {
             title: '【客廳 / 餐廳】',
             items: [
-                {name: '書櫃', unit: '個'}, {name: '沙發', unit: '組'}, {name: '茶幾', unit: '個'},
+                {name: '書櫃', unit: '個'}, {name: '沙發', unit: '組'}, {name: '茶几', unit: '個'},
                 {name: '餐桌', unit: '張'}, {name: '書桌', unit: '張'}, {name: '工作桌', unit: '張'},
                 {name: '餐桌椅', unit: '張'}, {name: '書桌椅', unit: '張'}, {name: '辦公椅', unit: '張'},
-                {name: '電視機', unit: '台'}, {name: '電視櫃', unit: '個'}, {name: '電視遙控器', unit: '支'},
+                {name: '電視機', unit: '台'}, {name: '電視櫃', unit: '個'}, {name: '電視遙控器', unit: '個'},
                 {name: '收納置物櫃', unit: '個'}
             ]
         },
@@ -572,18 +576,18 @@
             ]
         },
         {
-            title: '【家電與公共硬體】',
+            title: '【家電與家具】',
             items: [
-                {name: '冷氣機', unit: '台'}, {name: '冷氣遙控器', unit: '支'}, {name: '洗衣機', unit: '台'},
+                {name: '冷氣機', unit: '台'}, {name: '冷氣遙控器', unit: '個'}, {name: '洗衣機', unit: '台'},
                 {name: '熱水器', unit: '台'}, {name: '室內對講機', unit: '台'}, {name: '鞋櫃', unit: '個'},
                 {name: '窗簾', unit: '組'}, {name: '盲簾', unit: '組'}
             ]
         },
         {
-            title: '【門禁與憑證控管】',
+            title: '【門禁與憑證管理】',
             items: [
-                {name: '大門鑰匙', unit: '支'}, {name: '房間鑰匙', unit: '支'}, {name: '門禁磁卡', unit: '個'},
-                {name: '感應扣', unit: '個'}, {name: '信箱鑰匙', unit: '支'}
+                {name: '大門鑰匙', unit: '副'}, {name: '房間鑰匙', unit: '副'}, {name: '門禁磁卡', unit: '個'},
+                {name: '感應扣', unit: '個'}, {name: '信箱鑰匙', unit: '副'}
             ]
         }
     ];
@@ -599,22 +603,22 @@
                     <td class="col-num">${itemCounter++}</td>
                     <td class="col-item">${item.name}</td>
                     <td class="col-qty"><input type="number" style="width:60px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
-                    <td class="col-note"><textarea class="note-input" placeholder="註記說明"></textarea></td>
+                    <td class="col-note"><textarea class="note-input" placeholder=""></textarea></td>
                 </tr>
             `;
         });
     });
 
-    tbody.innerHTML += `<tr id="custom-header"><td colspan="4" class="cat-header">【其他約定項目】</td></tr>`;
+    tbody.innerHTML += `<tr id="custom-header"><td colspan="4" class="cat-header">【其他項目】</td></tr>`;
 
     function addCustomRow() {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="col-num">${itemCounter++}</td>
-            <td class="col-item"><input type="text" placeholder="名稱" style="text-align:center;"></td>
-            <td class="col-qty"><input type="number" style="width:60px; text-align:center;" value="" placeholder=""></td>
+            <td class="col-item"><input type="text" placeholder="" style="text-align:center;"></td>
+            <td class="col-qty"><input type="number" style="width:70px; text-align:center;" value="" placeholder=""></td>
             <td class="col-note">
-                <textarea class="note-input" placeholder="註記說明" style="width:75%; display:inline-block;"></textarea>
+                <textarea class="note-input" placeholder="" style="width:100%; display:inline-block;"></textarea>
                 <button type="button" class="delete-btn" onclick="this.closest('tr').remove()">刪除</button>
             </td>
         `;
@@ -708,14 +712,21 @@
         closeSigModal();
     }
 
-    // 使用 html2pdf 直出 1:1 精準 PDF 檔案，徹底解決 iPad/Safari 列印跨頁切字 Bug
+  // 使用 html2pdf 自動抓取地址作為檔名
     function exportToPDF() {
         const element = document.getElementById('document-content');
+        
+        // 抓取輸入的物件地址，並清除前後空白
+        const address = document.getElementById('address-input').value.trim();
+        
+        // 如果有填寫地址，檔名為「地址_屋況設備點交單.pdf」；沒填則預設為「屋況設備點交單.pdf」
+        const pdfFileName = address ? `${address}_屋況設備點交單.pdf` : `屋況設備點交單.pdf`;
+
         element.classList.add('rendering-pdf');
 
         const opt = {
             margin:       [10, 10, 10, 10], // 上右下左邊距 (mm)
-            filename:     `屋況設備點交單_${rocYear}${month}${day}.pdf`,
+            filename:     pdfFileName,      // 動態套用帶有地址的檔名
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true, logging: false },
             pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] },
