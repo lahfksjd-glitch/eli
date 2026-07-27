@@ -360,7 +360,7 @@
             .sig-placeholder { font-size: 9.5pt; }
         }
 
-        /* 列印與匯出 PDF 專用版型 */
+        /* 列印與匯出 PDF 專用版型 (強制控制分頁) */
         @media print {
             @page {
                 size: A4 portrait;
@@ -387,9 +387,21 @@
                 break-after: avoid !important;
             }
 
-            .section-final-page {
+            /* 1. 第四點強制分頁至第二頁開頭 */
+            .section-page-2 {
                 page-break-before: always !important;
                 break-before: page !important;
+            }
+
+            /* 2. 每 10 個項目自動換頁樣式 */
+            .print-break-after {
+                page-break-after: always !important;
+                break-after: page !important;
+            }
+
+            /* 3. 第五點 (聲明與雙方簽章) 自動銜接或換頁至最後 */
+            .section-final-page {
+                page-break-before: auto !important;
             }
 
             .export-pdf-btn, .add-btn, .delete-btn, .modal-overlay {
@@ -516,8 +528,8 @@
         </div>
     </div>
 
-    <!-- 四、房屋設備與屋況清單 -->
-    <div class="section-title">四、房屋設備與屋況清單</div>
+    <!-- 四、房屋設備與屋況清單 (加載 section-page-2，列印時自動強換至第二頁開始) -->
+    <div class="section-title section-page-2">四、房屋設備與屋況清單</div>
     <table>
         <thead>
             <tr>
@@ -637,8 +649,12 @@
     categories.forEach(cat => {
         tbody.innerHTML += `<tr><td colspan="4" class="cat-header">${cat.title}</td></tr>`;
         cat.items.forEach(item => {
+            // 自動計算每 10 個項目加入列印自動換頁點 (.print-break-after)
+            const isTenthItem = (itemCounter % 10 === 0);
+            const rowClass = isTenthItem ? 'class="print-break-after"' : '';
+
             tbody.innerHTML += `
-                <tr>
+                <tr ${rowClass}>
                     <td class="col-num">${itemCounter++}</td>
                     <td class="col-item">${item.name}</td>
                     <td class="col-qty"><input type="number" style="width:55px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
