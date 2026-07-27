@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>屋況設備點交單</title>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2b6cb0;
+            --bg-light: #f7fafc;
+            --border-color: #cbd5e0;
+            --text-color: #2d3748;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            margin: 0;
+            padding: 30px;
+            background-color: #f0f4f8;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 12px;
+            margin-bottom: 25px;
+        }
+
+        .doc-title {
+            font-size: 24pt;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .section-title {
+            font-size: 13pt;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: var(--primary-color);
+            padding: 8px 14px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 8px 10px;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #edf2f7;
+            color: var(--text-color);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .info-label {
+            background-color: var(--bg-light);
+            font-weight: bold;
+            width: 15%;
+            color: var(--text-color);
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 10pt;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            background-color: #fffdf5;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        .inline-input {
+            display: inline-block;
+            width: auto;
+            margin: 0 6px;
+        }
+
+        .radio-label, .checkbox-label {
+            margin-right: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 欄位寬度調整與置中設定 */
+        .col-num { width: 5%; text-align: center; }
+        .col-item { width: 15%; text-align: center; }
+        .col-qty { width: 10%; text-align: center; }
+        .col-photo { width: 35%; text-align: center; }
+        .col-note { width: 20%; text-align: center; }
+
+        .cat-header {
+            background-color: #e2e8f0;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-align: left;
+            padding: 8px 12px;
+            font-size: 11pt;
+        }
+
+        .photo-btn-label {
+            display: inline-block;
+            background-color: #edf2f7;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 9pt;
+            color: #4a5568;
+            transition: all 0.2s;
+        }
+
+        .photo-btn-label:hover {
+            background-color: #cbd5e0;
+            color: #1a202c;
+        }
+
+        .photo-input {
+            display: none;
+        }
+
+        /* 多照片排版容器 */
+        .photo-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 6px;
+        }
+
+        .photo-preview {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e0;
+            object-fit: cover;
+        }
+
+        .clause-box {
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-light);
+            padding: 14px;
+            font-size: 9.5pt;
+            line-height: 1.6;
+            color: #4a5568;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            text-align: justify;
+            border-radius: 4px;
+        }
+
+        .add-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 9.5pt;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .add-btn:hover {
+            background-color: #2c5282;
+        }
+
+        .delete-btn {
+            background-color: #e53e3e;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 8.5pt;
+            margin-left: 6px;
+        }
+
+        /* 簽名彈窗 Modal 樣式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            width: 90%;
+            max-width: 550px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        }
+
+        .modal-header {
+            font-size: 12pt;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-canvas-wrap {
+            border: 2px dashed #cbd5e0;
+            border-radius: 6px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        canvas.modal-sig-pad {
+            width: 100%;
+            height: 200px;
+            display: block;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-modal {
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 9.5pt;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-clear { background-color: #a0aec0; color: white; }
+        .btn-save { background-color: #2b6cb0; color: white; }
+        .btn-cancel { background-color: #e2e8f0; color: #4a5568; }
+
+        .sig-preview-box {
+            border: 1px dashed #cbd5e0;
+            border-radius: 4px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+
+        .sig-preview-box img {
+            max-height: 90px;
+            max-width: 100%;
+        }
+
+        .sig-placeholder {
+            color: #a0aec0;
+            font-size: 9.5pt;
+        }
+
+        .date-display {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .copyright-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            font-size: 8.5pt;
+            color: #718096;
+        }
+
+        @media print {
+            body { background-color: #fff; padding: 0; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; }
+            .add-btn, .delete-btn, .photo-btn-label, .modal-overlay { display: none !important; }
+
+            /* 取消第 1、3、4 部分所有印出/轉換時的底線 */
+            input[type="text"], input[type="number"] {
+                border: none !important;
+                border-bottom: none !important;
+                background: transparent;
+                padding: 2px;
+                text-decoration: none !important;
+            }
+            .sig-preview-box { border: none; background: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="document-content">
+    <div class="header">
+        <div class="doc-title">屋況設備點交單</div>
+    </div>
+
+    <!-- 一、基本資料與點交類別 -->
+    <div class="section-title">一、基本資料與點交類別</div>
+    <table>
+        <tr>
+            <td class="info-label" style="text-align: justify; text-align-last: justify;">點交類型</td>
+            <td style="width: 35%;">
+                <label class="radio-label"><input type="radio" name="handover_type" value="遷入點交"> 遷入點交</label>
+                <label class="radio-label"><input type="radio" name="handover_type" value="遷出點交"> 遷出點交</label>
+            </td>
+            <td class="info-label" style="text-align: justify; text-align-last: justify;">點交日期</td>
+            <td style="width: 35%;">
+                <span class="date-display current-date-str"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="info-label" style="text-align: justify; text-align-last: justify;">物件地址</td>
+            <td colspan="3"><input type="text" placeholder=""></td>
+        </tr>
+        <tr>
+            <td class="info-label" style="text-align: justify; text-align-last: justify;">出租人</td>
+            <td><input type="text" placeholder=""></td>
+            <td class="info-label" style="text-align: justify; text-align-last: justify;">承租人</td>
+            <td><input type="text" placeholder=""></td>
+        </tr>
+    </table>
+
+    <!-- 二、水電瓦斯度數確認 -->
+    <div class="section-title">二、水電瓦斯度數確認</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 20%;">項目</th>
+                <th style="width: 50%;">錶號 / 代碼</th>
+                <th style="width: 16%;">點交當日度數</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight: bold; text-align: center;">電錶 (總錶 / 分錶)</td>
+                <td><input type="text" placeholder=""></td>
+                <td><input type="number" step="0.1" placeholder="" class="inline-input" style="width: 120px; text-align:center;"> 度</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; text-align: center;">水錶</td>
+                <td><input type="text" placeholder=""></td>
+                <td><input type="number" step="0.1" placeholder="" class="inline-input" style="width: 120px; text-align:center;"> 度</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; text-align: center;">瓦斯錶</td>
+                <td><input type="text" placeholder=""></td>
+                <td><input type="number" step="0.1" placeholder="" class="inline-input" style="width: 120px; text-align:center;"> 度</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 三、屋況必要設備 -->
+    <div class="section-title">三、屋況必要設備</div>
+    <table>
+        <thead>
+            <tr>
+                <th class="col-num">編號</th>
+                <th class="col-item">項目</th>
+                <th class="col-qty">數量</th>
+                <th class="col-photo">拍照存證</th>
+                <th class="col-note">備註</th>
+            </tr>
+        </thead>
+        <tbody id="checklist-essential">
+            <!-- 動態注入必要設備 -->
+        </tbody>
+    </table>
+
+    <!-- 四、房屋設備與屋況清單 -->
+    <div class="section-title">四、房屋設備與屋況清單</div>
+    <table>
+        <thead>
+            <tr>
+                <th class="col-num">編號</th>
+                <th class="col-item">項目</th>
+                <th class="col-qty">數量</th>
+                <th class="col-photo">拍照存證</th>
+                <th class="col-note">備註</th>
+            </tr>
+        </thead>
+        <tbody id="checklist-main">
+            <!-- 動態注入全部類別 -->
+        </tbody>
+    </table>
+    <button type="button" class="add-btn" onclick="addCustomRow()">+ 新增自訂約定項目</button>
+
+    <!-- 五、費用與管理費結算確認 -->
+    <div class="section-title">五、費用與管理費結算確認</div>
+    <div style="border: 1px solid var(--border-color); padding: 14px; line-height: 2; font-size: 12pt; border-radius: 4px;">
+        <strong>【大樓管理費狀況】</strong><br>
+        <label class="radio-label">
+            <input type="radio" name="mgmt_type" value="遷入確認"> <strong>遷入確認：</strong>前手已繳納至 民國 
+            <input type="number" class="inline-input" style="width: 100px; text-align:center;"> 年 
+            <input type="number" class="inline-input" style="width: 100px; text-align:center;"> 月 
+            <input type="number" class="inline-input" style="width: 100px; text-align:center;"> 日。
+        </label><br>
+        <label class="radio-label">
+            <input type="radio" name="mgmt_type" value="遷出結算"> <strong>遷出結算：</strong>本手已繳納至 民國 
+            <input type="number" class="inline-input" style="width:100px; text-align:center;"> 年 
+            <input type="number" class="inline-input" style="width:100px; text-align:center;"> 月 
+            <input type="number" class="inline-input" style="width:100px; text-align:center;"> 日。
+        </label><br>
+        每月管理費金額：NT$ <input type="number" class="inline-input" style="width:120px; text-align:center;" placeholder=""> 元，後續由 
+        <label class="radio-label"><input type="radio" name="mgmt_payer" value="承租人"> 承租人</label>
+        <label class="radio-label"><input type="radio" name="mgmt_payer" value="出租人"> 出租人</label> 依約負擔。<br>
+        <strong style="margin-top: 10px; display: inline-block;">【水電瓦斯遺留費用】</strong><br>
+        <label class="radio-label"><input type="radio" name="utility_type" value="遷入切結"> <strong>遷入時：</strong>已由前手結清 / 切結負責。</label><br>
+        <label class="radio-label">
+            <input type="radio" name="utility_type" value="遷出扣押"> <strong>遷出時：</strong>現場預扣押金結算，金額：NT$ 
+            <input type="number" class="inline-input" style="width:120px; text-align:center;" placeholder=""> 元（多退少補，依台水台電單據為準）。
+        </label>
+    </div>
+
+    <!-- 六、點交確認聲明與雙方簽章 -->
+    <div class="section-title">六、點交確認聲明與雙方簽章</div>
+    <div class="clause-box" style="font-size: 12pt; line-height: 1.8;">
+        <strong>確認聲明：</strong>
+        <p style="margin: 6px 0;">經點交雙方現場會同清點，確認上列所述之建築物屋況現狀、附屬設備數量及其運作功能均屬確實，並已拍照存證。</p>
+        <p style="margin: 6px 0;">自點交完成日起，房屋之保管與日常維護責任正式移轉。若屬「遷入點交」，承租人如於點交後三日內發現隱蔽性非人為損壞之硬體，應立即拍照並通知代管專員處理，逾期視為以現狀良好點交；若屬「遷出點交」，雙方確認房屋已依約復原無誤後，得依約辦理返還押金手續。</p>
+        <p style="margin: 6px 0;">承租人知悉並同意，本清單所列之修繕或瑕疵項目，不必然符合政府社會住宅修繕費補助之申請條件；所有修繕補助之核准與否，均須依主管機關之審查規定為主。</p>
+    </div>
+
+    <table>
+        <tr>
+            <td style="width: 50%; padding: 15px; vertical-align: top;">
+                <strong>出租人 (或代理人) 簽名：</strong>
+                <div class="sig-preview-box" onclick="openSigModal('landlord')">
+                    <span id="sig-placeholder-landlord" class="sig-placeholder" style="font-size:14pt">✍️ 點擊開啟簽名小視窗</span>
+                    <img id="sig-img-landlord" style="display:none;">
+                </div>
+                <div style="margin-top: 10px;">日期：<span class="date-display current-date-str"></span></div>
+            </td>
+            <td style="width: 50%; padding: 15px; vertical-align: top;">
+                <strong>承租人 (或代理人) 簽名：</strong>
+                <div class="sig-preview-box" onclick="openSigModal('tenant')">
+                    <span id="sig-placeholder-tenant" class="sig-placeholder" style="font-size:14pt">✍️ 點擊開啟簽名小視窗</span>
+                    <img id="sig-img-tenant" style="display:none;">
+                </div>
+                <div style="margin-top: 10px;">日期：<span class="date-display current-date-str"></span></div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="copyright-footer">
+         © 新智 (Eli) 2026 制作 供租賃雙方屋況設備點交使用。
+    </div>
+</div>
+
+<!-- 手寫簽名彈窗 Modal -->
+<div class="modal-overlay" id="sigModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span id="modalTitle">手寫簽名</span>
+            <button type="button" onclick="closeSigModal()" style="border:none; background:none; font-size:14pt; cursor:pointer;">✕</button>
+        </div>
+        <div class="modal-canvas-wrap">
+            <canvas id="modalCanvas" class="modal-sig-pad"></canvas>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn-modal btn-clear" onclick="clearModalCanvas()">清除重簽</button>
+            <button type="button" class="btn-modal btn-cancel" onclick="closeSigModal()">取消</button>
+            <button type="button" class="btn-modal btn-save" onclick="saveSignature()">確認儲存簽名</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 三、屋況必要設備
+    const essentialItems = [
+        {name: '門牌'},
+        {name: '信箱'},
+        {name: '一樓大門'},
+        {name: '馬桶'},
+        {name: '洗面盆'},
+        {name: '浴缸或蓮蓬頭'},
+        {name: '租屋處大門'},
+        {name: '上樓梯照'},
+        {name: '下樓梯照'},
+        {name: '滅火器'},
+        {name: '住警器'},
+        {name: '熱水器'}
+    ];
+
+    const essentialTbody = document.getElementById('checklist-essential');
+    essentialItems.forEach((item, index) => {
+        essentialTbody.innerHTML += `
+            <tr>
+                <td class="col-num">${index + 1}</td>
+                <td class="col-item">${item.name}</td>
+                <td class="col-qty"><input type="number" style="width:60px; text-align:center;" value="" placeholder=""></td>
+                <td class="col-photo">
+                    <label class="photo-btn-label">
+                        📷 拍照/上傳
+                        <input type="file" accept="image/*" multiple capture="environment" class="photo-input" onchange="previewImage(this)">
+                    </label>
+                    <div class="photo-container"></div>
+                </td>
+                <td class="col-note"><input type="text" placeholder="" style="text-align:center;"></td>
+            </tr>
+        `;
+    });
+
+    // 四、房屋設備與屋況清單分類數據（無需手動填寫 id）
+    const categories = [
+        {
+            title: '【客廳 / 餐廳】',
+            items: [
+                {name: '書櫃', unit: '個'},
+                {name: '沙發', unit: '組'},
+                {name: '茶幾', unit: '個'},
+                {name: '餐桌', unit: '張'},
+                {name: '書桌', unit: '張'},
+                {name: '工作桌', unit: '張'},
+                {name: '餐桌椅', unit: '張'},
+                {name: '書桌椅', unit: '張'},
+                {name: '辦公椅', unit: '張'},
+                {name: '電視機', unit: '台'},
+                {name: '電視櫃', unit: '個'},
+                {name: '電視遙控器', unit: '支'},
+                {name: '收納置物櫃', unit: '個'}
+            ]
+        },
+        {
+            title: '【臥室區域】',
+            items: [
+                {name: '床組', unit: '組'},
+                {name: '床架', unit: '組'},
+                {name: '床墊', unit: '張'},
+                {name: '衣櫃', unit: '個'},
+                {name: '鏡子', unit: '個'},
+                {name: '梳妝台', unit: '組'}
+            ]
+        },
+        {
+            title: '【廚房區域】',
+            items: [
+                {name: '冰箱', unit: '台'},
+                {name: '烤箱', unit: '台'},
+                {name: '微波爐', unit: '台'},
+                {name: '烘碗機', unit: '台'},
+                {name: '洗碗機', unit: '台'},
+                {name: '瓦斯爐', unit: '台'},
+                {name: '流理台', unit: '組'},
+                {name: '排油煙機', unit: '台'},
+                {name: 'IH電磁爐', unit: '台'}
+            ]
+        },
+        {
+            title: '【家電與公共硬體】',
+            items: [
+                {name: '冷氣機', unit: '台'},
+                {name: '冷氣遙控器', unit: '支'},
+                {name: '洗衣機', unit: '台'},
+                {name: '熱水器', unit: '台'},
+                {name: '室內對講機', unit: '台'},
+                {name: '鞋櫃', unit: '個'},
+                {name: '窗簾', unit: '組'},
+                {name: '盲簾', unit: '組'}
+            ]
+        },
+        {
+            title: '【門禁與憑證控管】',
+            items: [
+                {name: '大門鑰匙', unit: '支'},
+                {name: '房間鑰匙', unit: '支'},
+                {name: '門禁磁卡', unit: '個'},
+                {name: '感應扣', unit: '個'},
+                {name: '信箱鑰匙', unit: '支'}
+            ]
+        }
+    ];
+
+    const tbody = document.getElementById('checklist-main');
+    let itemCounter = 1; // 自動遞增編號計數器
+
+    categories.forEach(cat => {
+        tbody.innerHTML += `<tr><td colspan="5" class="cat-header">${cat.title}</td></tr>`;
+        cat.items.forEach(item => {
+            tbody.innerHTML += `
+                <tr>
+                    <td class="col-num">${itemCounter++}</td>
+                    <td class="col-item">${item.name}</td>
+                    <td class="col-qty"><input type="number" style="width:60px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
+                    <td class="col-photo">
+                        <label class="photo-btn-label">
+                            📷 拍照/上傳
+                            <input type="file" accept="image/*" multiple capture="environment" class="photo-input" onchange="previewImage(this)">
+                        </label>
+                        <div class="photo-container"></div>
+                    </td>
+                    <td class="col-note"><input type="text" placeholder="" style="text-align:center;"></td>
+                </tr>
+            `;
+        });
+    });
+
+    tbody.innerHTML += `<tr id="custom-header"><td colspan="5" class="cat-header">【其他約定項目】</td></tr>`;
+
+    function addCustomRow() {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="col-num">${itemCounter++}</td>
+            <td class="col-item"><input type="text" placeholder="自訂項目名稱" style="text-align:center;"></td>
+            <td class="col-qty"><input type="number" style="width:60px; text-align:center;" value="" placeholder=""></td>
+            <td class="col-photo">
+                <label class="photo-btn-label">
+                    📷 拍照
+                    <input type="file" accept="image/*" multiple capture="environment" class="photo-input" onchange="previewImage(this)">
+                </label>
+                <div class="photo-container"></div>
+            </td>
+            <td class="col-note">
+                <input type="text" placeholder="" style="width:65%; display:inline-block; text-align:center;">
+                <button type="button" class="delete-btn" onclick="this.closest('tr').remove()">刪除</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    addCustomRow();
+
+    // 支援多照片預覽功能
+    function previewImage(input) {
+        const photoContainer = input.parentElement.parentElement.querySelector('.photo-container');
+        photoContainer.innerHTML = '';
+
+        if (input.files && input.files.length > 0) {
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'photo-preview';
+                    photoContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    }
+
+    // 自動帶入當前民國年月日
+    const today = new Date();
+    const rocYear = today.getFullYear() - 1911;
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const dateStr = `民國 ${rocYear} 年 ${month} 月 ${day} 日`;
+
+    document.querySelectorAll('.current-date-str').forEach(el => el.textContent = dateStr);
+
+    /* 簽名小視窗 Modal 邏輯 */
+    let currentRole = '';
+    const modal = document.getElementById('sigModal');
+    const modalCanvas = document.getElementById('modalCanvas');
+    const ctx = modalCanvas.getContext('2d');
+    let isDrawing = false;
+
+    function openSigModal(role) {
+        currentRole = role;
+        document.getElementById('modalTitle').textContent = role === 'landlord' ? '出租人 (或代理人) 手寫簽名' : '承租人 (或代理人) 手寫簽名';
+        modal.style.display = 'flex';
+        
+        setTimeout(() => {
+            modalCanvas.width = modalCanvas.offsetWidth;
+            modalCanvas.height = modalCanvas.offsetHeight;
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#1a365d';
+            clearModalCanvas();
+        }, 100);
+    }
+
+    function closeSigModal() {
+        modal.style.display = 'none';
+    }
+
+    function clearModalCanvas() {
+        ctx.clearRect(0, 0, modalCanvas.width, modalCanvas.height);
+    }
+
+    function getPos(e) {
+        const rect = modalCanvas.getBoundingClientRect();
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        }
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDraw(e) {
+        isDrawing = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    }
+
+    function stopDraw() { isDrawing = false; }
+
+    modalCanvas.addEventListener('mousedown', startDraw);
+    modalCanvas.addEventListener('mousemove', draw);
+    modalCanvas.addEventListener('mouseup', stopDraw);
+    modalCanvas.addEventListener('mouseleave', stopDraw);
+
+    modalCanvas.addEventListener('touchstart', (e) => { startDraw(e); e.preventDefault(); });
+    modalCanvas.addEventListener('touchmove', (e) => { draw(e); e.preventDefault(); });
+    modalCanvas.addEventListener('touchend', stopDraw);
+
+    function saveSignature() {
+        const dataUrl = modalCanvas.toDataURL();
+        const placeholder = document.getElementById(`sig-placeholder-${currentRole}`);
+        const img = document.getElementById(`sig-img-${currentRole}`);
+        
+        img.src = dataUrl;
+        img.style.display = 'block';
+        placeholder.style.display = 'none';
+        
+        closeSigModal();
+    }
+</script>
+
+</body>
+</html>
