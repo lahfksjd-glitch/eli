@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>最新社會住宅租金評定試算工具</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .print-card {
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: none !important;
+        background: white !important;
+        color: black !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-12">
+
+  <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    
+    <!-- Header -->
+    <header class="mb-8 no-print">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-6">
+        <div>
+          <div class="flex items-center space-x-3">
+            <div class="bg-indigo-600 p-2.5 rounded-xl text-white shadow-md shadow-indigo-600/20">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">租金評定試算機</h1>
+          </div>
+          <p class="mt-3 text-slate-500 text-sm sm:text-base">雙北與桃園社會住宅包租代管租金評定標準。</p>
+        </div>
+        
+        <div class="mt-4 md:mt-0 flex items-center space-x-3">
+          <button onclick="resetDefaults()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18.2" />
+            </svg>
+            重設預設值
+          </button>
+          <button onclick="window.print()" class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-md shadow-indigo-600/10 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-3a2 2 0 00-2-2H9a2 2 0 00-2 2v3a2 2 0 002 2zm0 0v-4h10v4" />
+            </svg>
+            匯出評定報告
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Left Column: Input Panel -->
+      <section class="lg:col-span-7 space-y-6 no-print">
+        
+        <!-- 1. 基本資訊與謄本面積計算表 (全動態可輸入) -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-5 flex items-center">
+            <span class="bg-indigo-50 text-indigo-600 p-1.5 rounded-lg mr-2 font-black text-sm">1</span>
+            房屋基本條件與謄本面積試算表
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">縣市</label>
+              <select id="citySelect" onchange="onCityChange()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold bg-white focus:ring-2 focus:ring-indigo-500">
+                <option value="桃園" selected>桃園市</option>
+                <option value="台北">台北市</option>
+                <option value="新北">新北市</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">行政區</label>
+              <select id="districtSelect" onchange="calculateRent()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold bg-white focus:ring-2 focus:ring-indigo-500">
+                <!-- JS Dynamic Insert -->
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">房屋型態</label>
+              <select id="typeSelect" onchange="calculateRent()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold bg-white focus:ring-2 focus:ring-indigo-500">
+                <option value="整層住宅" selected>整層住宅</option>
+                <option value="獨立套房">獨立套房</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 謄本面積輸入表格 -->
+          <div class="overflow-x-auto border border-slate-300 rounded-xl shadow-sm">
+            <table class="w-full text-xs text-center border-collapse bg-white">
+              <thead>
+                <tr class="bg-slate-100 font-bold border-b border-slate-300 text-slate-700">
+                  <th colspan="3" class="p-2 text-[10pt] border-r border-slate-300">項目</th>
+                  <th class="p-2 border-r text-[10pt] border-slate-300 w-24">平方公尺<p>(面積)</p></th>
+                  <th class="p-2 border-r text-[10pt] border-slate-300 w-20">分母</th>
+                  <th class="p-2 border-r text-[10pt] border-slate-300 w-20">分子</th>
+                  <th class="p-2 w-24 bg-emerald-50 text-emerald-900 font-bold border-l border-slate-300">平方公尺<p>(計算)</p></th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <!-- 專有部分：主建物 -->
+                <tr>
+                  <td rowspan="6" class="p-2 font-bold bg-slate-50 text-[10pt] border-r border-slate-300 w-16">專有<p>部分</p></td>
+                  <td colspan="2" class="p-2 font-bold bg-slate-50 text-[10pt] border-r border-slate-300">總面積(主建物)</td>
+                  <td class="p-1 border-r border-slate-300"><input type="number" id="mainSqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center text-[10pt] py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 border-r border-slate-300"><input type="number" id="mainDen" value="1" oninput="calculateRent()" class="w-full text-center text-[10pt] py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 border-r border-slate-300"><input type="number" id="mainNum" value="1" oninput="calculateRent()" class="w-full text-center text-[10pt] py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 font-bold bg-emerald-50/50 text-[10pt] text-slate-800 border-l border-slate-300" id="mainRes">0.00</td>
+                </tr>
+                <!-- 附屬建物 -->
+                <tr>
+                  <td rowspan="5" class="p-2 font-bold bg-slate-50 text-[10pt] border-r border-slate-300 w-24">附屬建物</td>
+                  <td class="p-1 bg-slate-50 text-[10pt] border-r border-slate-300">陽台</td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="balSqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="balDen" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="balNum" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 font-bold text-[10pt] bg-emerald-50/50 text-slate-800 border-l border-slate-300" id="balRes">0.00</td>
+                </tr>
+                <tr>
+                  <td class="p-1 bg-slate-50 border-r text-[10pt] border-slate-300">花台</td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="flowerSqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="flowerDen" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="flowerNum" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 font-bold text-[10pt] bg-emerald-50/50 text-slate-800 border-l border-slate-300" id="flowerRes">0.00</td>
+                </tr>
+                <tr>
+                  <td class="p-1 bg-slate-50 text-[10pt] border-r border-slate-300">雨遮</td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="rainSqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-[10pt] text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="rainDen" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="rainNum" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 font-bold text-[10pt] bg-emerald-50/50 text-slate-800 border-l border-slate-300" id="rainRes">0.00</td>
+                </tr>
+                <tr>
+                  <td class="p-1 bg-slate-50 text-[10pt] border-r border-slate-300">平台</td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="platSqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="platDen" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="platNum" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 font-bold text-[10pt] bg-emerald-50/50 text-slate-800 border-l border-slate-300" id="platRes">0.00</td>
+                </tr>
+                <tr>
+                  <td class="p-1 bg-slate-50 text-[10pt] border-r border-slate-300">其他</td>
+                  <td class="p-1 text-[10pt] border-r border-slate-300"><input type="number" id="otherSqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 text-[10pt] border-r border-slate-300"><input type="number" id="otherDen" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 text-[10pt] border-r border-slate-300"><input type="number" id="otherNum" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 text-[10pt] font-bold bg-emerald-50/50 text-slate-800 border-l border-slate-300" id="otherRes">0.00</td>
+                </tr>
+
+                <!-- 共有部分 (1-5組) -->
+                <tr>
+                  <td rowspan="5" colspan="3" class="p-2 font-bold bg-slate-50 text-[10pt] border-r border-slate-300">共有部分</td>
+                  <td class="p-1 text-[10pt] border-r border-slate-300"><input type="number" id="s1SqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 text-[10pt] border-r border-slate-300"><input type="number" id="s1Den" value="100000" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 text-[10pt] border-r border-slate-300"><input type="number" id="s1Num" value="" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 text-[10pt] font-bold bg-emerald-50/50 text-slate-800 border-l border-slate-300" id="s1Res">0.00</td>
+                </tr>
+                <tr>
+                  <td class="p-1 text-[10pt] border-r border-slate-300"><input type="number" id="s2SqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 text-[10pt] border-r border-slate-300"><input type="number" id="s2Den" value="10000" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 text-[10pt] border-r border-slate-300"><input type="number" id="s2Num" value="" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 text-[10pt] font-bold bg-emerald-50/50 text-slate-800 border-l border-slate-300" id="s2Res">0.00</td>
+                </tr>
+                <tr>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="s3SqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="s3Den" value="10000" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="s3Num" value="" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 font-bold text-[10pt] bg-emerald-50/50 text-slate-800 border-l border-slate-300" id="s3Res">0.00</td>
+                </tr>
+                <tr>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="s4SqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="s4Den" value="1000" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="s4Num" value="" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 font-bold text-[10pt] bg-emerald-50/50 text-slate-800 border-l border-slate-300" id="s4Res">0.00</td>
+                </tr>
+                <tr>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="s5SqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="s5Den" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="s5Num" value="" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 font-bold text-[10pt] bg-emerald-50/50 text-slate-800 border-l border-slate-300" id="s5Res">0.00</td>
+                </tr>
+
+                <!-- 共有部分(車位) - 扣除項 -->
+                <tr class="bg-rose-50/30">
+                  <td colspan="3" class="p-2 text-[10pt] font-bold bg-rose-50/50 text-rose-900 border-r border-slate-300">共有部分(車位) - 扣除項</td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="carSqM" value="" step="0.01" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded font-bold bg-amber-50/30"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="carDen" value="1" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-1 border-r text-[10pt] border-slate-300"><input type="number" id="carNum" value="" oninput="calculateRent()" class="w-full text-center py-1 border border-slate-300 rounded"></td>
+                  <td class="p-2 font-bold text-[10pt] text-rose-700 bg-rose-100/50 border-l border-slate-300" id="carRes">0.00</td>
+                </tr>
+
+                <!-- 謄本總計區域 -->
+                <tr class="bg-amber-100 font-bold text-amber-950">
+                  <td colspan="5" rowspan="2" class="p-3 border-r border-slate-300 text-sm">謄本面積(不含車位面積)</td>
+                  <td class="p-2 border-r text-[10pt] border-slate-300 bg-yellow-200">平方公尺</td>
+                  <td class="p-2 text-base font-black bg-yellow-300 text-slate-900 border-l border-slate-300" id="totalSqM">0.00</td>
+                </tr>
+                <tr class="bg-amber-50 font-bold text-amber-950">
+                  <td class="p-2 text-[10pt] border-r border-slate-300 bg-amber-200">坪數</td>
+                  <td class="p-2 text-base font-black bg-amber-300 text-indigo-900 border-l border-slate-300" id="totalPing">0.00</td>
+                </tr>
+
+                <!-- 建築完成年份與屋齡 -->
+                <tr class="bg-slate-100 font-bold text-slate-800 border-t-2 border-slate-300">
+                  <td colspan="3" class="p-2 text-[10pt] border-r border-slate-300">建築完成年份 (民國)</td>
+                  <td class="p-1 border-r border-slate-300">
+                    <input type="number" id="buildYearInput" value="" oninput="calculateRent()" class="w-full text-center py-1 border border-indigo-400 rounded font-black text-indigo-900 bg-indigo-50">
+                  </td>
+                  <td colspan="2" class="p-2 text-[10pt] border-r border-slate-300 bg-slate-200 text-slate-700">屋齡計算</td>
+                  <td class="p-2 text-sm font-black bg-indigo-100 text-indigo-950 border-l border-slate-300" id="calculatedAge">0 年</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 2. 評定調整加成設定 -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-5">
+          <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center">
+            <span class="bg-indigo-50 text-indigo-600 p-1.5 rounded-lg mr-2 font-black text-sm">2</span>
+            品質與屋況調整加成
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <!-- 區位 -->
+            <div>
+              <label class="block text-[12pt] font-bold text-slate-700 mb-1">區位調整率</label>
+              <select id="locationRate" onchange="calculateRent()" class="w-full px-2.5 py-2 text-[10pt] border border-slate-300 rounded-lg font-semibold bg-white">
+                <option value="0.05">優質區位 (+5%) </option>
+                <option value="0.03">中上區位 (+3%) </option>
+                <option value="0" selected>中下區位 (+0%)</option>
+              </select>
+            </div>
+
+            <!-- 裝修 -->
+            <div>
+              <label class="block text-[12pt] font-bold text-slate-700 mb-1">裝修調整率</label>
+              <select id="decorationRate" onchange="calculateRent()" class="w-full px-2.5 py-2 text-[10pt] border border-slate-300 rounded-lg font-semibold bg-white">
+                <option value="0.05">中等裝修 (+5%)</option>
+                <option value="0.03">簡易裝修 (+3%)</option>
+                <option value="0" selected>無裝修 (+0%)</option>
+              </select>
+            </div>
+
+            <!-- 屋齡級距 -->
+            <div>
+              <label class="block text-[12pt] font-bold text-slate-700 mb-1">屋齡級距 (自動對照單價)</label>
+              <select id="ageSelect" onchange="calculateRent()" class="w-full text-[10pt] px-2.5 py-2 border border-slate-300 rounded-lg font-semibold bg-white">
+                <option value="0-4" selected>0-4 年</option>
+                <option value="5-9">5-9 年</option>
+                <option value="10-14">10-14 年</option>
+                <option value="15-19">15-19 年</option>
+                <option value="20-24">20-24 年</option>
+                <option value="25-29">25-29 年</option>
+                <option value="30-34">30-34 年</option>
+                <option value="35-39">35-39 年</option>
+                <option value="40+">40 年以上</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 設備勾選區 -->
+          <div class="pt-3 border-t border-slate-100">
+            <label class="block text-[12pt] font-bold text-slate-700 mb-2">
+              屋況設備配置（每勾選一項可得 +500 補助，整層上限 +2,000 / 獨套上限 +1,000）
+            </label>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-xs">
+              <label class="inline-flex text-[12pt] items-center bg-slate-50 p-2 rounded border border-slate-200 cursor-pointer hover:bg-slate-100">
+                <input type="checkbox" id="equipAirCon" class="equip-check" onchange="calculateRent()"> <span class="ml-1.5 font-medium">冷氣</span>
+              </label>
+              <label class="inline-flex text-[12pt] items-center bg-slate-50 p-2 rounded border border-slate-200 cursor-pointer hover:bg-slate-100">
+                <input type="checkbox" id="equipFridge" class="equip-check" onchange="calculateRent()"> <span class="ml-1.5 font-medium">冰箱</span>
+              </label>
+              <label class="inline-flex text-[12pt] items-center bg-slate-50 p-2 rounded border border-slate-200 cursor-pointer hover:bg-slate-100">
+                <input type="checkbox" id="equipWasher" class="equip-check" onchange="calculateRent()"> <span class="ml-1.5 font-medium">洗衣機</span>
+              </label>
+              <label class="inline-flex text-[12pt] items-center bg-slate-50 p-2 rounded border border-slate-200 cursor-pointer hover:bg-slate-100">
+                <input type="checkbox" id="equipNet" class="equip-check" onchange="calculateRent()"> <span class="ml-1.5 font-medium">網路</span>
+              </label>
+              <label class="inline-flex text-[12pt] items-center bg-slate-50 p-2 rounded border border-slate-200 cursor-pointer hover:bg-slate-100">
+                <input type="checkbox" id="equipTV" class="equip-check" onchange="calculateRent()"> <span class="ml-1.5 font-medium">電視</span>
+              </label>
+              <label class="inline-flex text-[12pt] items-center bg-slate-50 p-2 rounded border border-slate-200 cursor-pointer hover:bg-slate-100">
+                <input type="checkbox" id="equipCable" class="equip-check" onchange="calculateRent()"> <span class="ml-1.5 font-medium">第四台</span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3. 預計開價與驗證 -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4 flex items-center">
+            <span class="bg-indigo-50 text-indigo-600 p-1.5 rounded-lg mr-2 font-black text-sm">3</span>
+            房東預計收取租金
+          </h2>
+          <div>
+            <div class="relative rounded-lg shadow-sm max-w-md">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span class="text-slate-400 sm:text-sm font-bold">NT$</span>
+              </div>
+              <input type="number" id="monthlyRentInput" value="" step="500" oninput="calculateRent()" class="block w-full pl-12 pr-3 py-2.5 border border-slate-300 rounded-lg text-slate-900 font-bold focus:ring-2 focus:ring-indigo-500 text-lg">
+            </div>
+            <p class="text-xs text-slate-400 mt-2">請輸入每月租金金額，系統將自動比對評定上限。</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Results & Status Banner -->
+      <main class="lg:col-span-5 space-y-6">
+        
+        <!-- Status Banner -->
+        <div id="statusBanner" class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-xl flex flex-col justify-between relative overflow-hidden transition-all">
+          <div>
+            <span class="inline-flex items-center px-10 py-1 rounded-full text-[11pt] font-bold bg-white/20 text-white backdrop-blur-sm mb-4">
+              審核判定結果
+            </span>
+            <h2 class="text-xl sm:text-2xl font-black" id="statusTitle">✅ 符合進件標準 </h2>
+            <p class="text-m text-emerald-50 mt-2" id="statusSubtitle">預計開價未超過該物件評定上限，可直接進件申請！</p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-white/20 flex justify-between items-end">
+            <div>
+              <span class="text-s text-emerald-100 font-medium">調整後租金上限</span>
+              <p class="text-3xl font-black" id="cappedRentDisplay">NT$ 0</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 評定參數細節清單 -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
+          <h3 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">租金評定試算明細</h3>
+          
+          <div class="space-y-2.5 text-s">
+            <div class="flex justify-between text-slate-500">
+              <span>基期租金單價 (依屋齡)：</span>
+              <span class="font-bold text-slate-800" id="baseRentRate">NT$ 0 / 坪</span>
+            </div>
+            <div class="flex justify-between text-slate-500">
+              <span>總坪數 (已扣除車位)：</span>
+              <span class="font-bold text-slate-800" id="calcPing">0 坪</span>
+            </div>
+            <div class="flex justify-between text-slate-500">
+              <span>基準市場租金 (坪數 × 單價)：</span>
+              <span class="font-bold text-slate-800" id="rawBaseRent">NT$ 0</span>
+            </div>
+            
+            <hr class="border-dashed border-slate-200 my-2">
+
+            <div class="flex justify-between text-slate-500">
+              <span>區位加成比率 ：</span>
+              <span class="font-bold text-indigo-600" id="dispLocRate">+ 0%</span>
+            </div>
+            <div class="flex justify-between text-slate-500">
+              <span>裝修加成比率：</span>
+              <span class="font-bold text-indigo-600" id="dispDecRate">+ 0%</span>
+            </div>
+           
+            <hr class="border-dashed border-slate-200 my-2">
+
+            <div class="flex justify-between text-slate-500">
+              <span>區域法定收件上限：</span>
+              <span class="font-bold text-slate-800" id="legalLimitDisp">NT$ 0</span>
+            </div>
+            <div class="flex justify-between text-slate-500">
+              <span>設備勾選項目加額：</span>
+              <span class="font-bold text-emerald-600" id="equipBonusDisp">+ NT$ 0</span>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 text-center text-xs text-slate-400 border-t border-slate-200 pt-6 no-print">
+      <p>© 新智 (Eli) 制作 最新社宅租金評定試算工具</p>
+      <p class="mt-1">本評定僅供參考，實際收件上限與評定金額以主管機關及審查單位核定為準。</p>
+    </footer>
+
+    <!-- 列印報告格式 -->
+    <div class="hidden print:block mt-8 print-card p-6 rounded-none border-none">
+      <h1 class="text-xl font-bold text-center border-b pb-4 mb-4">社會住宅租金評定與進件上限報告</h1>
+      <div class="grid grid-cols-2 gap-4 text-lg leading-loose mb-6">
+        <div>
+          <p><strong>房屋位置：</strong> <span id="printCityDist">桃園市 桃園區</span></p>
+          <p><strong>房屋型態：</strong> <span id="printType">整層住宅</span></p>
+          <p><strong>建物坪數：</strong> <span id="printPing">0.00</span> 坪 (<span id="printSqM">0.00</span> m²)</p>
+          <p><strong>建築完成年份：</strong> 民國 <span id="printBuildYear">0</span> 年 (屋齡 <span id="printAge">0</span> 年)</p>
+        </div>
+        <div>
+          <p><strong>預計每月租金：</strong> NT$ <span id="printRent">0</span></p>
+          <p><strong>評定租金上限：</strong> NT$ <span id="printLimit">0</span></p>
+          <p><strong>審核結果：</strong> <span id="printStatus">符合進件標準</span></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // 完整的區域與屋齡基期租金單價資料庫 (解析自 租金水準表.xlsx)
+    const RENT_DATABASE = {
+      "台北": {
+        "整層住宅": {
+          "大安區": {"0-4": 1725, "5-9": 1715, "10-14": 1695, "15-19": 1670, "20-24": 1640, "25-29": 1605, "30-34": 1575, "35-39": 1575, "40+": 1500},
+          "中山區": {"0-4": 1725, "5-9": 1715, "10-14": 1695, "15-19": 1670, "20-24": 1640, "25-29": 1605, "30-34": 1575, "35-39": 1575, "40+": 1500},
+          "中正區": {"0-4": 1705, "5-9": 1690, "10-14": 1675, "15-19": 1645, "20-24": 1615, "25-29": 1585, "30-34": 1555, "35-39": 1555, "40+": 1480},
+          "信義區": {"0-4": 1705, "5-9": 1690, "10-14": 1675, "15-19": 1645, "20-24": 1615, "25-29": 1585, "30-34": 1555, "35-39": 1555, "40+": 1480},
+          "大同區": {"0-4": 1680, "5-9": 1665, "10-14": 1650, "15-19": 1625, "20-24": 1595, "25-29": 1565, "30-34": 1535, "35-39": 1535, "40+": 1460},
+          "松山區": {"0-4": 1680, "5-9": 1665, "10-14": 1650, "15-19": 1625, "20-24": 1595, "25-29": 1565, "30-34": 1535, "35-39": 1535, "40+": 1460},
+          "南港區": {"0-4": 1545, "5-9": 1530, "10-14": 1515, "15-19": 1490, "20-24": 1465, "25-29": 1435, "30-34": 1410, "35-39": 1410, "40+": 1340},
+          "萬華區": {"0-4": 1545, "5-9": 1530, "10-14": 1515, "15-19": 1490, "20-24": 1465, "25-29": 1435, "30-34": 1410, "35-39": 1410, "40+": 1340},
+          "士林區": {"0-4": 1495, "5-9": 1485, "10-14": 1470, "15-19": 1445, "20-24": 1420, "25-29": 1395, "30-34": 1365, "35-39": 1365, "40+": 1300},
+          "內湖區": {"0-4": 1495, "5-9": 1485, "10-14": 1470, "15-19": 1445, "20-24": 1420, "25-29": 1395, "30-34": 1365, "35-39": 1365, "40+": 1300},
+          "文山區": {"0-4": 1415, "5-9": 1405, "10-14": 1390, "15-19": 1370, "20-24": 1345, "25-29": 1320, "30-34": 1295, "35-39": 1295, "40+": 1230},
+          "北投區": {"0-4": 1415, "5-9": 1405, "10-14": 1390, "15-19": 1370, "20-24": 1345, "25-29": 1320, "30-34": 1295, "35-39": 1295, "40+": 1230}
+        },
+        "獨立套房": {
+          "大安區": {"0-4": 2475, "5-9": 2435, "10-14": 2390, "15-19": 2350, "20-24": 2290, "25-29": 2225, "30-34": 2165, "35-39": 2165, "40+": 2060},
+          "中山區": {"0-4": 2365, "5-9": 2325, "10-14": 2290, "15-19": 2250, "20-24": 2190, "25-29": 2130, "30-34": 2070, "35-39": 2070, "40+": 1970},
+          "松山區": {"0-4": 2305, "5-9": 2270, "10-14": 2230, "15-19": 2190, "20-24": 2135, "25-29": 2075, "30-34": 2020, "35-39": 2020, "40+": 1920},
+          "信義區": {"0-4": 2220, "5-9": 2185, "10-14": 2150, "15-19": 2110, "20-24": 2055, "25-29": 2000, "30-34": 1945, "35-39": 1945, "40+": 1850},
+          "中正區": {"0-4": 2175, "5-9": 2140, "10-14": 2100, "15-19": 2065, "20-24": 2010, "25-29": 1955, "30-34": 1905, "35-39": 1905, "40+": 1810},
+          "大同區": {"0-4": 2160, "5-9": 2125, "10-14": 2090, "15-19": 2055, "20-24": 2000, "25-29": 1945, "30-34": 1890, "35-39": 1890, "40+": 1800},
+          "南港區": {"0-4": 2160, "5-9": 2125, "10-14": 2090, "15-19": 2055, "20-24": 2000, "25-29": 1945, "30-34": 1890, "35-39": 1890, "40+": 1800},
+          "萬華區": {"0-4": 2160, "5-9": 2125, "10-14": 2090, "15-19": 2055, "20-24": 2000, "25-29": 1945, "30-34": 1890, "35-39": 1890, "40+": 1800},
+          "士林區": {"0-4": 2040, "5-9": 2010, "10-14": 1975, "15-19": 1940, "20-24": 1890, "25-29": 1840, "30-34": 1785, "35-39": 1785, "40+": 1700},
+          "內湖區": {"0-4": 2040, "5-9": 2010, "10-14": 1975, "15-19": 1940, "20-24": 1890, "25-29": 1840, "30-34": 1785, "35-39": 1785, "40+": 1700},
+          "文山區": {"0-4": 1920, "5-9": 1890, "10-14": 1860, "15-19": 1825, "20-24": 1780, "25-29": 1730, "30-34": 1680, "35-39": 1680, "40+": 1600},
+          "北投區": {"0-4": 1920, "5-9": 1890, "10-14": 1860, "15-19": 1825, "20-24": 1780, "25-29": 1730, "30-34": 1680, "35-39": 1680, "40+": 1600}
+        }
+      },
+      "新北": {
+        "整層住宅": {
+          "三重區": {"0-4": 1380, "5-9": 1370, "10-14": 1360, "15-19": 1335, "20-24": 1310, "25-29": 1285, "30-34": 1260, "35-39": 1260, "40+": 1200},
+          "永和區": {"0-4": 1210, "5-9": 1200, "10-14": 1190, "15-19": 1170, "20-24": 1145, "25-29": 1125, "30-34": 1105, "35-39": 1105, "40+": 1050},
+          "板橋區": {"0-4": 1185, "5-9": 1175, "10-14": 1165, "15-19": 1145, "20-24": 1125, "25-29": 1105, "30-34": 1085, "35-39": 1085, "40+": 1030},
+          "中和區": {"0-4": 1165, "5-9": 1155, "10-14": 1145, "15-19": 1125, "20-24": 1105, "25-29": 1085, "30-34": 1065, "35-39": 1065, "40+": 1010},
+          "新店區": {"0-4": 1060, "5-9": 1050, "10-14": 1040, "15-19": 1025, "20-24": 1005, "25-29": 985, "30-34": 970, "35-39": 970, "40+": 920},
+          "新莊區": {"0-4": 1050, "5-9": 1040, "10-14": 1030, "15-19": 1015, "20-24": 995, "25-29": 975, "30-34": 960, "35-39": 960, "40+": 910},
+          "蘆洲區": {"0-4": 1050, "5-9": 1040, "10-14": 1030, "15-19": 1015, "20-24": 995, "25-29": 975, "30-34": 960, "35-39": 960, "40+": 910},
+          "土城區": {"0-4": 1015, "5-9": 1005, "10-14": 995, "15-19": 980, "20-24": 960, "25-29": 945, "30-34": 925, "35-39": 925, "40+": 880},
+          "汐止區": {"0-4": 980, "5-9": 970, "10-14": 965, "15-19": 945, "20-24": 930, "25-29": 910, "30-34": 895, "35-39": 895, "40+": 850},
+          "林口區": {"0-4": 920, "5-9": 915, "10-14": 905, "15-19": 890, "20-24": 875, "25-29": 860, "30-34": 840, "35-39": 840, "40+": 800},
+          "泰山區": {"0-4": 920, "5-9": 915, "10-14": 905, "15-19": 890, "20-24": 875, "25-29": 860, "30-34": 840, "35-39": 840, "40+": 800},
+          "五股區": {"0-4": 890, "5-9": 880, "10-14": 875, "15-19": 855, "20-24": 840, "25-29": 825, "30-34": 810, "35-39": 810, "40+": 770},
+          "樹林區": {"0-4": 890, "5-9": 880, "10-14": 875, "15-19": 855, "20-24": 840, "25-29": 825, "30-34": 810, "35-39": 810, "40+": 770},
+          "三峽區": {"0-4": 795, "5-9": 790, "10-14": 775, "15-19": 770, "20-24": 755, "25-29": 740, "30-34": 725, "35-39": 725, "40+": 690},
+          "鶯歌區": {"0-4": 750, "5-9": 745, "10-14": 735, "15-19": 725, "20-24": 710, "25-29": 700, "30-34": 685, "35-39": 685, "40+": 650},
+          "淡水區": {"0-4": 715, "5-9": 710, "10-14": 700, "15-19": 690, "20-24": 675, "25-29": 665, "30-34": 655, "35-39": 655, "40+": 620},
+          "八里區": {"0-4": 645, "5-9": 640, "10-14": 630, "15-19": 625, "20-24": 615, "25-29": 600, "30-34": 590, "35-39": 590, "40+": 560},
+          "深坑區": {"0-4": 635, "5-9": 630, "10-14": 620, "15-19": 615, "20-24": 600, "25-29": 590, "30-34": 580, "35-39": 580, "40+": 550},
+          "金山區": {"0-4": 460, "5-9": 455, "10-14": 450, "15-19": 445, "20-24": 440, "25-29": 430, "30-34": 420, "35-39": 420, "40+": 400},
+          "三芝區": {"0-4": 440, "5-9": 435, "10-14": 430, "15-19": 425, "20-24": 415, "25-29": 410, "30-34": 400, "35-39": 400, "40+": 380},
+          "石門區": {"0-4": 430, "5-9": 425, "10-14": 420, "15-19": 415, "20-24": 405, "25-29": 400, "30-34": 390, "35-39": 390, "40+": 370},
+          "石碇區": {"0-4": 430, "5-9": 425, "10-14": 420, "15-19": 415, "20-24": 405, "25-29": 400, "30-34": 390, "35-39": 390, "40+": 370},
+          "貢寮區": {"0-4": 430, "5-9": 425, "10-14": 420, "15-19": 415, "20-24": 405, "25-29": 400, "30-34": 390, "35-39": 390, "40+": 370},
+          "瑞芳區": {"0-4": 430, "5-9": 425, "10-14": 420, "15-19": 415, "20-24": 405, "25-29": 400, "30-34": 390, "35-39": 390, "40+": 370},
+          "萬里區": {"0-4": 430, "5-9": 425, "10-14": 420, "15-19": 415, "20-24": 405, "25-29": 400, "30-34": 390, "35-39": 390, "40+": 370},
+          "平溪區": {"0-4": 360, "5-9": 355, "10-14": 350, "15-19": 345, "20-24": 340, "25-29": 335, "30-34": 330, "35-39": 330, "40+": 310},
+          "雙溪區": {"0-4": 360, "5-9": 355, "10-14": 350, "15-19": 345, "20-24": 340, "25-29": 335, "30-34": 330, "35-39": 330, "40+": 310},
+          "烏來區": {"0-4": 360, "5-9": 355, "10-14": 350, "15-19": 345, "20-24": 340, "25-29": 335, "30-34": 330, "35-39": 330, "40+": 310},
+          "坪林區": {"0-4": 360, "5-9": 355, "10-14": 350, "15-19": 345, "20-24": 340, "25-29": 335, "30-34": 330, "35-39": 330, "40+": 310}
+        },
+        "獨立套房": {
+          "三重區": {"0-4": 1815, "5-9": 1785, "10-14": 1755, "15-19": 1725, "20-24": 1680, "25-29": 1635, "30-34": 1590, "35-39": 1590, "40+": 1510},
+          "永和區": {"0-4": 1790, "5-9": 1760, "10-14": 1730, "15-19": 1700, "20-24": 1655, "25-29": 1610, "30-34": 1565, "35-39": 1565, "40+": 1490},
+          "板橋區": {"0-4": 1780, "5-9": 1750, "10-14": 1720, "15-19": 1690, "20-24": 1645, "25-29": 1600, "30-34": 1555, "35-39": 1555, "40+": 1480},
+          "中和區": {"0-4": 1670, "5-9": 1645, "10-14": 1615, "15-19": 1585, "20-24": 1545, "25-29": 1505, "30-34": 1460, "35-39": 1460, "40+": 1390},
+          "新店區": {"0-4": 1670, "5-9": 1645, "10-14": 1615, "15-19": 1585, "20-24": 1545, "25-29": 1505, "30-34": 1460, "35-39": 1460, "40+": 1390},
+          "土城區": {"0-4": 1600, "5-9": 1570, "10-14": 1545, "15-19": 1520, "20-24": 1480, "25-29": 1440, "30-34": 1400, "35-39": 1400, "40+": 1330},
+          "新莊區": {"0-4": 1600, "5-9": 1570, "10-14": 1545, "15-19": 1520, "20-24": 1480, "25-29": 1440, "30-34": 1400, "35-39": 1400, "40+": 1330},
+          "汐止區": {"0-4": 1405, "5-9": 1385, "10-14": 1360, "15-19": 1335, "20-24": 1300, "25-29": 1265, "30-34": 1230, "35-39": 1230, "40+": 1170},
+          "蘆洲區": {"0-4": 1405, "5-9": 1385, "10-14": 1360, "15-19": 1335, "20-24": 1300, "25-29": 1265, "30-34": 1230, "35-39": 1230, "40+": 1170},
+          "林口區": {"0-4": 1320, "5-9": 1300, "10-14": 1280, "15-19": 1255, "20-24": 1225, "25-29": 1190, "30-34": 1155, "35-39": 1155, "40+": 1110},
+          "泰山區": {"0-4": 1320, "5-9": 1300, "10-14": 1280, "15-19": 1255, "20-24": 1225, "25-29": 1190, "30-34": 1155, "35-39": 1155, "40+": 1110},
+          "樹林區": {"0-4": 1225, "5-9": 1205, "10-14": 1185, "15-19": 1165, "20-24": 1135, "25-29": 1105, "30-34": 1075, "35-39": 1075, "40+": 1020},
+          "深坑區": {"0-4": 1200, "5-9": 1180, "10-14": 1160, "15-19": 1145, "20-24": 1110, "25-29": 1080, "30-34": 1050, "35-39": 1050, "40+": 1000},
+          "三峽區": {"0-4": 1155, "5-9": 1135, "10-14": 1115, "15-19": 1095, "20-24": 1070, "25-29": 1040, "30-34": 1010, "35-39": 1010, "40+": 960},
+          "五股區": {"0-4": 1105, "5-9": 1090, "10-14": 1070, "15-19": 1050, "20-24": 1025, "25-29": 995, "30-34": 970, "35-39": 970, "40+": 920},
+          "淡水區": {"0-4": 1105, "5-9": 1090, "10-14": 1070, "15-19": 1050, "20-24": 1025, "25-29": 995, "30-34": 970, "35-39": 970, "40+": 920},
+          "八里區": {"0-4": 1010, "5-9": 995, "10-14": 975, "15-19": 960, "20-24": 935, "25-29": 910, "30-34": 885, "35-39": 885, "40+": 840},
+          "鶯歌區": {"0-4": 900, "5-9": 885, "10-14": 870, "15-19": 860, "20-24": 835, "25-29": 810, "30-34": 790, "35-39": 790, "40+": 750},
+          "金山區": {"0-4": 660, "5-9": 650, "10-14": 640, "15-19": 630, "20-24": 615, "25-29": 595, "30-34": 580, "35-39": 580, "40+": 550},
+          "萬里區": {"0-4": 660, "5-9": 650, "10-14": 640, "15-19": 630, "20-24": 615, "25-29": 595, "30-34": 580, "35-39": 580, "40+": 550},
+          "三芝區": {"0-4": 640, "5-9": 630, "10-14": 615, "15-19": 605, "20-24": 590, "25-29": 575, "30-34": 560, "35-39": 560, "40+": 530},
+          "石門區": {"0-4": 640, "5-9": 630, "10-14": 615, "15-19": 605, "20-24": 590, "25-29": 575, "30-34": 560, "35-39": 560, "40+": 530},
+          "石碇區": {"0-4": 640, "5-9": 630, "10-14": 615, "15-19": 605, "20-24": 590, "25-29": 575, "30-34": 560, "35-39": 560, "40+": 530},
+          "貢寮區": {"0-4": 640, "5-9": 630, "10-14": 615, "15-19": 605, "20-24": 590, "25-29": 575, "30-34": 560, "35-39": 560, "40+": 530},
+          "瑞芳區": {"0-4": 640, "5-9": 630, "10-14": 615, "15-19": 605, "20-24": 590, "25-29": 575, "30-34": 560, "35-39": 560, "40+": 530},
+          "平溪區": {"0-4": 385, "5-9": 380, "10-14": 375, "15-19": 365, "20-24": 360, "25-29": 350, "30-34": 340, "35-39": 340, "40+": 320},
+          "雙溪區": {"0-4": 385, "5-9": 380, "10-14": 375, "15-19": 365, "20-24": 360, "25-29": 350, "30-34": 340, "35-39": 340, "40+": 320},
+          "烏來區": {"0-4": 385, "5-9": 380, "10-14": 375, "15-19": 365, "20-24": 360, "25-29": 350, "30-34": 340, "35-39": 340, "40+": 320},
+          "坪林區": {"0-4": 385, "5-9": 380, "10-14": 375, "15-19": 365, "20-24": 360, "25-29": 350, "30-34": 340, "35-39": 340, "40+": 320}
+        }
+      },
+      "桃園": {
+        "整層住宅": {
+          "龜山區": {"0-4": 855, "5-9": 840, "10-14": 825, "15-19": 805, "20-24": 785, "25-29": 760, "30-34": 740, "35-39": 710, "40+": 675},
+          "桃園區": {"0-4": 780, "5-9": 770, "10-14": 755, "15-19": 735, "20-24": 720, "25-29": 700, "30-34": 680, "35-39": 650, "40+": 620},
+          "中壢區": {"0-4": 770, "5-9": 760, "10-14": 745, "15-19": 725, "20-24": 705, "25-29": 685, "30-34": 670, "35-39": 640, "40+": 610},
+          "蘆竹區": {"0-4": 745, "5-9": 735, "10-14": 720, "15-19": 705, "20-24": 685, "25-29": 665, "30-34": 645, "35-39": 620, "40+": 590},
+          "八德區": {"0-4": 735, "5-9": 720, "10-14": 710, "15-19": 690, "20-24": 675, "25-29": 655, "30-34": 635, "35-39": 610, "40+": 580},
+          "大園區": {"0-4": 735, "5-9": 720, "10-14": 710, "15-19": 690, "20-24": 675, "25-29": 655, "30-34": 635, "35-39": 610, "40+": 580},
+          "平鎮區": {"0-4": 720, "5-9": 710, "10-14": 700, "15-19": 680, "20-24": 660, "25-29": 645, "30-34": 625, "35-39": 600, "40+": 570},
+          "觀音區": {"0-4": 700, "5-9": 685, "10-14": 675, "15-19": 660, "20-24": 640, "25-29": 625, "30-34": 605, "35-39": 580, "40+": 555},
+          "楊梅區": {"0-4": 615, "5-9": 605, "10-14": 595, "15-19": 580, "20-24": 565, "25-29": 550, "30-34": 535, "35-39": 510, "40+": 485},
+          "新屋區": {"0-4": 580, "5-9": 570, "10-14": 560, "15-19": 545, "20-24": 530, "25-29": 515, "30-34": 500, "35-39": 480, "40+": 460},
+          "龍潭區": {"0-4": 580, "5-9": 570, "10-14": 560, "15-19": 545, "20-24": 530, "25-29": 515, "30-34": 500, "35-39": 480, "40+": 460},
+          "大溪區": {"0-4": 565, "5-9": 555, "10-14": 550, "15-19": 535, "20-24": 520, "25-29": 505, "30-34": 490, "35-39": 470, "40+": 450},
+          "復興區": {"0-4": 375, "5-9": 370, "10-14": 360, "15-19": 355, "20-24": 345, "25-29": 335, "30-34": 325, "35-39": 310, "40+": 295}
+        },
+        "獨立套房": {
+          "龜山區": {"0-4": 1225, "5-9": 1205, "10-14": 1185, "15-19": 1155, "20-24": 1125, "25-29": 1095, "30-34": 1065, "35-39": 1020, "40+": 970},
+          "蘆竹區": {"0-4": 1180, "5-9": 1160, "10-14": 1140, "15-19": 1110, "20-24": 1080, "25-29": 1050, "30-34": 1020, "35-39": 980, "40+": 935},
+          "桃園區": {"0-4": 1120, "5-9": 1100, "10-14": 1080, "15-19": 1055, "20-24": 1025, "25-29": 1000, "30-34": 970, "35-39": 930, "40+": 885},
+          "中壢區": {"0-4": 1080, "5-9": 1065, "10-14": 1045, "15-19": 1020, "20-24": 995, "25-29": 965, "30-34": 940, "35-39": 900, "40+": 855},
+          "八德區": {"0-4": 1045, "5-9": 1030, "10-14": 1010, "15-19": 985, "20-24": 960, "25-29": 935, "30-34": 905, "35-39": 870, "40+": 830},
+          "大園區": {"0-4": 1045, "5-9": 1030, "10-14": 1010, "15-19": 985, "20-24": 960, "25-29": 935, "30-34": 905, "35-39": 870, "40+": 830},
+          "平鎮區": {"0-4": 900, "5-9": 885, "10-14": 870, "15-19": 850, "20-24": 830, "25-29": 805, "30-34": 780, "35-39": 750, "40+": 715},
+          "觀音區": {"0-4": 900, "5-9": 885, "10-14": 870, "15-19": 850, "20-24": 830, "25-29": 805, "30-34": 780, "35-39": 750, "40+": 715},
+          "楊梅區": {"0-4": 830, "5-9": 815, "10-14": 805, "15-19": 780, "20-24": 760, "25-29": 740, "30-34": 720, "35-39": 690, "40+": 660},
+          "龍潭區": {"0-4": 830, "5-9": 815, "10-14": 805, "15-19": 780, "20-24": 760, "25-29": 740, "30-34": 720, "35-39": 690, "40+": 660},
+          "大溪區": {"0-4": 710, "5-9": 700, "10-14": 685, "15-19": 670, "20-24": 650, "25-29": 635, "30-34": 615, "35-39": 590, "40+": 565},
+          "新屋區": {"0-4": 625, "5-9": 615, "10-14": 605, "15-19": 590, "20-24": 575, "25-29": 560, "30-34": 545, "35-39": 520, "40+": 495},
+          "復興區": {"0-4": 385, "5-9": 380, "10-14": 375, "15-19": 365, "20-24": 355, "25-29": 345, "30-34": 335, "35-39": 320, "40+": 305}
+        }
+      }
+    };
+
+    // 法定收件上限
+    const LEGAL_LIMITS = {
+      "台北整層": 39000,
+      "新北整層": 35000,
+      "台北獨套": 24000,
+      "新北獨套": 21000,
+      "桃園整層": 35000,
+      "桃園獨套": 21000
+    };
+
+    function formatCurrency(num) {
+      return 'NT$ ' + Math.round(num).toLocaleString('zh-TW');
+    }
+
+    // ROUNDDOWN 無條件捨去至百位 (-2)
+    function roundDownToHundred(val) {
+      return Math.floor(val / 100) * 100;
+    }
+
+    function onCityChange() {
+      const city = document.getElementById('citySelect').value;
+      const type = document.getElementById('typeSelect').value;
+      const distSelect = document.getElementById('districtSelect');
+      
+      distSelect.innerHTML = '';
+      const districts = Object.keys(RENT_DATABASE[city][type] || {});
+      
+      districts.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.innerText = d;
+        distSelect.appendChild(opt);
+      });
+
+      calculateRent();
+    }
+
+    // 計算單列持分平方公尺：面積 * (分子 / 分母)
+    function getRowValue(sqmId, denId, numId) {
+      const sqm = parseFloat(document.getElementById(sqmId).value) || 0;
+      const den = parseFloat(document.getElementById(denId).value) || 1;
+      const num = parseFloat(document.getElementById(numId).value) || 0;
+      
+      if (den === 0) return 0;
+      return sqm * (num / den);
+    }
+
+    function calculateRent() {
+      const city = document.getElementById('citySelect').value;
+      const dist = document.getElementById('districtSelect').value || Object.keys(RENT_DATABASE[city]["整層住宅"])[0];
+      const type = document.getElementById('typeSelect').value;
+
+      // 1. 各項目持分計算 (面積 * 分子 / 分母)
+      const mainV = getRowValue('mainSqM', 'mainDen', 'mainNum');
+      const balV = getRowValue('balSqM', 'balDen', 'balNum');
+      const flowerV = getRowValue('flowerSqM', 'flowerDen', 'flowerNum');
+      const rainV = getRowValue('rainSqM', 'rainDen', 'rainNum');
+      const platV = getRowValue('platSqM', 'platDen', 'platNum');
+      const otherV = getRowValue('otherSqM', 'otherDen', 'otherNum');
+
+      // 共有部分
+      const s1V = getRowValue('s1SqM', 's1Den', 's1Num');
+      const s2V = getRowValue('s2SqM', 's2Den', 's2Num');
+      const s3V = getRowValue('s3SqM', 's3Den', 's3Num');
+      const s4V = getRowValue('s4SqM', 's4Den', 's4Num');
+      const s5V = getRowValue('s5SqM', 's5Den', 's5Num');
+
+      // 車位扣除項
+      const carV = getRowValue('carSqM', 'carDen', 'carNum');
+
+      // 更新表格內各列計算出之平方公尺結果
+      document.getElementById('mainRes').innerText = mainV.toFixed(2);
+      document.getElementById('balRes').innerText = balV.toFixed(2);
+      document.getElementById('flowerRes').innerText = flowerV.toFixed(2);
+      document.getElementById('rainRes').innerText = rainV.toFixed(2);
+      document.getElementById('platRes').innerText = platV.toFixed(2);
+      document.getElementById('otherRes').innerText = otherV.toFixed(2);
+
+      document.getElementById('s1Res').innerText = s1V.toFixed(2);
+      document.getElementById('s2Res').innerText = s2V.toFixed(2);
+      document.getElementById('s3Res').innerText = s3V.toFixed(2);
+      document.getElementById('s4Res').innerText = s4V.toFixed(2);
+      document.getElementById('s5Res').innerText = s5V.toFixed(2);
+
+      document.getElementById('carRes').innerText = carV.toFixed(2);
+
+      // 謄本總計 (扣除車位)
+      const rawTotalSqM = mainV + balV + flowerV + rainV + platV + otherV + s1V + s2V + s3V + s4V + s5V;
+      const totalSqM = Math.max(0, rawTotalSqM - carV);
+      const totalPing = totalSqM * 0.3025;
+
+      document.getElementById('totalSqM').innerText = totalSqM.toFixed(2);
+      document.getElementById('totalPing').innerText = totalPing.toFixed(2);
+      document.getElementById('calcPing').innerText = totalPing.toFixed(2) + " 坪";
+
+      // 2. 屋齡計算
+      const currentYear = new Date().getFullYear();
+      const buildYearMinguo = parseFloat(document.getElementById('buildYearInput').value) || (currentYear - 1911);
+      const calculatedAge = Math.max(0, currentYear - 1911 - buildYearMinguo);
+      
+      document.getElementById('calculatedAge').innerText = calculatedAge + " 年";
+
+      // 自動對應屋齡選單級距
+      const ageSelect = document.getElementById('ageSelect');
+      if (calculatedAge <= 4) ageSelect.value = "0-4";
+      else if (calculatedAge <= 9) ageSelect.value = "5-9";
+      else if (calculatedAge <= 14) ageSelect.value = "10-14";
+      else if (calculatedAge <= 19) ageSelect.value = "15-19";
+      else if (calculatedAge <= 24) ageSelect.value = "20-24";
+      else if (calculatedAge <= 29) ageSelect.value = "25-29";
+      else if (calculatedAge <= 34) ageSelect.value = "30-34";
+      else if (calculatedAge <= 39) ageSelect.value = "35-39";
+      else ageSelect.value = "40+";
+
+      // 3. 直接對照 Excel《租金水準表》取得該屋齡級距之【基期租金單價】
+      const ageKey = ageSelect.value;
+      const unitBaseRate = (RENT_DATABASE[city] && RENT_DATABASE[city][type] && RENT_DATABASE[city][type][dist]) 
+                           ? RENT_DATABASE[city][type][dist][ageKey] || 620 
+                           : 620;
+      
+      document.getElementById('baseRentRate').innerText = formatCurrency(unitBaseRate) + " / 坪";
+
+      const I21 = totalPing * unitBaseRate;
+      document.getElementById('rawBaseRent').innerText = formatCurrency(I21);
+
+      // 4. 加成參數（屋齡調整率取消，L10 恆為 0）
+      const L2 = parseFloat(document.getElementById('locationRate').value) || 0;
+      const L6 = parseFloat(document.getElementById('decorationRate').value) || 0;
+
+      document.getElementById('dispLocRate').innerText = (L2 >= 0 ? '+' : '') + (L2 * 100).toFixed(1) + '%';
+      document.getElementById('dispDecRate').innerText = (L6 >= 0 ? '+' : '') + (L6 * 100).toFixed(1) + '%';
+
+      // 5. 設備勾選加額
+      const equipChecks = [
+        document.getElementById('equipAirCon').checked,
+        document.getElementById('equipFridge').checked,
+        document.getElementById('equipWasher').checked,
+        document.getElementById('equipNet').checked,
+        document.getElementById('equipTV').checked,
+        document.getElementById('equipCable').checked
+      ];
+      const totalEquipCount = equipChecks.filter(Boolean).length;
+      const rawEquipSum = totalEquipCount * 500;
+
+      const b1Key = city + (type === "整層住宅" ? "整層" : "獨套");
+      let L19 = 0;
+      if (b1Key === "新北整層" || b1Key === "桃園整層" || b1Key === "台北整層") {
+        L19 = Math.min(rawEquipSum, 2000);
+      } else if (b1Key === "新北獨套" || b1Key === "台北獨套" || b1Key === "桃園獨套") {
+        L19 = Math.min(rawEquipSum, 1000);
+      }
+
+      document.getElementById('equipBonusDisp').innerText = "+ " + formatCurrency(L19);
+
+      // 6. 區域法定收件上限
+      const legalLimit = LEGAL_LIMITS[b1Key] || 35000;
+      document.getElementById('legalLimitDisp').innerText = formatCurrency(legalLimit);
+
+      // 7. 評定公式計算（取消 L10 加價與折數，以對照單價 I21 為基準）
+      const rawCalculatedRent = I21 * (1 + L2 + L6) + L19;
+      const roundedRent = roundDownToHundred(rawCalculatedRent);
+      const cappedLimit = Math.min(roundedRent, legalLimit);
+
+      document.getElementById('cappedRentDisplay').innerText = formatCurrency(cappedLimit);
+
+      // 8. 判斷房東開價與進件標準
+      const userRent = parseFloat(document.getElementById('monthlyRentInput').value) || 0;
+      const banner = document.getElementById('statusBanner');
+      const title = document.getElementById('statusTitle');
+      const subtitle = document.getElementById('statusSubtitle');
+
+      if (userRent <= cappedLimit) {
+        banner.className = "bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-xl flex flex-col justify-between relative overflow-hidden transition-all";
+        title.innerText = "✅ 符合進件標準 ";
+        subtitle.innerText = `開價 NT$ ${userRent.toLocaleString()} 未超過評定上限 (${formatCurrency(cappedLimit)})，可順利進件！`;
+        document.getElementById('printStatus').innerText = "✅ 符合進件標準";
+      } else {
+        banner.className = "bg-gradient-to-r from-rose-500 to-red-600 rounded-3xl p-6 text-white shadow-xl flex flex-col justify-between relative overflow-hidden transition-all";
+        title.innerText = "超過評定進件上限 ⚠️";
+        subtitle.innerText = `開價 NT$ ${userRent.toLocaleString()} 已超過評定上限 (${formatCurrency(cappedLimit)})，建議調整租金再行送審。`;
+        document.getElementById('printStatus').innerText = "⚠️ 超過進件上限 (需調降)";
+      }
+
+      // 更新列印頁面
+      document.getElementById('printCityDist').innerText = `${city}市 ${dist}`;
+      document.getElementById('printType').innerText = type;
+      document.getElementById('printPing').innerText = totalPing.toFixed(2);
+      document.getElementById('printSqM').innerText = totalSqM.toFixed(2);
+      document.getElementById('printBuildYear').innerText = buildYearMinguo;
+      document.getElementById('printAge').innerText = calculatedAge;
+      document.getElementById('printRent').innerText = userRent.toLocaleString();
+      document.getElementById('printLimit').innerText = cappedLimit.toLocaleString();
+    }
+
+    function resetDefaults() {
+      document.getElementById('citySelect').value = "桃園";
+      document.getElementById('typeSelect').value = "整層住宅";
+      
+      document.getElementById('mainSqM').value = 0;
+      document.getElementById('mainDen').value = 1;
+      document.getElementById('mainNum').value = 1;
+
+      document.getElementById('balSqM').value = 0;
+      document.getElementById('balDen').value = 1;
+      document.getElementById('balNum').value = 1;
+
+      document.getElementById('flowerSqM').value = 0;
+      document.getElementById('flowerDen').value = 1;
+      document.getElementById('flowerNum').value = 1;
+
+      document.getElementById('rainSqM').value = 0;
+      document.getElementById('rainDen').value = 1;
+      document.getElementById('rainNum').value = 1;
+
+      document.getElementById('platSqM').value = 0;
+      document.getElementById('platDen').value = 1;
+      document.getElementById('platNum').value = 1;
+
+      document.getElementById('otherSqM').value = 0;
+      document.getElementById('otherDen').value = 1;
+      document.getElementById('otherNum').value = 1;
+
+      document.getElementById('s1SqM').value = 0;
+      document.getElementById('s1Den').value = 100000;
+      document.getElementById('s1Num').value = 0;
+
+      document.getElementById('s2SqM').value = 0;
+      document.getElementById('s2Den').value = 10000;
+      document.getElementById('s2Num').value = 0;
+
+      document.getElementById('s3SqM').value = 0;
+      document.getElementById('s3Den').value = 10000;
+      document.getElementById('s3Num').value = 0;
+
+      document.getElementById('s4SqM').value = 0;
+      document.getElementById('s4Den').value = 1000;
+      document.getElementById('s4Num').value = 0;
+
+      document.getElementById('s5SqM').value = 0;
+      document.getElementById('s5Den').value = 1;
+      document.getElementById('s5Num').value = 0;
+
+      document.getElementById('carSqM').value = 0;
+      document.getElementById('carDen').value = 1;
+      document.getElementById('carNum').value = 0;
+
+      const currentYear = new Date().getFullYear();
+      document.getElementById('buildYearInput').value = currentYear - 1911;
+
+      document.getElementById('locationRate').value = "0";
+      document.getElementById('decorationRate').value = "0";
+      document.getElementById('monthlyRentInput').value = 0;
+      
+      document.getElementById('equipAirCon').checked = false;
+      document.getElementById('equipFridge').checked = false;
+      document.getElementById('equipWasher').checked = false;
+      document.getElementById('equipNet').checked = false;
+      document.getElementById('equipTV').checked = false;
+      document.getElementById('equipCable').checked = false;
+
+      onCityChange();
+    }
+
+    window.onload = function() {
+      onCityChange();
+    };
+
+    // 禁用右鍵與開發者工具快捷鍵
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      const isCmdOrCtrl = e.ctrlKey || e.metaKey;
+      if (
+        e.key === 'F12' ||
+        (isCmdOrCtrl && (e.key === 's' || e.key === 'S')) ||
+        (isCmdOrCtrl && (e.key === 'u' || e.key === 'U')) ||
+        (isCmdOrCtrl && e.shiftKey && (e.key === 'I' || e.key === 'i'))
+      ) {
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
