@@ -124,10 +124,10 @@
             font-size: 8.5pt;
         }
 
-        /* 備註多行文字框 (Textarea) 樣式 - 支援無限制自動換行 */
+        /* 備註多行文字框 (Textarea) 樣式 */
         textarea.note-input {
             width: 100%;
-            min-height: 42px;
+            min-height: 38px;
             padding: 4px;
             border: 1px solid #cbd5e0;
             border-radius: 4px;
@@ -170,10 +170,9 @@
 
         /* 欄位寬度百分比分配 */
         .col-num { width: 8%; text-align: center; }
-        .col-item { width: 20%; text-align: center; font-size: 8.5pt; }
-        .col-qty { width: 16%; text-align: center; }
-        .col-photo { width: 30%; text-align: center; }
-        .col-note { width: 26%; text-align: center; }
+        .col-item { width: 24%; text-align: center; font-size: 8.5pt; }
+        .col-qty { width: 22%; text-align: center; }
+        .col-note { width: 46%; text-align: center; }
 
         .cat-header {
             background-color: #e2e8f0;
@@ -182,51 +181,6 @@
             text-align: left;
             padding: 6px 8px;
             font-size: 9pt;
-        }
-
-        /* 按鈕組排版 (拍照與上傳按鈕並列) */
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            justify-content: center;
-        }
-
-        .photo-btn-label {
-            display: inline-block;
-            background-color: #edf2f7;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
-            padding: 4px 6px;
-            cursor: pointer;
-            font-size: 7.5pt;
-            color: #4a5568;
-            transition: all 0.2s;
-        }
-
-        .photo-btn-label:hover {
-            background-color: #cbd5e0;
-            color: #1a202c;
-        }
-
-        .photo-input {
-            display: none;
-        }
-
-        .photo-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 3px;
-            justify-content: center;
-            margin-top: 4px;
-        }
-
-        .photo-preview {
-            max-width: 50px;
-            max-height: 50px;
-            border-radius: 3px;
-            border: 1px solid #cbd5e0;
-            object-fit: cover;
         }
 
         .fee-section {
@@ -387,7 +341,7 @@
             color: #718096;
         }
 
-        /* 平板與電腦螢幕尺寸還原為標準版型 */
+        /* 平板與電腦螢幕寬度調寬 */
         @media (min-width: 768px) {
             body { padding: 30px; }
             .container { padding: 40px; }
@@ -397,16 +351,13 @@
             .info-label { width: 15%; font-size: 10pt; }
             th, td { padding: 8px 10px; font-size: 10pt; }
             input[type="text"], input[type="number"], textarea.note-input { padding: 6px; font-size: 10pt; }
-            .col-item { width: 15%; font-size: 10pt; }
-            .col-qty { width: 10%; }
-            .col-photo { width: 35%; }
-            .col-note { width: 20%; }
-            .photo-btn-label { font-size: 8.5pt; padding: 5px 8px; }
+            .col-item { width: 18%; font-size: 10pt; }
+            .col-qty { width: 15%; }
+            .col-note { width: 59%; }
             .fee-section { font-size: 10pt; line-height: 2; padding: 14px; }
             .add-btn { width: auto; font-size: 9.5pt; }
             .sig-preview-box { height: 100px; }
             .sig-placeholder { font-size: 9.5pt; }
-            .photo-preview { max-width: 90px; max-height: 90px; }
         }
 
         /* 列印與匯出 PDF 專用版型 */
@@ -441,15 +392,14 @@
                 break-before: page !important;
             }
 
-            .export-pdf-btn, .add-btn, .delete-btn, .photo-btn-label, .modal-overlay {
+            .export-pdf-btn, .add-btn, .delete-btn, .modal-overlay {
                 display: none !important;
             }
             .info-label { width: 15% !important; font-size: 10pt !important; }
             th, td { padding: 6px 8px !important; font-size: 9.5pt !important; }
-            .col-item { width: 15% !important; font-size: 10pt !important; }
-            .col-qty { width: 10% !important; }
-            .col-photo { width: 35% !important; }
-            .col-note { width: 20% !important; }
+            .col-item { width: 18% !important; font-size: 10pt !important; }
+            .col-qty { width: 15% !important; }
+            .col-note { width: 59% !important; }
             input[type="text"], input[type="number"], textarea.note-input {
                 border: none !important;
                 background: transparent !important;
@@ -459,10 +409,6 @@
             .sig-preview-box {
                 border: none !important;
                 background: transparent !important;
-            }
-            .photo-preview {
-                max-width: 110px !important;
-                max-height: 110px !important;
             }
         }
     </style>
@@ -533,43 +479,8 @@
         </tbody>
     </table>
 
-    <!-- 三、屋況必要設備 -->
-    <div class="section-title">三、屋況必要設備</div>
-    <table>
-        <thead>
-            <tr>
-                <th class="col-num">編號</th>
-                <th class="col-item">項目</th>
-                <th class="col-qty">數量</th>
-                <th class="col-photo">照片</th>
-                <th class="col-note">備註</th>
-            </tr>
-        </thead>
-        <tbody id="checklist-essential">
-            <!-- 動態注入必要設備 -->
-        </tbody>
-    </table>
-
-    <!-- 四、房屋設備與屋況清單 -->
-    <div class="section-title">四、房屋設備與屋況清單</div>
-    <table>
-        <thead>
-            <tr>
-                <th class="col-num">編號</th>
-                <th class="col-item">項目</th>
-                <th class="col-qty">數量</th>
-                <th class="col-photo">照片</th>
-                <th class="col-note">備註</th>
-            </tr>
-        </thead>
-        <tbody id="checklist-main">
-            <!-- 動態注入全部類別 -->
-        </tbody>
-    </table>
-    <button type="button" class="add-btn" onclick="addCustomRow()">+ 新增自訂約定項目</button>
-
-    <!-- 五、費用與管理費結算確認 -->
-    <div class="section-title">五、費用與管理費結算確認</div>
+    <!-- 三、費用與管理費結算確認 -->
+    <div class="section-title">三、費用與管理費結算確認</div>
     <div class="fee-section">
         <strong>【大樓管理費狀況】</strong><br>
         <div class="fee-row">
@@ -605,8 +516,25 @@
         </div>
     </div>
 
-    <!-- 六、點交確認聲明與雙方簽章 -->
-    <div class="section-title section-final-page">六、點交確認聲明與雙方簽章</div>
+    <!-- 四、房屋設備與屋況清單 -->
+    <div class="section-title">四、房屋設備與屋況清單</div>
+    <table>
+        <thead>
+            <tr>
+                <th class="col-num">編號</th>
+                <th class="col-item">項目</th>
+                <th class="col-qty">數量</th>
+                <th class="col-note">備註</th>
+            </tr>
+        </thead>
+        <tbody id="checklist-main">
+            <!-- 動態注入全部類別 -->
+        </tbody>
+    </table>
+    <button type="button" class="add-btn" onclick="addCustomRow()">+ 新增自訂約定項目</button>
+
+    <!-- 五、點交確認聲明與雙方簽章 -->
+    <div class="section-title section-final-page">五、點交確認聲明與雙方簽章</div>
     <div class="clause-box">
         <strong>確認聲明：</strong>
         <p style="margin: 4px 0;">經點交雙方現場會同清點，確認上列所述之建築物屋況現狀、附屬設備數量及其運作功能均屬確實，並已拍照存證。自點交完成日起，房屋之保管與日常維護責任正式移轉。</p>
@@ -659,44 +587,12 @@
 </div>
 
 <script>
-    // 三、屋況必要設備
-    const essentialItems = [
-        {name: '門牌'}, {name: '信箱'}, {name: '一樓大門'}, {name: '馬桶'},
-        {name: '洗面盆'}, {name: '浴缸或蓮蓬頭'}, {name: '租屋處大門'}, {name: '上樓梯照'},
-        {name: '下樓梯照'}, {name: '滅火器'}, {name: '住警器'}, {name: '熱水器'}
-    ];
-
-    const essentialTbody = document.getElementById('checklist-essential');
-    essentialItems.forEach((item, index) => {
-        essentialTbody.innerHTML += `
-            <tr>
-                <td class="col-num">${index + 1}</td>
-                <td class="col-item">${item.name}</td>
-                <td class="col-qty"><input type="number" style="width:35px; text-align:center;" value="" placeholder=""></td>
-                <td class="col-photo">
-                    <div class="btn-group">
-                        <label class="photo-btn-label">
-                            📷 拍照
-                            <input type="file" accept="image/*" capture="environment" class="photo-input" onchange="previewImage(this)">
-                        </label>
-                        <label class="photo-btn-label">
-                            🖼️ 上傳相片
-                            <input type="file" accept="image/*" multiple class="photo-input" onchange="previewImage(this)">
-                        </label>
-                    </div>
-                    <div class="photo-container"></div>
-                </td>
-                <td class="col-note"><textarea class="note-input" placeholder="註記說明"></textarea></td>
-            </tr>
-        `;
-    });
-
-    // 四、房屋設備與屋況清單分類數據
+    // 房屋設備與屋況清單分類數據
     const categories = [
         {
             title: '【客廳 / 餐廳】',
             items: [
-                {name: '書櫃', unit: '個'}, {name: '沙發', unit: '組'}, {name: '茶几', unit: '個'},
+                {name: '書櫃', unit: '個'}, {name: '沙發', unit: '組'}, {name: '茶幾', unit: '個'},
                 {name: '餐桌', unit: '張'}, {name: '書桌', unit: '張'}, {name: '工作桌', unit: '張'},
                 {name: '餐桌椅', unit: '張'}, {name: '書桌椅', unit: '張'}, {name: '辦公椅', unit: '張'},
                 {name: '電視機', unit: '台'}, {name: '電視櫃', unit: '個'}, {name: '電視遙控器', unit: '支'},
@@ -739,55 +635,29 @@
     let itemCounter = 1;
 
     categories.forEach(cat => {
-        tbody.innerHTML += `<tr><td colspan="5" class="cat-header">${cat.title}</td></tr>`;
+        tbody.innerHTML += `<tr><td colspan="4" class="cat-header">${cat.title}</td></tr>`;
         cat.items.forEach(item => {
             tbody.innerHTML += `
                 <tr>
                     <td class="col-num">${itemCounter++}</td>
                     <td class="col-item">${item.name}</td>
-                    <td class="col-qty"><input type="number" style="width:35px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
-                    <td class="col-photo">
-                        <div class="btn-group">
-                            <label class="photo-btn-label">
-                                📷 拍照
-                                <input type="file" accept="image/*" capture="environment" class="photo-input" onchange="previewImage(this)">
-                            </label>
-                            <label class="photo-btn-label">
-                                🖼️ 上傳相片
-                                <input type="file" accept="image/*" multiple class="photo-input" onchange="previewImage(this)">
-                            </label>
-                        </div>
-                        <div class="photo-container"></div>
-                    </td>
+                    <td class="col-qty"><input type="number" style="width:55px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
                     <td class="col-note"><textarea class="note-input" placeholder="註記說明"></textarea></td>
                 </tr>
             `;
         });
     });
 
-    tbody.innerHTML += `<tr id="custom-header"><td colspan="5" class="cat-header">【其他約定項目】</td></tr>`;
+    tbody.innerHTML += `<tr id="custom-header"><td colspan="4" class="cat-header">【其他約定項目】</td></tr>`;
 
     function addCustomRow() {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="col-num">${itemCounter++}</td>
             <td class="col-item"><input type="text" placeholder="名稱" style="text-align:center;"></td>
-            <td class="col-qty"><input type="number" style="width:35px; text-align:center;" value="" placeholder=""></td>
-            <td class="col-photo">
-                <div class="btn-group">
-                    <label class="photo-btn-label">
-                        📷 拍照
-                        <input type="file" accept="image/*" capture="environment" class="photo-input" onchange="previewImage(this)">
-                    </label>
-                    <label class="photo-btn-label">
-                        🖼️ 上傳相片
-                        <input type="file" accept="image/*" multiple class="photo-input" onchange="previewImage(this)">
-                    </label>
-                </div>
-                <div class="photo-container"></div>
-            </td>
+            <td class="col-qty"><input type="number" style="width:55px; text-align:center;" value="" placeholder=""></td>
             <td class="col-note">
-                <textarea class="note-input" placeholder="註記說明" style="width:80%; display:inline-block;"></textarea>
+                <textarea class="note-input" placeholder="註記說明" style="width:75%; display:inline-block;"></textarea>
                 <button type="button" class="delete-btn" onclick="this.closest('tr').remove()">刪除</button>
             </td>
         `;
@@ -795,24 +665,6 @@
     }
 
     addCustomRow();
-
-    // 多照片累積上傳與預覽處理邏輯
-    function previewImage(input) {
-        const photoContainer = input.parentElement.parentElement.parentElement.querySelector('.photo-container');
-
-        if (input.files && input.files.length > 0) {
-            Array.from(input.files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'photo-preview';
-                    photoContainer.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-    }
 
     const today = new Date();
     const rocYear = today.getFullYear() - 1911;
