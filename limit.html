@@ -648,7 +648,8 @@
       const num = parseFloat(document.getElementById(numId).value) || 0;
       
       if (den === 0) return 0;
-      return sqm * (num / den);
+      // 將面積計算改為四捨五入至小數點後兩位
+      return Math.round((sqm * (num / den)) * 100) / 100;
     }
 
     function calculateRent() {
@@ -692,8 +693,8 @@
 
       // 謄本總計 (扣除車位)
       const rawTotalSqM = mainV + balV + flowerV + rainV + platV + otherV + s1V + s2V + s3V + s4V + s5V;
-      const totalSqM = Math.max(0, rawTotalSqM - carV);
-      const totalPing = totalSqM * 0.3025;
+      const totalSqM = Math.max(0, Math.round((rawTotalSqM - carV) * 100) / 100);
+      const totalPing = Math.round((totalSqM * 0.3025) * 100) / 100;
 
       document.getElementById('totalSqM').innerText = totalSqM.toFixed(2);
       document.getElementById('totalPing').innerText = totalPing.toFixed(2);
