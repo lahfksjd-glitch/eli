@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>最新社會住宅租金評定試算工具</title>
+  <title>社會住宅租金評定試算工具</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts -->
@@ -222,25 +222,25 @@
                 <tr>
                   <td rowspan="5" colspan="3" class="p-2 font-bold bg-slate-50 border-r border-slate-300">共有部分</td>
                   <td class="p-1 border-r border-slate-300"><input type="number" id="s1SqM" placeholder="0" step="0.01" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md font-bold bg-amber-50/40 text-sm"></td>
-                  <td class="p-1 border-r border-slate-300"><input type="number" id="s1Den" value="100000" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
+                  <td class="p-1 border-r border-slate-300"><input type="number" id="s1Den" value="" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
                   <td class="p-1 border-r border-slate-300"><input type="number" id="s1Num" placeholder="0" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
                   <td class="p-2 font-bold text-slate-800 border-l border-slate-300" id="s1Res">0.00</td>
                 </tr>
                 <tr>
                   <td class="p-1 border-r border-slate-300"><input type="number" id="s2SqM" placeholder="0" step="0.01" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md font-bold bg-amber-50/40 text-sm"></td>
-                  <td class="p-1 border-r border-slate-300"><input type="number" id="s2Den" value="10000" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
+                  <td class="p-1 border-r border-slate-300"><input type="number" id="s2Den" value="" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
                   <td class="p-1 border-r border-slate-300"><input type="number" id="s2Num" placeholder="0" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
                   <td class="p-2 font-bold text-slate-800 border-l border-slate-300" id="s2Res">0.00</td>
                 </tr>
                 <tr>
                   <td class="p-1 border-r border-slate-300"><input type="number" id="s3SqM" placeholder="0" step="0.01" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md font-bold bg-amber-50/40 text-sm"></td>
-                  <td class="p-1 border-r border-slate-300"><input type="number" id="s3Den" value="10000" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
+                  <td class="p-1 border-r border-slate-300"><input type="number" id="s3Den" value="" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
                   <td class="p-1 border-r border-slate-300"><input type="number" id="s3Num" placeholder="0" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
                   <td class="p-2 font-bold text-slate-800 border-l border-slate-300" id="s3Res">0.00</td>
                 </tr>
                 <tr>
                   <td class="p-1 border-r border-slate-300"><input type="number" id="s4SqM" placeholder="0" step="0.01" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md font-bold bg-amber-50/40 text-sm"></td>
-                  <td class="p-1 border-r border-slate-300"><input type="number" id="s4Den" value="1000" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
+                  <td class="p-1 border-r border-slate-300"><input type="number" id="s4Den" value="" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
                   <td class="p-1 border-r border-slate-300"><input type="number" id="s4Num" placeholder="0" oninput="calculateRent()" class="w-full text-center py-1.5 border border-slate-300 rounded-md text-sm"></td>
                   <td class="p-2 font-bold text-slate-800 border-l border-slate-300" id="s4Res">0.00</td>
                 </tr>
@@ -273,14 +273,16 @@
                   <td class="p-2 font-black bg-amber-300 text-indigo-950 border-l border-slate-300 text-base" id="totalPing">0.00</td>
                 </tr>
 
-                <!-- 建築完成年與屋齡 -->
+                <!-- 建築完成年與屋齡設定 (支援直接輸入屋齡或年份) -->
                 <tr class="bg-slate-100 font-bold text-slate-800 border-t-2 border-slate-300">
-                  <td colspan="3" class="p-2 border-r border-slate-300 text-sm">建築完成年份 (民國)</td>
+                  <td colspan="2" class="p-2 border-r border-slate-300 text-sm">建築完成年份 (民國)</td>
                   <td class="p-1 border-r border-slate-300">
-                    <input type="number" id="buildYearInput" placeholder="如: 88" oninput="calculateRent()" class="w-full text-center py-1.5 border border-indigo-400 rounded-md font-black text-indigo-900 bg-indigo-50 text-sm">
+                    <input type="number" id="buildYearInput" placeholder="如: 88" oninput="onBuildYearInput()" class="w-full text-center py-1.5 border border-indigo-400 rounded-md font-black text-indigo-900 bg-indigo-50 text-sm">
                   </td>
-                  <td colspan="2" class="p-2 border-r border-slate-300 bg-slate-200 text-slate-700 text-sm">換算屋齡</td>
-                  <td class="p-2 font-black bg-indigo-100 text-indigo-950 border-l border-slate-300 text-base" id="calculatedAge">0 年</td>
+                  <td colspan="2" class="p-2 border-r border-slate-300 bg-slate-200 text-slate-700 text-sm">直接輸入屋齡 (年)</td>
+                  <td colspan="2" class="p-1 border-l border-slate-300 bg-indigo-50/50">
+                    <input type="number" id="directAgeInput" placeholder="如: 25" oninput="onDirectAgeInput()" class="w-full text-center py-1.5 border border-indigo-400 rounded-md font-black text-indigo-900 bg-white text-sm">
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -648,8 +650,39 @@
       const num = parseFloat(document.getElementById(numId).value) || 0;
       
       if (den === 0) return 0;
-      // 將面積計算改為四捨五入至小數點後兩位
       return Math.round((sqm * (num / den)) * 100) / 100;
+    }
+
+    // 當輸入建築完成年時，自動計算屋齡
+    function onBuildYearInput() {
+      const currentMinguoYear = new Date().getFullYear() - 1911;
+      const buildYearInput = document.getElementById('buildYearInput');
+      const directAgeInput = document.getElementById('directAgeInput');
+      const val = parseFloat(buildYearInput.value);
+
+      if (!isNaN(val) && val > 0) {
+        const age = Math.max(0, currentMinguoYear - val);
+        directAgeInput.value = age;
+      } else {
+        directAgeInput.value = '';
+      }
+      calculateRent();
+    }
+
+    // 當直接輸入屋齡時，自動回推建築完成年
+    function onDirectAgeInput() {
+      const currentMinguoYear = new Date().getFullYear() - 1911;
+      const buildYearInput = document.getElementById('buildYearInput');
+      const directAgeInput = document.getElementById('directAgeInput');
+      const age = parseFloat(directAgeInput.value);
+
+      if (!isNaN(age) && age >= 0) {
+        const buildYear = currentMinguoYear - age;
+        buildYearInput.value = buildYear;
+      } else {
+        buildYearInput.value = '';
+      }
+      calculateRent();
     }
 
     function calculateRent() {
@@ -700,19 +733,12 @@
       document.getElementById('totalPing').innerText = totalPing.toFixed(2);
       document.getElementById('calcPing').innerText = totalPing.toFixed(2) + " 坪";
 
-      // 2. 屋齡計算 (以民國計算)
-      const currentMinguoYear = new Date().getFullYear() - 1911;
-      const buildYearInput = document.getElementById('buildYearInput');
-      let buildYearMinguo = parseFloat(buildYearInput.value);
-      let calculatedAge = 0;
-
-      if (!isNaN(buildYearMinguo) && buildYearMinguo > 0) {
-        calculatedAge = Math.max(0, currentMinguoYear - buildYearMinguo);
-      } else {
+      // 2. 讀取直接輸入的屋齡
+      const directAgeInput = document.getElementById('directAgeInput');
+      let calculatedAge = parseFloat(directAgeInput.value);
+      if (isNaN(calculatedAge) || calculatedAge < 0) {
         calculatedAge = 0;
       }
-      
-      document.getElementById('calculatedAge').innerText = calculatedAge + " 年";
 
       // 自動對應屋齡選單級距
       const ageSelect = document.getElementById('ageSelect');
@@ -809,7 +835,7 @@
         'mainSqM', 'balSqM', 'flowerSqM', 'rainSqM', 'platSqM', 'otherSqM',
         's1SqM', 's2SqM', 's3SqM', 's4SqM', 's5SqM', 'carSqM',
         's1Num', 's2Num', 's3Num', 's4Num', 's5Num', 'carNum',
-        'convPing', 'convSqM', 'buildYearInput', 'monthlyRentInput'
+        'convPing', 'convSqM', 'buildYearInput', 'directAgeInput', 'monthlyRentInput'
       ];
       resetIds.forEach(id => {
         const el = document.getElementById(id);
@@ -832,7 +858,7 @@
       document.getElementById('s1Den').value = 100000;
       document.getElementById('s2Den').value = 10000;
       document.getElementById('s3Den').value = 10000;
-      document.getElementById('s4Den').value = 1000;
+      document.getElementById('s4Den').value = 10000;
       document.getElementById('s5Den').value = 1;
       document.getElementById('carDen').value = 1;
 
