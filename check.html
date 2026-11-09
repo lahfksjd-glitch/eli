@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>屋況設備點交單</title>
-    <!-- 引入 html2pdf.js 解決 iPad / 行動裝置列印跑版問題 -->
+    <!-- 引入 html2pdf.js 解決行動裝置列印跑版問題 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -13,6 +13,10 @@
             --bg-light: #f7fafc;
             --border-color: #cbd5e0;
             --text-color: #2d3748;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
@@ -25,14 +29,13 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             background-color: #ffffff;
-            padding: 20px;
+            padding: 24px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border-radius: 8px;
             position: relative;
-            box-sizing: border-box;
         }
 
         /* 匯出 PDF 按鈕樣式 */
@@ -65,11 +68,11 @@
             text-align: center;
             border-bottom: 3px solid var(--primary-color);
             padding-bottom: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .doc-title {
-            font-size: 20pt;
+            font-size: 18pt;
             font-weight: bold;
             color: var(--primary-color);
             margin: 0;
@@ -77,29 +80,30 @@
         }
 
         .section-title {
-            font-size: 11pt;
+            font-size: 10.5pt;
             font-weight: bold;
             color: #ffffff;
             background-color: var(--primary-color);
-            padding: 8px 12px;
-            margin-top: 18px;
-            margin-bottom: 10px;
+            padding: 6px 10px;
+            margin-top: 14px;
+            margin-bottom: 8px;
             border-radius: 4px;
+            break-after: avoid;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             table-layout: fixed;
             word-break: break-all;
         }
 
         th, td {
             border: 1px solid var(--border-color);
-            padding: 6px 4px;
+            padding: 5px 4px;
             vertical-align: middle;
-            font-size: 9.5pt;
+            font-size: 9pt;
         }
 
         th {
@@ -114,26 +118,27 @@
             font-weight: bold;
             width: 18%;
             color: var(--text-color);
-            font-size: 9.5pt;
+            font-size: 9pt;
         }
 
         input[type="text"], input[type="number"] {
             width: 100%;
-            padding: 5px;
+            padding: 4px;
             border: 1px solid #cbd5e0;
             border-radius: 4px;
             box-sizing: border-box;
-            font-size: 9.5pt;
+            font-size: 9pt;
+            font-family: inherit;
         }
 
         textarea.note-input {
             width: 100%;
-            min-height: 38px;
-            padding: 5px;
+            min-height: 32px;
+            padding: 4px;
             border: 1px solid #cbd5e0;
             border-radius: 4px;
             box-sizing: border-box;
-            font-size: 9.5pt;
+            font-size: 9pt;
             font-family: inherit;
             resize: vertical;
             white-space: pre-wrap;
@@ -148,8 +153,8 @@
         }
 
         input[type="radio"], input[type="checkbox"] {
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
             cursor: pointer;
             vertical-align: middle;
         }
@@ -157,37 +162,39 @@
         .inline-input {
             display: inline-block;
             width: auto;
-            margin: 0 3px;
+            margin: 0 2px;
         }
 
         .radio-label {
-            margin-right: 10px;
+            margin-right: 8px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            font-size: 9.5pt;
+            gap: 3px;
+            font-size: 9pt;
         }
 
-        .col-num { width: 8%; text-align: center; }
-        .col-item { width: 22%; text-align: center; font-size: 9.5pt; }
-        .col-qty { width: 22%; text-align: center; }
-        .col-note { width: 48%; text-align: center; }
+        /* 欄寬比例調校 */
+        .col-num { width: 7%; text-align: center; }
+        .col-item { width: 21%; text-align: center; font-size: 9pt; }
+        .col-qty { width: 17%; text-align: center; }
+        .col-photo { width: 17%; text-align: center; }
+        .col-note { width: 38%; text-align: center; }
 
         .cat-header {
             background-color: #e2e8f0;
             font-weight: bold;
             color: var(--secondary-color);
             text-align: left;
-            padding: 6px 10px;
-            font-size: 10pt;
+            padding: 5px 8px;
+            font-size: 9.5pt;
         }
 
         .fee-section {
             border: 1px solid var(--border-color);
-            padding: 12px;
-            line-height: 2;
-            font-size: 9.5pt;
+            padding: 10px;
+            line-height: 1.9;
+            font-size: 9pt;
             border-radius: 4px;
             word-wrap: break-word;
         }
@@ -196,19 +203,19 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 4px;
-            margin-bottom: 6px;
+            gap: 3px;
+            margin-bottom: 4px;
         }
 
         .clause-box {
             border: 1px solid var(--border-color);
             background-color: var(--bg-light);
-            padding: 12px;
-            font-size: 9.5pt;
-            line-height: 1.6;
+            padding: 10px;
+            font-size: 8.5pt;
+            line-height: 1.5;
             color: #4a5568;
-            margin-top: 12px;
-            margin-bottom: 12px;
+            margin-top: 10px;
+            margin-bottom: 10px;
             text-align: justify;
             border-radius: 4px;
         }
@@ -217,12 +224,12 @@
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 9.5pt;
-            margin-top: 6px;
-            margin-bottom: 15px;
+            font-size: 9pt;
+            margin-top: 4px;
+            margin-bottom: 12px;
             width: 100%;
         }
 
@@ -230,11 +237,42 @@
             background-color: #e53e3e;
             color: white;
             border: none;
-            padding: 3px 6px;
+            padding: 2px 5px;
             border-radius: 3px;
             cursor: pointer;
-            font-size: 8pt;
+            font-size: 7.5pt;
             margin-top: 2px;
+        }
+
+        /* 照片上傳樣式 */
+        .photo-upload-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .photo-preview {
+            max-width: 65px;
+            max-height: 50px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            display: none;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .upload-label-btn {
+            display: inline-block;
+            background-color: #edf2f7;
+            border: 1px solid #cbd5e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 8pt;
+            cursor: pointer;
+            color: var(--secondary-color);
+            font-weight: bold;
         }
 
         .modal-overlay {
@@ -249,7 +287,6 @@
             align-items: center;
             z-index: 1000;
             padding: 10px;
-            box-sizing: border-box;
         }
 
         .modal-box {
@@ -307,17 +344,17 @@
         .sig-preview-box {
             border: 1px dashed #cbd5e0;
             border-radius: 4px;
-            height: 90px;
+            height: 85px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #fafafa;
-            margin-top: 6px;
+            margin-top: 4px;
             cursor: pointer;
         }
 
         .sig-preview-box img {
-            max-height: 80px;
+            max-height: 75px;
             max-width: 100%;
         }
 
@@ -326,50 +363,97 @@
             font-size: 9pt;
         }
 
-        .date-display {
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
         .copyright-footer {
             text-align: center;
-            margin-top: 25px;
-            padding-top: 12px;
+            margin-top: 18px;
+            padding-top: 10px;
             border-top: 1px solid var(--border-color);
             font-size: 8pt;
             color: #718096;
         }
 
-        @media (min-width: 768px) {
-            body { padding: 30px; }
-            .container { padding: 40px; }
-            .add-btn { width: auto; }
-            .sig-preview-box { height: 100px; }
+        /* 底部劃線輸入欄位 */
+        input.underline-input {
+            border: none;
+            border-bottom: 1.5px solid var(--primary-color);
+            border-radius: 0;
+            background: transparent;
+            padding: 1px 3px;
         }
 
-        /* 匯出 PDF 狀態下的乾淨樣式（自動去除邊框與無用按鈕） */
+        /* ========== A4 列印與 PDF 匯出規則設定 ========== */
+        @page {
+            size: A4 portrait;
+            margin: 10mm 12mm 10mm 12mm;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+            .export-pdf-btn,
+            .add-btn,
+            .delete-btn,
+            .modal-overlay,
+            .upload-label-btn {
+                display: none !important;
+            }
+            tr, .fee-section, .clause-box {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            input[type="text"],
+            input[type="number"]:not(.underline-input),
+            textarea.note-input {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                resize: none !important;
+            }
+            input.underline-input {
+                border-bottom: 1.5px solid var(--primary-color) !important;
+            }
+        }
+
+        /* html2pdf 渲染時套用 */
+        .rendering-pdf {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
         .rendering-pdf .export-pdf-btn,
         .rendering-pdf .add-btn,
         .rendering-pdf .delete-btn,
-        .rendering-pdf .modal-overlay {
+        .rendering-pdf .modal-overlay,
+        .rendering-pdf .upload-label-btn {
             display: none !important;
         }
-.rendering-pdf input[type="text"],
-.rendering-pdf input[type="number"]:not(.underline-input), /* 排除有底線的輸入框 */
-.rendering-pdf textarea.note-input {
-    border: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    resize: none !important;
-}
-
-/* 確保匯出 PDF 時，底線輸入框保留底部線條 */
-.rendering-pdf input.underline-input {
-    border: none !important;
-    border-bottom: 1.5px solid var(--primary-color) !important;
-    background: transparent !important;
-    border-radius: 0 !important;
-}
+        .rendering-pdf tr,
+        .rendering-pdf .fee-section,
+        .rendering-pdf .clause-box {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        .rendering-pdf input[type="text"],
+        .rendering-pdf input[type="number"]:not(.underline-input),
+        .rendering-pdf textarea.note-input {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            resize: none !important;
+        }
+        .rendering-pdf input.underline-input {
+            border-bottom: 1.5px solid var(--primary-color) !important;
+        }
     </style>
 </head>
 <body>
@@ -389,19 +473,21 @@
         <tr>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">點交類型</td>
             <td style="width: 32%;">
-                <label class="radio-label"><input type="radio" name="handover_type" value="遷入點交"> 遷入點交</label>
+                <label class="radio-label"><input type="radio" name="handover_type" value="遷入點交" checked> 遷入點交</label>
                 <label class="radio-label"><input type="radio" name="handover_type" value="遷出點退"> 遷出點退</label>
             </td>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">點交日期</td>
             <td style="width: 32%;">
-                <span class="date-display current-date-str"></span>
+                民國
+                <input type="number" id="handover-year" class="inline-input underline-input" style="width: 46px; text-align:center;"> 年
+                <input type="number" id="handover-month" class="inline-input underline-input" style="width: 36px; text-align:center;"> 月
+                <input type="number" id="handover-day" class="inline-input underline-input" style="width: 36px; text-align:center;"> 日
             </td>
         </tr>
         <tr>
-    <td class="info-label" style="text-align: justify; text-align-last: justify;">物件地址</td>
-    <!-- 加上 id="address-input" -->
-    <td colspan="3"><input type="text" id="address-input" placeholder=""></td>
-</tr>
+            <td class="info-label" style="text-align: justify; text-align-last: justify;">物件地址</td>
+            <td colspan="3"><input type="text" id="address-input" placeholder=""></td>
+        </tr>
         <tr>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">出租人</td>
             <td><input type="text" placeholder=""></td>
@@ -422,19 +508,19 @@
         </thead>
         <tbody>
             <tr>
-                <td style="font-weight: bold; text-align: center;">電錶 </td>
+                <td style="font-weight: bold; text-align: center;">電錶</td>
                 <td><input type="text" placeholder=""></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 150px; text-align:center;"> 度</td>
+                <td><input type="number" step="0.1" class="inline-input" style="width: 130px; text-align:center;"> 度</td>
             </tr>
             <tr>
                 <td style="font-weight: bold; text-align: center;">水錶</td>
                 <td><input type="text" placeholder=""></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 150px; text-align:center;"> 度</td>
+                <td><input type="number" step="0.1" class="inline-input" style="width: 130px; text-align:center;"> 度</td>
             </tr>
             <tr>
                 <td style="font-weight: bold; text-align: center;">瓦斯錶</td>
                 <td><input type="text" placeholder=""></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 150px; text-align:center;"> 度</td>
+                <td><input type="number" step="0.1" class="inline-input" style="width: 130px; text-align:center;"> 度</td>
             </tr>
         </tbody>
     </table>
@@ -445,34 +531,34 @@
         <strong>【大樓管理費狀況】</strong><br>
         <div class="fee-row">
             <label class="radio-label">
-                <input type="radio" name="mgmt_type" value="遷入確認"> <strong>遷入確認：</strong>前手已繳至民國
+                <input type="radio" name="mgmt_type" value="遷入確認" checked> <strong>遷入確認：</strong>前手已繳至民國
             </label>
-    <input type="number" class="inline-input underline-input" style="width: 50px; text-align:center;"> 年
-<input type="number" class="inline-input underline-input" style="width: 40px; text-align:center;"> 月
-<input type="number" class="inline-input underline-input" style="width: 40px; text-align:center;"> 日。
-   </div>
+            <input type="number" class="inline-input underline-input" style="width: 46px; text-align:center;"> 年
+            <input type="number" class="inline-input underline-input" style="width: 36px; text-align:center;"> 月
+            <input type="number" class="inline-input underline-input" style="width: 36px; text-align:center;"> 日。
+        </div>
         <div class="fee-row">
             <label class="radio-label">
                 <input type="radio" name="mgmt_type" value="遷出結算"> <strong>遷出結算：</strong>本手已繳至民國
             </label>
-<input type="number" class="inline-input underline-input" style="width: 50px; text-align:center;"> 年
-<input type="number" class="inline-input underline-input" style="width: 40px; text-align:center;"> 月
-<input type="number" class="inline-input underline-input" style="width: 40px; text-align:center;"> 日。
-       </div>
+            <input type="number" class="inline-input underline-input" style="width: 46px; text-align:center;"> 年
+            <input type="number" class="inline-input underline-input" style="width: 36px; text-align:center;"> 月
+            <input type="number" class="inline-input underline-input" style="width: 36px; text-align:center;"> 日。
+        </div>
         <div class="fee-row">
-            每月管理費：NT$ <input type="number" class="inline-input underline-input" style="width: 80px; text-align:center;" placeholder=""> 元，後續由 
+            每月管理費：NT$ <input type="number" class="inline-input underline-input" style="width: 75px; text-align:center;" placeholder=""> 元，後續由 
             <label class="radio-label"><input type="radio" name="mgmt_payer" value="承租人"> 承租人</label>
             <label class="radio-label"><input type="radio" name="mgmt_payer" value="出租人"> 出租人</label> 負擔。
         </div>
-        <strong style="margin-top: 6px; display: inline-block;">【水電瓦斯遺留費用】</strong><br>
+        <strong style="margin-top: 4px; display: inline-block;">【水電瓦斯遺留費用】</strong><br>
         <div class="fee-row">
-            <label class="radio-label"><input type="radio" name="utility_type" value="遷入切結"> <strong>遷入時：</strong>已由前手結清 / 切結負責。</label>
+            <label class="radio-label"><input type="radio" name="utility_type" value="遷入切結" checked> <strong>遷入時：</strong>已由前手結清 / 切結負責。</label>
         </div>
         <div class="fee-row">
             <label class="radio-label">
                 <input type="radio" name="utility_type" value="遷出扣押"> <strong>遷出時：</strong>預扣押金結算 NT$
             </label>
-            <input type="number" class="inline-input underline-input" style="width: 80px; text-align:center;" placeholder=""> 元（多退少補）。
+            <input type="number" class="inline-input underline-input" style="width: 75px; text-align:center;" placeholder=""> 元（多退少補）。
         </div>
     </div>
 
@@ -484,6 +570,7 @@
                 <th class="col-num">編號</th>
                 <th class="col-item">項目</th>
                 <th class="col-qty">數量</th>
+                <th class="col-photo">照片存證</th>
                 <th class="col-note">備註</th>
             </tr>
         </thead>
@@ -496,36 +583,43 @@
     <!-- 五、點交確認聲明與雙方簽章 -->
     <div class="section-title">五、點交確認聲明與雙方簽章</div>
     <div class="clause-box">
-        <div style="font-size: 10pt; font-weight: bold;"   <strong>確認聲明：</strong></div> 
-        <p style="margin: 6px 0; text-indent: 2em;">經點交雙方現場會同清點，確認上列所述之建築物屋況現狀、附屬設備數量及其運作功能均屬確實，並已拍照存證。自點交完成日起，房屋之保管與日常維護責任正式移轉。</p>
-        <p style="margin: 4px 0; text-indent: 2em">若屬「遷入點交」，承租人如於點交後三日內發現隱蔽性非人為損壞之硬體，應立即拍照並通知代管專員處理，逾期視為以現狀良好點交；
-	<p style="margin: 4px 0; text-indent: 2em">若屬「遷出點退」，雙方確認房屋已依約復原無誤後，得依約辦理返還押金手續。</p>
-        <p style="margin: 6px 0; text-indent: 2em">承租人知悉並同意，本清單所列之修繕或瑕疵項目，不必然符合政府社會住宅修繕費補助之申請條件；所有修繕補助之核准與否，均須依主管機關之審查規定為主。</p>
+        <div style="font-weight: bold; margin-bottom: 2px;">確認聲明：</div> 
+        <p style="margin: 4px 0; text-indent: 2em;">經點交雙方現場會同清點，確認上列所述之建築物屋況現狀、附屬設備數量及其運作功能均屬確實，並已拍照存證。自點交完成日起，房屋之保管與日常維護責任正式移轉。</p>
+        <p style="margin: 4px 0; text-indent: 2em;">若屬「遷入點交」，承租人如於點交後三日內發現隱蔽性非人為損壞之硬體，應立即拍照並通知代管專員處理，逾期視為以現狀良好點交；</p>
+        <p style="margin: 4px 0; text-indent: 2em;">若屬「遷出點退」，雙方確認房屋已依約復原無誤後，得依約辦理返還押金手續。</p>
+        <p style="margin: 4px 0; text-indent: 2em;">承租人知悉並同意，本清單所列之修繕或瑕疵項目，不必然符合政府社會住宅修繕費補助之申請條件；所有修繕補助之核准與否，均須依主管機關之審查規定為主。</p>
+		<p style="margin: 4px 0; text-indent: 2em;">若屬自然老化之損壞則由房東負擔修繕責任，經第三方師傅評估判斷爲承租方使用不當或破壞導致的修繕，應由承租人負擔修繕責任。</p>
     </div>
 
     <table>
         <tr>
             <td style="width: 50%; padding: 8px; vertical-align: top;">
-               <div style="font-size: 11pt; font-weight: bold;"  </div> <strong>出租人 (或代理人) 簽名：</strong>
+                <div style="font-size: 10pt; font-weight: bold;">出租人 (或代理人) 簽名：</div>
                 <div class="sig-preview-box" onclick="openSigModal('landlord')">
-                    <span id="sig-placeholder-landlord" class="sig-placeholder" style="font-size: 13pt; font-weight: bold;">✍️ 點擊開啟簽名視窗</span>
+                    <span id="sig-placeholder-landlord" class="sig-placeholder" style="font-size: 11pt; font-weight: bold;">✍️ 點擊開啟簽名視窗</span>
                     <img id="sig-img-landlord" style="display:none;">
                 </div>
-                <div style="margin-top: 6px; font-size: 10pt;">日期：<span class="date-display current-date-str"></span></div>
             </td>
             <td style="width: 50%; padding: 8px; vertical-align: top;">
-               <div style="font-size: 11pt; font-weight: bold;"  </div>   <strong>承租人 (或代理人) 簽名：</strong>
+                <div style="font-size: 10pt; font-weight: bold;">承租人 (或代理人) 簽名：</div>
                 <div class="sig-preview-box" onclick="openSigModal('tenant')">
-                    <span id="sig-placeholder-tenant" class="sig-placeholder" style="font-size: 13pt; font-weight: bold;">✍️ 點擊開啟簽名視窗</span>
+                    <span id="sig-placeholder-tenant" class="sig-placeholder" style="font-size: 11pt; font-weight: bold;">✍️ 點擊開啟簽名視窗</span>
                     <img id="sig-img-tenant" style="display:none;">
                 </div>
-                <div style="margin-top: 6px; font-size: 10pt;">日期：<span class="date-display current-date-str"></span></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding: 10px; text-align: center; background-color: var(--bg-light); font-size: 9.5pt;">
+                <strong>點交確認日期：</strong>民國 
+                <input type="number" id="sign-year" class="inline-input underline-input" style="width: 48px; text-align:center;"> 年 
+                <input type="number" id="sign-month" class="inline-input underline-input" style="width: 38px; text-align:center;"> 月 
+                <input type="number" id="sign-day" class="inline-input underline-input" style="width: 38px; text-align:center;"> 日
             </td>
         </tr>
     </table>
 
     <div class="copyright-footer">
-         © 新智 (Eli) 2026 制作 此表作爲租賃雙方屋況設備點交及點退使用。
+         此表由新智（Eli）制作，作爲租賃雙方屋況設備點交及點退使用。
     </div>
 </div>
 
@@ -595,28 +689,43 @@
     const tbody = document.getElementById('checklist-main');
     let itemCounter = 1;
 
+    // 產生每一列的照片欄位 HTML
+    function getPhotoCellHtml(id) {
+        return `
+            <div class="photo-upload-box">
+                <input type="file" id="photo_file_${id}" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoUpload(this, 'photo_img_${id}')">
+                <label for="photo_file_${id}" class="upload-label-btn">📷 照片</label>
+                <img id="photo_img_${id}" class="photo-preview" onclick="document.getElementById('photo_file_${id}').click()" title="點擊更換照片">
+            </div>
+        `;
+    }
+
     categories.forEach(cat => {
-        tbody.innerHTML += `<tr><td colspan="4" class="cat-header">${cat.title}</td></tr>`;
+        tbody.innerHTML += `<tr><td colspan="5" class="cat-header">${cat.title}</td></tr>`;
         cat.items.forEach(item => {
+            const rowId = itemCounter;
             tbody.innerHTML += `
                 <tr>
                     <td class="col-num">${itemCounter++}</td>
                     <td class="col-item">${item.name}</td>
-                    <td class="col-qty"><input type="number" style="width:60px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
+                    <td class="col-qty"><input type="number" style="width:48px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
+                    <td class="col-photo">${getPhotoCellHtml(rowId)}</td>
                     <td class="col-note"><textarea class="note-input" placeholder=""></textarea></td>
                 </tr>
             `;
         });
     });
 
-    tbody.innerHTML += `<tr id="custom-header"><td colspan="4" class="cat-header">【其他項目】</td></tr>`;
+    tbody.innerHTML += `<tr id="custom-header"><td colspan="5" class="cat-header">【其他項目】</td></tr>`;
 
     function addCustomRow() {
+        const rowId = itemCounter;
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="col-num">${itemCounter++}</td>
             <td class="col-item"><input type="text" placeholder="" style="text-align:center;"></td>
-            <td class="col-qty"><input type="number" style="width:70px; text-align:center;" value="" placeholder=""></td>
+            <td class="col-qty"><input type="number" style="width:55px; text-align:center;" value="" placeholder=""></td>
+            <td class="col-photo">${getPhotoCellHtml(rowId)}</td>
             <td class="col-note">
                 <textarea class="note-input" placeholder="" style="width:100%; display:inline-block;"></textarea>
                 <button type="button" class="delete-btn" onclick="this.closest('tr').remove()">刪除</button>
@@ -627,13 +736,34 @@
 
     addCustomRow();
 
-    const today = new Date();
-    const rocYear = today.getFullYear() - 1911;
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const dateStr = `民國 ${rocYear} 年 ${month} 月 ${day} 日`;
+    // 處理照片選取與即時縮圖預覽
+    function handlePhotoUpload(input, imgId) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById(imgId);
+                img.src = e.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 
-    document.querySelectorAll('.current-date-str').forEach(el => el.textContent = dateStr);
+    // 預設日期初始化（民國年月日）
+    const today = new Date();
+    const curRocYear = today.getFullYear() - 1911;
+    const curMonth = today.getMonth() + 1;
+    const curDay = today.getDate();
+
+    // 初始化頂部點交日期
+    document.getElementById('handover-year').value = curRocYear;
+    document.getElementById('handover-month').value = curMonth;
+    document.getElementById('handover-day').value = curDay;
+
+    // 初始化底部簽章確認日期
+    document.getElementById('sign-year').value = curRocYear;
+    document.getElementById('sign-month').value = curMonth;
+    document.getElementById('sign-day').value = curDay;
 
     let currentRole = '';
     const modal = document.getElementById('sigModal');
@@ -712,21 +842,17 @@
         closeSigModal();
     }
 
-  // 使用 html2pdf 自動抓取地址作為檔名
+    // 匯出 PDF 功能（符合 A4 邊界）
     function exportToPDF() {
         const element = document.getElementById('document-content');
-        
-        // 抓取輸入的物件地址，並清除前後空白
         const address = document.getElementById('address-input').value.trim();
-        
-        // 如果有填寫地址，檔名為「地址_屋況設備點交單.pdf」；沒填則預設為「屋況設備點交單.pdf」
         const pdfFileName = address ? `${address}_屋況設備點交單.pdf` : `屋況設備點交單.pdf`;
 
         element.classList.add('rendering-pdf');
 
         const opt = {
             margin:       [10, 10, 10, 10], // 上右下左邊距 (mm)
-            filename:     pdfFileName,      // 動態套用帶有地址的檔名
+            filename:     pdfFileName,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true, logging: false },
             pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] },
@@ -737,7 +863,7 @@
             element.classList.remove('rendering-pdf');
         }).catch(err => {
             element.classList.remove('rendering-pdf');
-            window.print(); // 若瀏覽器限制則自動降級為原生列印
+            window.print();
         });
     }
 </script>
