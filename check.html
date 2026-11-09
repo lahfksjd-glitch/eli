@@ -13,6 +13,8 @@
             --bg-light: #f7fafc;
             --border-color: #cbd5e0;
             --text-color: #2d3748;
+            --warning-bg: #fffaf0;
+            --warning-border: #dd6b20;
         }
 
         * {
@@ -29,7 +31,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 920px;
             margin: 0 auto;
             background-color: #ffffff;
             padding: 24px;
@@ -38,30 +40,60 @@
             position: relative;
         }
 
-        /* 匯出 PDF 按鈕樣式 */
-        .export-pdf-btn {
+        /* 頂部操作按鈕列 */
+        .top-action-bar {
             position: absolute;
             top: 20px;
             right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .export-pdf-btn {
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 7px 14px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 9.5pt;
+            font-size: 9pt;
             font-weight: bold;
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
             transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 4px;
-            z-index: 10;
         }
 
         .export-pdf-btn:hover {
             background-color: #1c4ed8;
             transform: translateY(-1px);
+        }
+
+        .reset-storage-btn {
+            background-color: #edf2f7;
+            color: #718096;
+            border: 1px solid #cbd5e0;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 8.5pt;
+            transition: all 0.2s;
+        }
+
+        .reset-storage-btn:hover {
+            background-color: #e2e8f0;
+            color: #e53e3e;
+        }
+
+        .save-indicator {
+            font-size: 8pt;
+            color: #38a169;
+            font-weight: bold;
+            display: none;
+            transition: opacity 0.3s;
         }
 
         .header {
@@ -79,16 +111,45 @@
             letter-spacing: 1px;
         }
 
-        .section-title {
-            font-size: 10.5pt;
-            font-weight: bold;
-            color: #ffffff;
+        .section-header-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background-color: var(--primary-color);
             padding: 6px 10px;
             margin-top: 14px;
             margin-bottom: 8px;
             border-radius: 4px;
             break-after: avoid;
+        }
+
+        .section-title {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .quick-btn-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-quick-fill {
+            background-color: #ffffff;
+            color: var(--primary-color);
+            border: none;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 8pt;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-quick-fill:hover {
+            background-color: #ebf8ff;
+            color: var(--secondary-color);
         }
 
         table {
@@ -121,7 +182,7 @@
             font-size: 9pt;
         }
 
-        input[type="text"], input[type="number"] {
+        input[type="text"], input[type="number"], select.status-select {
             width: 100%;
             padding: 4px;
             border: 1px solid #cbd5e0;
@@ -129,6 +190,29 @@
             box-sizing: border-box;
             font-size: 9pt;
             font-family: inherit;
+        }
+
+        select.status-select {
+            background-color: #fff;
+            text-align-last: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        select.status-select:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+
+        .status-alert {
+            background-color: var(--warning-bg) !important;
+            border-color: var(--warning-border) !important;
+            color: #c05621 !important;
+            font-weight: bold;
+        }
+
+        tr.row-alert {
+            background-color: #fffdfa;
         }
 
         textarea.note-input {
@@ -174,11 +258,10 @@
             font-size: 9pt;
         }
 
-        /* 欄寬比例調校 */
-        .col-num { width: 7%; text-align: center; }
-        .col-item { width: 21%; text-align: center; font-size: 9pt; }
+        .col-num { width: 6.5%; text-align: center; }
+        .col-item { width: 20%; text-align: center; font-size: 9pt; }
         .col-qty { width: 17%; text-align: center; }
-        .col-photo { width: 17%; text-align: center; }
+        .col-status { width: 18.5%; text-align: center; }
         .col-note { width: 38%; text-align: center; }
 
         .cat-header {
@@ -244,35 +327,51 @@
             margin-top: 2px;
         }
 
-        /* 照片上傳樣式 */
-        .photo-upload-box {
+        /* 簽名板樣式 */
+        .sig-container {
+            position: relative;
+        }
+
+        .sig-preview-box {
+            border: 1px dashed #cbd5e0;
+            border-radius: 4px;
+            height: 90px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 3px;
+            background: #fafafa;
+            margin-top: 4px;
+            cursor: pointer;
+            position: relative;
         }
 
-        .photo-preview {
-            max-width: 65px;
-            max-height: 50px;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
+        .sig-preview-box img {
+            max-height: 80px;
+            max-width: 95%;
+        }
+
+        .sig-placeholder {
+            color: #a0aec0;
+            font-size: 9.5pt;
+        }
+
+        .sig-clear-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(229, 62, 62, 0.85);
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            font-size: 7.5pt;
+            padding: 2px 6px;
+            cursor: pointer;
             display: none;
-            object-fit: cover;
-            cursor: pointer;
+            z-index: 5;
         }
 
-        .upload-label-btn {
-            display: inline-block;
-            background-color: #edf2f7;
-            border: 1px solid #cbd5e0;
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-size: 8pt;
-            cursor: pointer;
-            color: var(--secondary-color);
-            font-weight: bold;
+        .sig-clear-btn:hover {
+            background: #c53030;
         }
 
         .modal-overlay {
@@ -292,7 +391,7 @@
         .modal-box {
             background: #ffffff;
             width: 100%;
-            max-width: 500px;
+            max-width: 540px;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.25);
@@ -317,7 +416,7 @@
 
         canvas.modal-sig-pad {
             width: 100%;
-            height: 200px;
+            height: 220px;
             display: block;
             touch-action: none;
             cursor: crosshair;
@@ -341,28 +440,6 @@
         .btn-save { background-color: #2b6cb0; color: white; }
         .btn-cancel { background-color: #e2e8f0; color: #4a5568; }
 
-        .sig-preview-box {
-            border: 1px dashed #cbd5e0;
-            border-radius: 4px;
-            height: 85px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fafafa;
-            margin-top: 4px;
-            cursor: pointer;
-        }
-
-        .sig-preview-box img {
-            max-height: 75px;
-            max-width: 100%;
-        }
-
-        .sig-placeholder {
-            color: #a0aec0;
-            font-size: 9pt;
-        }
-
         .copyright-footer {
             text-align: center;
             margin-top: 18px;
@@ -372,7 +449,6 @@
             color: #718096;
         }
 
-        /* 底部劃線輸入欄位 */
         input.underline-input {
             border: none;
             border-bottom: 1.5px solid var(--primary-color);
@@ -381,7 +457,107 @@
             padding: 1px 3px;
         }
 
-        /* ========== A4 列印與 PDF 匯出規則設定 ========== */
+        .sign-protect-block {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        /* ========== 第六區：獨立存證照片附冊樣式 ========== */
+        .photo-gallery-section {
+            page-break-before: always !important;
+            break-before: page !important;
+            margin-top: 25px;
+            padding-top: 10px;
+        }
+
+        .gallery-action-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .photo-card {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px;
+            background: #fafafa;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .photo-card-img-wrap {
+            width: 100%;
+            height: 180px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: #edf2f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: #2d3748;
+        }
+
+        .photo-card-select {
+            width: 100%;
+            padding: 4px;
+            font-size: 8.5pt;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            background: #fff;
+            font-family: inherit;
+        }
+
+        .photo-card-note {
+            width: 100%;
+            min-height: 38px;
+            padding: 4px;
+            font-size: 8.5pt;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .photo-card-delete-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(229, 62, 62, 0.9);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            font-size: 9pt;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .photo-card-delete-btn:hover {
+            background: #c53030;
+        }
+
+        /* ========== A4 列印與 PDF 匯出規則 ========== */
         @page {
             size: A4 portrait;
             margin: 10mm 12mm 10mm 12mm;
@@ -399,178 +575,247 @@
                 box-shadow: none !important;
                 border-radius: 0 !important;
             }
-            .export-pdf-btn,
+            .top-action-bar,
             .add-btn,
             .delete-btn,
-            .modal-overlay,
-            .upload-label-btn {
+            .quick-btn-group,
+            .sig-clear-btn,
+            .gallery-action-bar,
+            .photo-card-delete-btn,
+            .modal-overlay {
                 display: none !important;
             }
-            tr, .fee-section, .clause-box {
-                page-break-inside: avoid;
-                break-inside: avoid;
+            tr, .fee-section, .clause-box, .sign-protect-block, .photo-card {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .photo-gallery-section {
+                page-break-before: always !important;
+                break-before: page !important;
+            }
+            /* 原生列印下若無照片卡片則自動隱藏第六區 */
+            .photo-gallery-section:not(:has(.photo-card)) {
+                display: none !important;
             }
             input[type="text"],
             input[type="number"]:not(.underline-input),
-            textarea.note-input {
+            textarea.note-input,
+            .photo-card-note {
                 border: none !important;
                 background: transparent !important;
                 padding: 0 !important;
                 resize: none !important;
             }
+            select.status-select,
+            .photo-card-select {
+                border: none !important;
+                background: transparent !important;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+            select.status-select {
+                text-align-last: center;
+            }
             input.underline-input {
                 border-bottom: 1.5px solid var(--primary-color) !important;
             }
+            .photo-card-img-wrap {
+                height: 200px !important;
+            }
         }
 
-        /* html2pdf 渲染時套用 */
         .rendering-pdf {
             width: 100% !important;
             max-width: 100% !important;
             padding: 0 !important;
             box-shadow: none !important;
         }
-        .rendering-pdf .export-pdf-btn,
+        .rendering-pdf .top-action-bar,
         .rendering-pdf .add-btn,
         .rendering-pdf .delete-btn,
-        .rendering-pdf .modal-overlay,
-        .rendering-pdf .upload-label-btn {
+        .rendering-pdf .quick-btn-group,
+        .rendering-pdf .sig-clear-btn,
+        .rendering-pdf .gallery-action-bar,
+        .rendering-pdf .photo-card-delete-btn,
+        .rendering-pdf .modal-overlay {
             display: none !important;
         }
         .rendering-pdf tr,
         .rendering-pdf .fee-section,
-        .rendering-pdf .clause-box {
-            page-break-inside: avoid;
-            break-inside: avoid;
+        .rendering-pdf .clause-box,
+        .rendering-pdf .sign-protect-block,
+        .rendering-pdf .photo-card {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        .rendering-pdf .photo-gallery-section {
+            page-break-before: always !important;
+            break-before: page !important;
         }
         .rendering-pdf input[type="text"],
         .rendering-pdf input[type="number"]:not(.underline-input),
-        .rendering-pdf textarea.note-input {
+        .rendering-pdf textarea.note-input,
+        .rendering-pdf .photo-card-note {
             border: none !important;
             background: transparent !important;
             padding: 0 !important;
             resize: none !important;
         }
+        .rendering-pdf select.status-select,
+        .rendering-pdf .photo-card-select {
+            border: none !important;
+            background: transparent !important;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .rendering-pdf select.status-select {
+            text-align-last: center;
+        }
         .rendering-pdf input.underline-input {
             border-bottom: 1.5px solid var(--primary-color) !important;
+        }
+        .rendering-pdf .photo-card-img-wrap {
+            height: 200px !important;
         }
     </style>
 </head>
 <body>
 
 <div class="container" id="document-content">
-    <button type="button" class="export-pdf-btn" onclick="exportToPDF()">
-        📥 匯出 PDF
-    </button>
+    <div class="top-action-bar">
+        <span class="save-indicator" id="saveIndicator">✓ 已暫存</span>
+        <button type="button" class="reset-storage-btn" onclick="clearSavedData()" title="清空所有欄位與暫存">清空重填</button>
+        <button type="button" class="export-pdf-btn" onclick="exportToPDF()">
+            📥 匯出 PDF
+        </button>
+    </div>
 
     <div class="header">
         <div class="doc-title">屋況設備點交單</div>
     </div>
 
     <!-- 一、基本資料與點交類別 -->
-    <div class="section-title">一、基本資料與點交類別</div>
+    <div class="section-header-wrap">
+        <div class="section-title">一、基本資料與點交類別</div>
+    </div>
     <table>
         <tr>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">點交類型</td>
             <td style="width: 32%;">
-                <label class="radio-label"><input type="radio" name="handover_type" value="遷入點交" checked> 遷入點交</label>
-                <label class="radio-label"><input type="radio" name="handover_type" value="遷出點退"> 遷出點退</label>
+                <label class="radio-label"><input type="radio" name="handover_type" value="遷入點交" checked onchange="autoSave()"> 遷入點交</label>
+                <label class="radio-label"><input type="radio" name="handover_type" value="遷出點退" onchange="autoSave()"> 遷出點退</label>
             </td>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">點交日期</td>
             <td style="width: 32%;">
                 民國
-                <input type="number" id="handover-year" class="inline-input underline-input" style="width: 46px; text-align:center;"> 年
-                <input type="number" id="handover-month" class="inline-input underline-input" style="width: 36px; text-align:center;"> 月
-                <input type="number" id="handover-day" class="inline-input underline-input" style="width: 36px; text-align:center;"> 日
+                <input type="number" id="handover-year" class="inline-input underline-input" inputmode="numeric" style="width: 46px; text-align:center;" oninput="autoSave()"> 年
+                <input type="number" id="handover-month" class="inline-input underline-input" inputmode="numeric" style="width: 36px; text-align:center;" oninput="autoSave()"> 月
+                <input type="number" id="handover-day" class="inline-input underline-input" inputmode="numeric" style="width: 36px; text-align:center;" oninput="autoSave()"> 日
             </td>
         </tr>
         <tr>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">物件地址</td>
-            <td colspan="3"><input type="text" id="address-input" placeholder=""></td>
+            <td colspan="3"><input type="text" id="address-input" placeholder="" oninput="autoSave()"></td>
         </tr>
         <tr>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">出租人</td>
-            <td><input type="text" placeholder=""></td>
+            <td><input type="text" id="landlord-name" placeholder="" oninput="autoSave()"></td>
             <td class="info-label" style="text-align: justify; text-align-last: justify;">承租人</td>
-            <td><input type="text" placeholder=""></td>
+            <td><input type="text" id="tenant-name" placeholder="" oninput="autoSave()"></td>
         </tr>
     </table>
 
     <!-- 二、水電瓦斯度數確認 -->
-    <div class="section-title">二、水電瓦斯度數確認</div>
+    <div class="section-header-wrap">
+        <div class="section-title">二、水電瓦斯度數確認</div>
+    </div>
     <table>
         <thead>
             <tr>
-                <th style="width: 25%;">項目</th>
-                <th style="width: 45%;">錶號 / 代碼</th>
-                <th style="width: 30%;">當日度數</th>
+                <th style="width: 18%;">項目</th>
+                <th style="width: 32%;">錶號 / 代碼</th>
+                <th style="width: 26%;">當日度數</th>
+                <th style="width: 24%;">備註 / 錶位說明</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td style="font-weight: bold; text-align: center;">電錶</td>
-                <td><input type="text" placeholder=""></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 130px; text-align:center;"> 度</td>
+                <td><input type="text" id="meter-elec-id" placeholder="" oninput="autoSave()"></td>
+                <td><input type="number" step="0.1" inputmode="decimal" id="meter-elec-val" class="inline-input" style="width: 100px; text-align:center;" oninput="autoSave()"> 度</td>
+                <td><input type="text" id="meter-elec-note" placeholder="" oninput="autoSave()"></td>
             </tr>
             <tr>
                 <td style="font-weight: bold; text-align: center;">水錶</td>
-                <td><input type="text" placeholder=""></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 130px; text-align:center;"> 度</td>
+                <td><input type="text" id="meter-water-id" placeholder="" oninput="autoSave()"></td>
+                <td><input type="number" step="0.1" inputmode="decimal" id="meter-water-val" class="inline-input" style="width: 100px; text-align:center;" oninput="autoSave()"> 度</td>
+                <td><input type="text" id="meter-water-note" placeholder="" oninput="autoSave()"></td>
             </tr>
             <tr>
                 <td style="font-weight: bold; text-align: center;">瓦斯錶</td>
-                <td><input type="text" placeholder=""></td>
-                <td><input type="number" step="0.1" class="inline-input" style="width: 130px; text-align:center;"> 度</td>
+                <td><input type="text" id="meter-gas-id" placeholder="" oninput="autoSave()"></td>
+                <td><input type="number" step="0.1" inputmode="decimal" id="meter-gas-val" class="inline-input" style="width: 100px; text-align:center;" oninput="autoSave()"> 度</td>
+                <td><input type="text" id="meter-gas-note" placeholder="" oninput="autoSave()"></td>
             </tr>
         </tbody>
     </table>
 
     <!-- 三、費用與管理費結算確認 -->
-    <div class="section-title">三、各式費用與管理費結算確認</div>
+    <div class="section-header-wrap">
+        <div class="section-title">三、各式費用與管理費結算確認</div>
+    </div>
     <div class="fee-section">
         <strong>【大樓管理費狀況】</strong><br>
         <div class="fee-row">
             <label class="radio-label">
-                <input type="radio" name="mgmt_type" value="遷入確認" checked> <strong>遷入確認：</strong>前手已繳至民國
+                <input type="radio" name="mgmt_type" value="遷入確認" checked onchange="autoSave()"> <strong>遷入確認：</strong>前手已繳至民國
             </label>
-            <input type="number" class="inline-input underline-input" style="width: 46px; text-align:center;"> 年
-            <input type="number" class="inline-input underline-input" style="width: 36px; text-align:center;"> 月
-            <input type="number" class="inline-input underline-input" style="width: 36px; text-align:center;"> 日。
+            <input type="number" id="mgmt-in-year" class="inline-input underline-input" inputmode="numeric" style="width: 46px; text-align:center;" oninput="autoSave()"> 年
+            <input type="number" id="mgmt-in-month" class="inline-input underline-input" inputmode="numeric" style="width: 36px; text-align:center;" oninput="autoSave()"> 月
+            <input type="number" id="mgmt-in-day" class="inline-input underline-input" inputmode="numeric" style="width: 36px; text-align:center;" oninput="autoSave()"> 日。
         </div>
         <div class="fee-row">
             <label class="radio-label">
-                <input type="radio" name="mgmt_type" value="遷出結算"> <strong>遷出結算：</strong>本手已繳至民國
+                <input type="radio" name="mgmt_type" value="遷出結算" onchange="autoSave()"> <strong>遷出結算：</strong>本手已繳至民國
             </label>
-            <input type="number" class="inline-input underline-input" style="width: 46px; text-align:center;"> 年
-            <input type="number" class="inline-input underline-input" style="width: 36px; text-align:center;"> 月
-            <input type="number" class="inline-input underline-input" style="width: 36px; text-align:center;"> 日。
+            <input type="number" id="mgmt-out-year" class="inline-input underline-input" inputmode="numeric" style="width: 46px; text-align:center;" oninput="autoSave()"> 年
+            <input type="number" id="mgmt-out-month" class="inline-input underline-input" inputmode="numeric" style="width: 36px; text-align:center;" oninput="autoSave()"> 月
+            <input type="number" id="mgmt-out-day" class="inline-input underline-input" inputmode="numeric" style="width: 36px; text-align:center;" oninput="autoSave()"> 日。
         </div>
         <div class="fee-row">
-            每月管理費：NT$ <input type="number" class="inline-input underline-input" style="width: 75px; text-align:center;" placeholder=""> 元，後續由 
-            <label class="radio-label"><input type="radio" name="mgmt_payer" value="承租人"> 承租人</label>
-            <label class="radio-label"><input type="radio" name="mgmt_payer" value="出租人"> 出租人</label> 負擔。
+            每月管理費：NT$ <input type="number" id="mgmt-fee" class="inline-input underline-input" inputmode="numeric" style="width: 75px; text-align:center;" placeholder="" oninput="autoSave()"> 元，後續由 
+            <label class="radio-label"><input type="radio" name="mgmt_payer" value="承租人" onchange="autoSave()"> 承租人</label>
+            <label class="radio-label"><input type="radio" name="mgmt_payer" value="出租人" onchange="autoSave()"> 出租人</label> 負擔。
         </div>
         <strong style="margin-top: 4px; display: inline-block;">【水電瓦斯遺留費用】</strong><br>
         <div class="fee-row">
-            <label class="radio-label"><input type="radio" name="utility_type" value="遷入切結" checked> <strong>遷入時：</strong>已由前手結清 / 切結負責。</label>
+            <label class="radio-label"><input type="radio" name="utility_type" value="遷入切結" checked onchange="autoSave()"> <strong>遷入時：</strong>已由前手結清 / 切結負責。</label>
         </div>
         <div class="fee-row">
             <label class="radio-label">
-                <input type="radio" name="utility_type" value="遷出扣押"> <strong>遷出時：</strong>預扣押金結算 NT$
+                <input type="radio" name="utility_type" value="遷出扣押" onchange="autoSave()"> <strong>遷出時：</strong>預扣押金結算 NT$
             </label>
-            <input type="number" class="inline-input underline-input" style="width: 75px; text-align:center;" placeholder=""> 元（多退少補）。
+            <input type="number" id="utility-deduct-val" class="inline-input underline-input" inputmode="numeric" style="width: 75px; text-align:center;" placeholder="" oninput="autoSave()"> 元（多退少補）。
         </div>
     </div>
 
     <!-- 四、房屋設備與屋況清單 -->
-    <div class="section-title">四、房屋設備與屋況清單</div>
+    <div class="section-header-wrap">
+        <div class="section-title">四、房屋設備與屋況清單</div>
+        <div class="quick-btn-group">
+            <button type="button" class="btn-quick-fill" onclick="setAllQtyToOne()">⚡ 預設數量填 1</button>
+            <button type="button" class="btn-quick-fill" onclick="setAllStatusToGood()">⚡ 一鍵全設為優良</button>
+        </div>
+    </div>
     <table>
         <thead>
             <tr>
                 <th class="col-num">編號</th>
                 <th class="col-item">項目</th>
                 <th class="col-qty">數量</th>
-                <th class="col-photo">照片存證</th>
+                <th class="col-status">設備狀態</th>
                 <th class="col-note">備註</th>
             </tr>
         </thead>
@@ -580,43 +825,73 @@
     </table>
     <button type="button" class="add-btn" onclick="addCustomRow()">+ 新增自訂約定項目</button>
 
-    <!-- 五、點交確認聲明與雙方簽章 -->
-    <div class="section-title">五、點交確認聲明與雙方簽章</div>
-    <div class="clause-box">
-        <div style="font-weight: bold; margin-bottom: 2px;">確認聲明：</div> 
-        <p style="margin: 4px 0; text-indent: 2em;">經點交雙方現場會同清點，確認上列所述之建築物屋況現狀、附屬設備數量及其運作功能均屬確實，並已拍照存證。自點交完成日起，房屋之保管與日常維護責任正式移轉。</p>
-        <p style="margin: 4px 0; text-indent: 2em;">若屬「遷入點交」，承租人如於點交後三日內發現隱蔽性非人為損壞之硬體，應立即拍照並通知代管專員處理，逾期視為以現狀良好點交；</p>
-        <p style="margin: 4px 0; text-indent: 2em;">若屬「遷出點退」，雙方確認房屋已依約復原無誤後，得依約辦理返還押金手續。</p>
-        <p style="margin: 4px 0; text-indent: 2em;">承租人知悉並同意，本清單所列之修繕或瑕疵項目，不必然符合政府社會住宅修繕費補助之申請條件；所有修繕補助之核准與否，均須依主管機關之審查規定為主。</p>
-		<p style="margin: 4px 0; text-indent: 2em;">若屬自然老化之損壞則由房東負擔修繕責任，經第三方師傅評估判斷爲承租方使用不當或破壞導致的修繕，應由承租人負擔修繕責任。</p>
+    <!-- 五、點交確認聲明與雙方簽章（防跨頁切斷） -->
+    <div class="sign-protect-block">
+        <div class="section-header-wrap">
+            <div class="section-title">五、點交確認聲明與雙方簽章</div>
+        </div>
+        <div class="clause-box">
+            <div style="font-weight: bold; margin-bottom: 2px;">確認聲明：</div> 
+            <p style="margin: 4px 0; text-indent: 2em;">經點交雙方現場會同清點，確認上列所述之建築物屋況現狀、附屬設備數量及其運作功能均屬確實，並已拍照存證。自點交完成日起，房屋之保管與日常維護責任正式移轉。</p>
+            <p style="margin: 4px 0; text-indent: 2em;">若屬「遷入點交」，承租人如於點交後三日內發現隱蔽性非人為損壞之硬體，應立即拍照並通知代管專員處理，逾期視為以現狀良好點交；</p>
+            <p style="margin: 4px 0; text-indent: 2em;">若屬「遷出點退」，雙方確認房屋已依約復原無誤後，得依約辦理返還押金手續。</p>
+            <p style="margin: 4px 0; text-indent: 2em;">承租人知悉並同意，本清單所列之修繕或瑕疵項目，不必然符合政府社會住宅修繕費補助之申請條件；所有修繕補助之核准與否，均須依主管機關之審查規定為主。</p>
+            <p style="margin: 4px 0; text-indent: 2em;">若屬自然老化之損壞則由房東負擔修繕責任，經第三方師傅評估判斷爲承租方使用不當或破壞導致的修繕，應由承租人負擔修繕責任。</p>
+        </div>
+
+        <table>
+            <tr>
+                <td style="width: 50%; padding: 8px; vertical-align: top;">
+                    <div style="font-size: 10pt; font-weight: bold;">出租人 (或代理人) 簽名：</div>
+                    <div class="sig-container">
+                        <button type="button" class="sig-clear-btn" id="sig-clear-landlord" onclick="removeSignature('landlord', event)">✕ 重簽</button>
+                        <div class="sig-preview-box" onclick="openSigModal('landlord')">
+                            <span id="sig-placeholder-landlord" class="sig-placeholder" style="font-size: 11pt; font-weight: bold;">✍️ 點擊開啟簽名視窗</span>
+                            <img id="sig-img-landlord" style="display:none;">
+                        </div>
+                    </div>
+                </td>
+                <td style="width: 50%; padding: 8px; vertical-align: top;">
+                    <div style="font-size: 10pt; font-weight: bold;">承租人 (或代理人) 簽名：</div>
+                    <div class="sig-container">
+                        <button type="button" class="sig-clear-btn" id="sig-clear-tenant" onclick="removeSignature('tenant', event)">✕ 重簽</button>
+                        <div class="sig-preview-box" onclick="openSigModal('tenant')">
+                            <span id="sig-placeholder-tenant" class="sig-placeholder" style="font-size: 11pt; font-weight: bold;">✍️ 點擊開啟簽名視窗</span>
+                            <img id="sig-img-tenant" style="display:none;">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding: 10px; text-align: center; background-color: var(--bg-light); font-size: 9.5pt;">
+                    <strong>點交確認日期：</strong>民國 
+                    <input type="number" id="sign-year" class="inline-input underline-input" inputmode="numeric" style="width: 48px; text-align:center;" oninput="autoSave()"> 年 
+                    <input type="number" id="sign-month" class="inline-input underline-input" inputmode="numeric" style="width: 38px; text-align:center;" oninput="autoSave()"> 月 
+                    <input type="number" id="sign-day" class="inline-input underline-input" inputmode="numeric" style="width: 38px; text-align:center;" oninput="autoSave()"> 日
+                </td>
+            </tr>
+        </table>
     </div>
 
-    <table>
-        <tr>
-            <td style="width: 50%; padding: 8px; vertical-align: top;">
-                <div style="font-size: 10pt; font-weight: bold;">出租人 (或代理人) 簽名：</div>
-                <div class="sig-preview-box" onclick="openSigModal('landlord')">
-                    <span id="sig-placeholder-landlord" class="sig-placeholder" style="font-size: 11pt; font-weight: bold;">✍️ 點擊開啟簽名視窗</span>
-                    <img id="sig-img-landlord" style="display:none;">
-                </div>
-            </td>
-            <td style="width: 50%; padding: 8px; vertical-align: top;">
-                <div style="font-size: 10pt; font-weight: bold;">承租人 (或代理人) 簽名：</div>
-                <div class="sig-preview-box" onclick="openSigModal('tenant')">
-                    <span id="sig-placeholder-tenant" class="sig-placeholder" style="font-size: 11pt; font-weight: bold;">✍️ 點擊開啟簽名視窗</span>
-                    <img id="sig-img-tenant" style="display:none;">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" style="padding: 10px; text-align: center; background-color: var(--bg-light); font-size: 9.5pt;">
-                <strong>點交確認日期：</strong>民國 
-                <input type="number" id="sign-year" class="inline-input underline-input" style="width: 48px; text-align:center;"> 年 
-                <input type="number" id="sign-month" class="inline-input underline-input" style="width: 38px; text-align:center;"> 月 
-                <input type="number" id="sign-day" class="inline-input underline-input" style="width: 38px; text-align:center;"> 日
-            </td>
-        </tr>
-    </table>
+    <!-- 六、現場屋況與設備存證照片附冊（強制另起全新 A4 頁面，無照片時匯出自動隱藏） -->
+    <div class="photo-gallery-section" id="photoGallerySection">
+        <div class="section-header-wrap">
+            <div class="section-title">六、現場屋況與設備存證照片附冊</div>
+            <span style="color:#ffffff; font-size:8pt;">附件存證文件</span>
+        </div>
+
+        <div class="gallery-action-bar">
+            <input type="file" id="batch-photo-input" accept="image/*" multiple capture="environment" style="display:none;" onchange="handleBatchPhotoUpload(this)">
+            <button type="button" class="btn-quick-fill" style="background-color:var(--secondary-color); color:#fff; padding:6px 14px; font-size:9pt;" onclick="document.getElementById('batch-photo-input').click()">
+                📷 新增 / 批次上傳現場存證照片
+            </button>
+            <span style="font-size:8pt; color:#718096; align-self:center;">（支援手機拍照或相簿多選，單張卡片清晰排版）</span>
+        </div>
+
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- 照片卡片動態插入 -->
+        </div>
+    </div>
 
     <div class="copyright-footer">
          此表由新智（Eli）制作，作爲租賃雙方屋況設備點交及點退使用。
@@ -642,7 +917,6 @@
 </div>
 
 <script>
-    // 房屋設備與屋況清單分類數據
     const categories = [
         {
             title: '【客廳 / 餐廳】',
@@ -686,31 +960,54 @@
         }
     ];
 
+    // 收集所有項目供照片附冊下拉選單使用
+    const allItemOptions = ['【水電瓦斯】電錶度數', '【水電瓦斯】水錶度數', '【水電瓦斯】瓦斯錶度數'];
+    categories.forEach(c => {
+        c.items.forEach(i => allItemOptions.push(`${c.title.replace(/[【】]/g, '')} - ${i.name}`));
+    });
+    allItemOptions.push('【其他】室內整體屋況', '【其他】牆面 / 地面 / 天花板', '【其他】自訂瑕疵註記');
+
     const tbody = document.getElementById('checklist-main');
     let itemCounter = 1;
 
-    // 產生每一列的照片欄位 HTML
-    function getPhotoCellHtml(id) {
+    function getStatusSelectHtml(rowId) {
         return `
-            <div class="photo-upload-box">
-                <input type="file" id="photo_file_${id}" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoUpload(this, 'photo_img_${id}')">
-                <label for="photo_file_${id}" class="upload-label-btn">📷 照片</label>
-                <img id="photo_img_${id}" class="photo-preview" onclick="document.getElementById('photo_file_${id}').click()" title="點擊更換照片">
-            </div>
+            <select class="status-select" id="status_${rowId}" onchange="handleStatusChange(this, '${rowId}')">
+                <option value="優良" selected>優良</option>
+                <option value="破損或瑕疵">破損或瑕疵</option>
+                <option value="待修繕">待修繕</option>
+            </select>
         `;
     }
 
+    function handleStatusChange(sel, rowId) {
+        const row = sel.closest('tr');
+        const note = row.querySelector('.note-input');
+        if (sel.value !== '優良') {
+            sel.classList.add('status-alert');
+            row.classList.add('row-alert');
+            if (note && note.value.trim() === '') {
+                note.focus();
+            }
+        } else {
+            sel.classList.remove('status-alert');
+            row.classList.remove('row-alert');
+        }
+        autoSave();
+    }
+
+    // 渲染設備預設清單
     categories.forEach(cat => {
         tbody.innerHTML += `<tr><td colspan="5" class="cat-header">${cat.title}</td></tr>`;
         cat.items.forEach(item => {
-            const rowId = itemCounter;
+            const currentId = `item_${itemCounter}`;
             tbody.innerHTML += `
-                <tr>
+                <tr id="tr_${currentId}">
                     <td class="col-num">${itemCounter++}</td>
                     <td class="col-item">${item.name}</td>
-                    <td class="col-qty"><input type="number" style="width:48px; text-align:center;" value="" placeholder=""> ${item.unit}</td>
-                    <td class="col-photo">${getPhotoCellHtml(rowId)}</td>
-                    <td class="col-note"><textarea class="note-input" placeholder=""></textarea></td>
+                    <td class="col-qty"><input type="number" inputmode="numeric" class="qty-input" style="width:48px; text-align:center;" value="" oninput="autoSave()"> ${item.unit}</td>
+                    <td class="col-status">${getStatusSelectHtml(currentId)}</td>
+                    <td class="col-note"><textarea class="note-input" placeholder="" oninput="autoSave()"></textarea></td>
                 </tr>
             `;
         });
@@ -718,58 +1015,114 @@
 
     tbody.innerHTML += `<tr id="custom-header"><td colspan="5" class="cat-header">【其他項目】</td></tr>`;
 
-    function addCustomRow() {
-        const rowId = itemCounter;
+    function addCustomRow(data = null) {
+        const currentId = `custom_${Date.now()}_${Math.floor(Math.random()*1000)}`;
         const tr = document.createElement('tr');
+        tr.id = `tr_${currentId}`;
+        tr.className = 'custom-row';
         tr.innerHTML = `
             <td class="col-num">${itemCounter++}</td>
-            <td class="col-item"><input type="text" placeholder="" style="text-align:center;"></td>
-            <td class="col-qty"><input type="number" style="width:55px; text-align:center;" value="" placeholder=""></td>
-            <td class="col-photo">${getPhotoCellHtml(rowId)}</td>
+            <td class="col-item"><input type="text" class="custom-name" placeholder="" style="text-align:center;" value="${data ? data.name : ''}" oninput="autoSave()"></td>
+            <td class="col-qty"><input type="number" inputmode="numeric" class="qty-input" style="width:55px; text-align:center;" value="${data ? data.qty : ''}" oninput="autoSave()"></td>
+            <td class="col-status">${getStatusSelectHtml(currentId)}</td>
             <td class="col-note">
-                <textarea class="note-input" placeholder="" style="width:100%; display:inline-block;"></textarea>
-                <button type="button" class="delete-btn" onclick="this.closest('tr').remove()">刪除</button>
+                <textarea class="note-input" placeholder="" style="width:100%; display:inline-block;" oninput="autoSave()">${data ? data.note : ''}</textarea>
+                <button type="button" class="delete-btn" onclick="this.closest('tr').remove(); autoSave();">刪除</button>
             </td>
         `;
         tbody.appendChild(tr);
-    }
 
-    addCustomRow();
-
-    // 處理照片選取與即時縮圖預覽
-    function handlePhotoUpload(input, imgId) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.getElementById(imgId);
-                img.src = e.target.result;
-                img.style.display = 'block';
-            };
-            reader.readAsDataURL(input.files[0]);
+        if (data && data.status) {
+            const sel = tr.querySelector('.status-select');
+            sel.value = data.status;
+            handleStatusChange(sel, currentId);
         }
     }
 
-    // 預設日期初始化（民國年月日）
+    function setAllStatusToGood() {
+        const selects = document.querySelectorAll('.status-select');
+        selects.forEach(sel => {
+            sel.value = '優良';
+            sel.classList.remove('status-alert');
+            sel.closest('tr').classList.remove('row-alert');
+        });
+        autoSave();
+    }
+
+    function setAllQtyToOne() {
+        const qtyInputs = document.querySelectorAll('.qty-input');
+        qtyInputs.forEach(input => {
+            if (!input.value) {
+                input.value = '1';
+            }
+        });
+        autoSave();
+    }
+
+    // ========== 第六區：現場存證照片處理 ==========
+    const galleryGrid = document.getElementById('galleryGrid');
+
+    function getTargetOptionsHtml(selectedTarget = '') {
+        return allItemOptions.map(opt => `<option value="${opt}" ${opt === selectedTarget ? 'selected' : ''}>${opt}</option>`).join('');
+    }
+
+    function addPhotoCard(imgSrc, target = '', note = '') {
+        const cardId = `pcard_${Date.now()}_${Math.floor(Math.random()*1000)}`;
+        const card = document.createElement('div');
+        card.className = 'photo-card';
+        card.id = cardId;
+        card.innerHTML = `
+            <button type="button" class="photo-card-delete-btn" onclick="this.closest('.photo-card').remove(); autoSave();" title="刪除照片">✕</button>
+            <div class="photo-card-img-wrap">
+                <img src="${imgSrc}" alt="存證照片">
+            </div>
+            <div>
+                <select class="photo-card-select" onchange="autoSave()">
+                    ${getTargetOptionsHtml(target)}
+                </select>
+            </div>
+            <div>
+                <textarea class="photo-card-note" placeholder="備註說明（例如：邊角微刮傷 / 運作正常存證）" oninput="autoSave()">${note}</textarea>
+            </div>
+        `;
+        galleryGrid.appendChild(card);
+    }
+
+    function handleBatchPhotoUpload(input) {
+        if (!input.files || input.files.length === 0) return;
+        Array.from(input.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                addPhotoCard(e.target.result);
+                autoSave();
+            };
+            reader.readAsDataURL(file);
+        });
+        input.value = '';
+    }
+
+    // ========== 日期與手寫簽名 ==========
     const today = new Date();
     const curRocYear = today.getFullYear() - 1911;
     const curMonth = today.getMonth() + 1;
     const curDay = today.getDate();
 
-    // 初始化頂部點交日期
-    document.getElementById('handover-year').value = curRocYear;
-    document.getElementById('handover-month').value = curMonth;
-    document.getElementById('handover-day').value = curDay;
+    function initDefaultDates() {
+        document.getElementById('handover-year').value = curRocYear;
+        document.getElementById('handover-month').value = curMonth;
+        document.getElementById('handover-day').value = curDay;
 
-    // 初始化底部簽章確認日期
-    document.getElementById('sign-year').value = curRocYear;
-    document.getElementById('sign-month').value = curMonth;
-    document.getElementById('sign-day').value = curDay;
+        document.getElementById('sign-year').value = curRocYear;
+        document.getElementById('sign-month').value = curMonth;
+        document.getElementById('sign-day').value = curDay;
+    }
 
     let currentRole = '';
     const modal = document.getElementById('sigModal');
     const modalCanvas = document.getElementById('modalCanvas');
     const ctx = modalCanvas.getContext('2d');
     let isDrawing = false;
+    let dpr = 1;
 
     function openSigModal(role) {
         currentRole = role;
@@ -777,22 +1130,22 @@
         modal.style.display = 'flex';
         
         setTimeout(() => {
-            modalCanvas.width = modalCanvas.offsetWidth;
-            modalCanvas.height = modalCanvas.offsetHeight;
+            dpr = window.devicePixelRatio || 1;
+            const rect = modalCanvas.getBoundingClientRect();
+            modalCanvas.width = rect.width * dpr;
+            modalCanvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            
             ctx.lineWidth = 2.5;
             ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
             ctx.strokeStyle = '#1a365d';
             clearModalCanvas();
         }, 100);
     }
 
-    function closeSigModal() {
-        modal.style.display = 'none';
-    }
-
-    function clearModalCanvas() {
-        ctx.clearRect(0, 0, modalCanvas.width, modalCanvas.height);
-    }
+    function closeSigModal() { modal.style.display = 'none'; }
+    function clearModalCanvas() { ctx.clearRect(0, 0, modalCanvas.width, modalCanvas.height); }
 
     function getPos(e) {
         const rect = modalCanvas.getBoundingClientRect();
@@ -834,24 +1187,245 @@
         const dataUrl = modalCanvas.toDataURL();
         const placeholder = document.getElementById(`sig-placeholder-${currentRole}`);
         const img = document.getElementById(`sig-img-${currentRole}`);
+        const clearBtn = document.getElementById(`sig-clear-${currentRole}`);
         
         img.src = dataUrl;
         img.style.display = 'block';
         placeholder.style.display = 'none';
+        clearBtn.style.display = 'block';
         
         closeSigModal();
+        autoSave();
     }
 
-    // 匯出 PDF 功能（符合 A4 邊界）
+    function removeSignature(role, event) {
+        if (event) event.stopPropagation();
+        const placeholder = document.getElementById(`sig-placeholder-${role}`);
+        const img = document.getElementById(`sig-img-${role}`);
+        const clearBtn = document.getElementById(`sig-clear-${role}`);
+        
+        img.src = '';
+        img.style.display = 'none';
+        placeholder.style.display = 'block';
+        clearBtn.style.display = 'none';
+        autoSave();
+    }
+
+    // ========== LocalStorage 本地背景自動儲存與還原 ==========
+    const STORAGE_KEY = 'HOUSING_HANDOVER_FORM_DRAFT';
+
+    function autoSave() {
+        const data = {
+            handoverType: document.querySelector('input[name="handover_type"]:checked')?.value || '遷入點交',
+            hYear: document.getElementById('handover-year').value,
+            hMonth: document.getElementById('handover-month').value,
+            hDay: document.getElementById('handover-day').value,
+            address: document.getElementById('address-input').value,
+            landlord: document.getElementById('landlord-name').value,
+            tenant: document.getElementById('tenant-name').value,
+
+            mElecId: document.getElementById('meter-elec-id').value,
+            mElecVal: document.getElementById('meter-elec-val').value,
+            mElecNote: document.getElementById('meter-elec-note').value,
+            mWaterId: document.getElementById('meter-water-id').value,
+            mWaterVal: document.getElementById('meter-water-val').value,
+            mWaterNote: document.getElementById('meter-water-note').value,
+            mGasId: document.getElementById('meter-gas-id').value,
+            mGasVal: document.getElementById('meter-gas-val').value,
+            mGasNote: document.getElementById('meter-gas-note').value,
+
+            mgmtType: document.querySelector('input[name="mgmt_type"]:checked')?.value || '',
+            mgmtInY: document.getElementById('mgmt-in-year').value,
+            mgmtInM: document.getElementById('mgmt-in-month').value,
+            mgmtInD: document.getElementById('mgmt-in-day').value,
+            mgmtOutY: document.getElementById('mgmt-out-year').value,
+            mgmtOutM: document.getElementById('mgmt-out-month').value,
+            mgmtOutD: document.getElementById('mgmt-out-day').value,
+            mgmtFee: document.getElementById('mgmt-fee').value,
+            mgmtPayer: document.querySelector('input[name="mgmt_payer"]:checked')?.value || '',
+
+            utilityType: document.querySelector('input[name="utility_type"]:checked')?.value || '',
+            utilityDeductVal: document.getElementById('utility-deduct-val').value,
+
+            signY: document.getElementById('sign-year').value,
+            signM: document.getElementById('sign-month').value,
+            signD: document.getElementById('sign-day').value,
+
+            items: [],
+            customRows: [],
+            photos: [],
+            sigLandlord: document.getElementById('sig-img-landlord').src,
+            sigTenant: document.getElementById('sig-img-tenant').src
+        };
+
+        document.querySelectorAll('#checklist-main tr[id^="tr_item_"]').forEach(tr => {
+            data.items.push({
+                id: tr.id,
+                qty: tr.querySelector('.qty-input').value,
+                status: tr.querySelector('.status-select').value,
+                note: tr.querySelector('.note-input').value
+            });
+        });
+
+        document.querySelectorAll('#checklist-main tr.custom-row').forEach(tr => {
+            data.customRows.push({
+                name: tr.querySelector('.custom-name').value,
+                qty: tr.querySelector('.qty-input').value,
+                status: tr.querySelector('.status-select').value,
+                note: tr.querySelector('.note-input').value
+            });
+        });
+
+        document.querySelectorAll('#galleryGrid .photo-card').forEach(card => {
+            const img = card.querySelector('img');
+            const sel = card.querySelector('.photo-card-select');
+            const note = card.querySelector('.photo-card-note');
+            if (img && img.src) {
+                data.photos.push({
+                    src: img.src,
+                    target: sel ? sel.value : '',
+                    note: note ? note.value : ''
+                });
+            }
+        });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+        const indicator = document.getElementById('saveIndicator');
+        indicator.style.display = 'inline';
+        clearTimeout(indicator.timer);
+        indicator.timer = setTimeout(() => { indicator.style.display = 'none'; }, 1500);
+    }
+
+    function restoreFromStorage() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+            initDefaultDates();
+            return;
+        }
+
+        try {
+            const data = JSON.parse(raw);
+            if (data.handoverType) {
+                const el = document.querySelector(`input[name="handover_type"][value="${data.handoverType}"]`);
+                if (el) el.checked = true;
+            }
+            document.getElementById('handover-year').value = data.hYear || curRocYear;
+            document.getElementById('handover-month').value = data.hMonth || curMonth;
+            document.getElementById('handover-day').value = data.hDay || curDay;
+            document.getElementById('address-input').value = data.address || '';
+            document.getElementById('landlord-name').value = data.landlord || '';
+            document.getElementById('tenant-name').value = data.tenant || '';
+
+            document.getElementById('meter-elec-id').value = data.mElecId || '';
+            document.getElementById('meter-elec-val').value = data.mElecVal || '';
+            document.getElementById('meter-elec-note').value = data.mElecNote || '';
+            document.getElementById('meter-water-id').value = data.mWaterId || '';
+            document.getElementById('meter-water-val').value = data.mWaterVal || '';
+            document.getElementById('meter-water-note').value = data.mWaterNote || '';
+            document.getElementById('meter-gas-id').value = data.mGasId || '';
+            document.getElementById('meter-gas-val').value = data.mGasVal || '';
+            document.getElementById('meter-gas-note').value = data.mGasNote || '';
+
+            if (data.mgmtType) {
+                const el = document.querySelector(`input[name="mgmt_type"][value="${data.mgmtType}"]`);
+                if (el) el.checked = true;
+            }
+            document.getElementById('mgmt-in-year').value = data.mgmtInY || '';
+            document.getElementById('mgmt-in-month').value = data.mgmtInM || '';
+            document.getElementById('mgmt-in-day').value = data.mgmtInD || '';
+            document.getElementById('mgmt-out-year').value = data.mgmtOutY || '';
+            document.getElementById('mgmt-out-month').value = data.mgmtOutM || '';
+            document.getElementById('mgmt-out-day').value = data.mgmtOutD || '';
+            document.getElementById('mgmt-fee').value = data.mgmtFee || '';
+            if (data.mgmtPayer) {
+                const el = document.querySelector(`input[name="mgmt_payer"][value="${data.mgmtPayer}"]`);
+                if (el) el.checked = true;
+            }
+
+            if (data.utilityType) {
+                const el = document.querySelector(`input[name="utility_type"][value="${data.utilityType}"]`);
+                if (el) el.checked = true;
+            }
+            document.getElementById('utility-deduct-val').value = data.utilityDeductVal || '';
+
+            document.getElementById('sign-year').value = data.signY || curRocYear;
+            document.getElementById('sign-month').value = data.signM || curMonth;
+            document.getElementById('sign-day').value = data.signD || curDay;
+
+            if (data.items && Array.isArray(data.items)) {
+                data.items.forEach(item => {
+                    const tr = document.getElementById(item.id);
+                    if (tr) {
+                        tr.querySelector('.qty-input').value = item.qty || '';
+                        const sel = tr.querySelector('.status-select');
+                        sel.value = item.status || '優良';
+                        handleStatusChange(sel, item.id.replace('tr_', ''));
+                        tr.querySelector('.note-input').value = item.note || '';
+                    }
+                });
+            }
+
+            if (data.customRows && Array.isArray(data.customRows)) {
+                data.customRows.forEach(row => addCustomRow(row));
+            }
+
+            if (data.photos && Array.isArray(data.photos)) {
+                data.photos.forEach(p => addPhotoCard(p.src, p.target, p.note));
+            }
+
+            if (data.sigLandlord && data.sigLandlord.startsWith('data:image')) {
+                const img = document.getElementById('sig-img-landlord');
+                img.src = data.sigLandlord;
+                img.style.display = 'block';
+                document.getElementById('sig-placeholder-landlord').style.display = 'none';
+                document.getElementById('sig-clear-landlord').style.display = 'block';
+            }
+            if (data.sigTenant && data.sigTenant.startsWith('data:image')) {
+                const img = document.getElementById('sig-img-tenant');
+                img.src = data.sigTenant;
+                img.style.display = 'block';
+                document.getElementById('sig-placeholder-tenant').style.display = 'none';
+                document.getElementById('sig-clear-tenant').style.display = 'block';
+            }
+        } catch (e) {
+            console.error('復原草稿失敗：', e);
+            initDefaultDates();
+        }
+    }
+
+    function clearSavedData() {
+        if (confirm('確定要清空目前填寫的所有資料、照片與簽名嗎？清空後無法復原。')) {
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
+        }
+    }
+
+    restoreFromStorage();
+
+    // ========== 匯出 PDF 功能（無照片時自動隱藏第六區附冊） ==========
     function exportToPDF() {
         const element = document.getElementById('document-content');
-        const address = document.getElementById('address-input').value.trim();
-        const pdfFileName = address ? `${address}_屋況設備點交單.pdf` : `屋況設備點交單.pdf`;
+        const photoSection = document.getElementById('photoGallerySection');
+        const hasPhotos = photoSection.querySelectorAll('.photo-card').length > 0;
+        
+        // 若完全沒有上傳照片，匯出時隱藏第六區以節省紙張
+        if (!hasPhotos) {
+            photoSection.style.display = 'none';
+        }
+
+        const address = document.getElementById('address-input').value.trim() || '未填地址';
+        const type = document.querySelector('input[name="handover_type"]:checked')?.value || '點交';
+        const y = document.getElementById('handover-year').value;
+        const m = String(document.getElementById('handover-month').value).padStart(2, '0');
+        const d = String(document.getElementById('handover-day').value).padStart(2, '0');
+        const dateTag = `${y}${m}${d}`;
+        const pdfFileName = `${address}_${type}_屋況設備點交單_${dateTag}.pdf`;
 
         element.classList.add('rendering-pdf');
 
         const opt = {
-            margin:       [10, 10, 10, 10], // 上右下左邊距 (mm)
+            margin:       [10, 10, 10, 10],
             filename:     pdfFileName,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true, logging: false },
@@ -859,10 +1433,17 @@
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
+        const restoreUi = () => {
+            element.classList.remove('rendering-pdf');
+            if (!hasPhotos) {
+                photoSection.style.display = ''; // 恢復畫面上第六區的顯示
+            }
+        };
+
         html2pdf().set(opt).from(element).save().then(() => {
-            element.classList.remove('rendering-pdf');
+            restoreUi();
         }).catch(err => {
-            element.classList.remove('rendering-pdf');
+            restoreUi();
             window.print();
         });
     }
