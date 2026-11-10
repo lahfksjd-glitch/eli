@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>屋況設備點交單</title>
-    <!-- 引入 html2pdf.js 解決行動裝置列印跑版問題 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary-color: #1a365d;
@@ -327,7 +325,6 @@
             margin-top: 2px;
         }
 
-        /* 簽名板樣式 */
         .sig-container {
             position: relative;
         }
@@ -462,102 +459,7 @@
             break-inside: avoid !important;
         }
 
-        /* ========== 第六區：獨立存證照片附冊樣式 ========== */
-        .photo-gallery-section {
-            page-break-before: always !important;
-            break-before: page !important;
-            margin-top: 25px;
-            padding-top: 10px;
-        }
-
-        .gallery-action-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .photo-card {
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px;
-            background: #fafafa;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .photo-card-img-wrap {
-            width: 100%;
-            height: 180px;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-            background-color: #edf2f7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .photo-card-img-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background-color: #2d3748;
-        }
-
-        .photo-card-select {
-            width: 100%;
-            padding: 4px;
-            font-size: 8.5pt;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
-            background: #fff;
-            font-family: inherit;
-        }
-
-        .photo-card-note {
-            width: 100%;
-            min-height: 38px;
-            padding: 4px;
-            font-size: 8.5pt;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        .photo-card-delete-btn {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(229, 62, 62, 0.9);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            cursor: pointer;
-            font-size: 9pt;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-
-        .photo-card-delete-btn:hover {
-            background: #c53030;
-        }
-
-        /* ========== A4 列印與 PDF 匯出規則 ========== */
+        /* ========== A4 列印 / 離線另存 PDF 規則 ========== */
         @page {
             size: A4 portrait;
             margin: 10mm 12mm 10mm 12mm;
@@ -565,9 +467,11 @@
 
         @media print {
             body {
-                background: white;
-                padding: 0;
-                margin: 0;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             .container {
                 max-width: 100% !important;
@@ -580,104 +484,32 @@
             .delete-btn,
             .quick-btn-group,
             .sig-clear-btn,
-            .gallery-action-bar,
-            .photo-card-delete-btn,
             .modal-overlay {
                 display: none !important;
             }
-            tr, .fee-section, .clause-box, .sign-protect-block, .photo-card {
+            tr, .fee-section, .clause-box, .sign-protect-block {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }
-            .photo-gallery-section {
-                page-break-before: always !important;
-                break-before: page !important;
-            }
-            /* 原生列印下若無照片卡片則自動隱藏第六區 */
-            .photo-gallery-section:not(:has(.photo-card)) {
-                display: none !important;
-            }
             input[type="text"],
             input[type="number"]:not(.underline-input),
-            textarea.note-input,
-            .photo-card-note {
+            textarea.note-input {
                 border: none !important;
                 background: transparent !important;
                 padding: 0 !important;
                 resize: none !important;
             }
-            select.status-select,
-            .photo-card-select {
+            select.status-select {
                 border: none !important;
                 background: transparent !important;
                 -webkit-appearance: none;
                 -moz-appearance: none;
                 appearance: none;
-            }
-            select.status-select {
                 text-align-last: center;
             }
             input.underline-input {
                 border-bottom: 1.5px solid var(--primary-color) !important;
             }
-            .photo-card-img-wrap {
-                height: 200px !important;
-            }
-        }
-
-        .rendering-pdf {
-            width: 100% !important;
-            max-width: 100% !important;
-            padding: 0 !important;
-            box-shadow: none !important;
-        }
-        .rendering-pdf .top-action-bar,
-        .rendering-pdf .add-btn,
-        .rendering-pdf .delete-btn,
-        .rendering-pdf .quick-btn-group,
-        .rendering-pdf .sig-clear-btn,
-        .rendering-pdf .gallery-action-bar,
-        .rendering-pdf .photo-card-delete-btn,
-        .rendering-pdf .modal-overlay {
-            display: none !important;
-        }
-        .rendering-pdf tr,
-        .rendering-pdf .fee-section,
-        .rendering-pdf .clause-box,
-        .rendering-pdf .sign-protect-block,
-        .rendering-pdf .photo-card {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-        .rendering-pdf .photo-gallery-section {
-            page-break-before: always !important;
-            break-before: page !important;
-        }
-        .rendering-pdf input[type="text"],
-        .rendering-pdf input[type="number"]:not(.underline-input),
-        .rendering-pdf textarea.note-input,
-        .rendering-pdf .photo-card-note {
-            border: none !important;
-            background: transparent !important;
-            padding: 0 !important;
-            resize: none !important;
-        }
-        .rendering-pdf select.status-select,
-        .rendering-pdf .photo-card-select {
-            border: none !important;
-            background: transparent !important;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
-        .rendering-pdf select.status-select {
-            text-align-last: center;
-        }
-        .rendering-pdf input.underline-input {
-            border-bottom: 1.5px solid var(--primary-color) !important;
-        }
-        .rendering-pdf .photo-card-img-wrap {
-            height: 200px !important;
         }
     </style>
 </head>
@@ -688,7 +520,7 @@
         <span class="save-indicator" id="saveIndicator">✓ 已暫存</span>
         <button type="button" class="reset-storage-btn" onclick="clearSavedData()" title="清空所有欄位與暫存">清空重填</button>
         <button type="button" class="export-pdf-btn" onclick="exportToPDF()">
-            📥 匯出 PDF
+            📥 匯出 / 列印 PDF
         </button>
     </div>
 
@@ -825,7 +657,7 @@
     </table>
     <button type="button" class="add-btn" onclick="addCustomRow()">+ 新增自訂約定項目</button>
 
-    <!-- 五、點交確認聲明與雙方簽章（防跨頁切斷） -->
+    <!-- 五、點交確認聲明與雙方簽章 -->
     <div class="sign-protect-block">
         <div class="section-header-wrap">
             <div class="section-title">五、點交確認聲明與雙方簽章</div>
@@ -873,28 +705,8 @@
         </table>
     </div>
 
-    <!-- 六、現場屋況與設備存證照片附冊（強制另起全新 A4 頁面，無照片時匯出自動隱藏） -->
-    <div class="photo-gallery-section" id="photoGallerySection">
-        <div class="section-header-wrap">
-            <div class="section-title">六、現場屋況與設備存證照片附冊</div>
-            <span style="color:#ffffff; font-size:8pt;">附件存證文件</span>
-        </div>
-
-        <div class="gallery-action-bar">
-            <input type="file" id="batch-photo-input" accept="image/*" multiple capture="environment" style="display:none;" onchange="handleBatchPhotoUpload(this)">
-            <button type="button" class="btn-quick-fill" style="background-color:var(--secondary-color); color:#fff; padding:6px 14px; font-size:9pt;" onclick="document.getElementById('batch-photo-input').click()">
-                📷 新增 / 批次上傳現場存證照片
-            </button>
-            <span style="font-size:8pt; color:#718096; align-self:center;">（支援手機拍照或相簿多選，單張卡片清晰排版）</span>
-        </div>
-
-        <div class="gallery-grid" id="galleryGrid">
-            <!-- 照片卡片動態插入 -->
-        </div>
-    </div>
-
     <div class="copyright-footer">
-         此表由新智（Eli）制作，作爲租賃雙方屋況設備點交及點退使用。
+        此表由新智（Eli）制作，作爲租賃雙方屋況設備點交及點退使用。
     </div>
 </div>
 
@@ -960,13 +772,6 @@
         }
     ];
 
-    // 收集所有項目供照片附冊下拉選單使用
-    const allItemOptions = ['【水電瓦斯】電錶度數', '【水電瓦斯】水錶度數', '【水電瓦斯】瓦斯錶度數'];
-    categories.forEach(c => {
-        c.items.forEach(i => allItemOptions.push(`${c.title.replace(/[【】]/g, '')} - ${i.name}`));
-    });
-    allItemOptions.push('【其他】室內整體屋況', '【其他】牆面 / 地面 / 天花板', '【其他】自訂瑕疵註記');
-
     const tbody = document.getElementById('checklist-main');
     let itemCounter = 1;
 
@@ -996,7 +801,6 @@
         autoSave();
     }
 
-    // 渲染設備預設清單
     categories.forEach(cat => {
         tbody.innerHTML += `<tr><td colspan="5" class="cat-header">${cat.title}</td></tr>`;
         cat.items.forEach(item => {
@@ -1059,49 +863,6 @@
         autoSave();
     }
 
-    // ========== 第六區：現場存證照片處理 ==========
-    const galleryGrid = document.getElementById('galleryGrid');
-
-    function getTargetOptionsHtml(selectedTarget = '') {
-        return allItemOptions.map(opt => `<option value="${opt}" ${opt === selectedTarget ? 'selected' : ''}>${opt}</option>`).join('');
-    }
-
-    function addPhotoCard(imgSrc, target = '', note = '') {
-        const cardId = `pcard_${Date.now()}_${Math.floor(Math.random()*1000)}`;
-        const card = document.createElement('div');
-        card.className = 'photo-card';
-        card.id = cardId;
-        card.innerHTML = `
-            <button type="button" class="photo-card-delete-btn" onclick="this.closest('.photo-card').remove(); autoSave();" title="刪除照片">✕</button>
-            <div class="photo-card-img-wrap">
-                <img src="${imgSrc}" alt="存證照片">
-            </div>
-            <div>
-                <select class="photo-card-select" onchange="autoSave()">
-                    ${getTargetOptionsHtml(target)}
-                </select>
-            </div>
-            <div>
-                <textarea class="photo-card-note" placeholder="備註說明（例如：邊角微刮傷 / 運作正常存證）" oninput="autoSave()">${note}</textarea>
-            </div>
-        `;
-        galleryGrid.appendChild(card);
-    }
-
-    function handleBatchPhotoUpload(input) {
-        if (!input.files || input.files.length === 0) return;
-        Array.from(input.files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                addPhotoCard(e.target.result);
-                autoSave();
-            };
-            reader.readAsDataURL(file);
-        });
-        input.value = '';
-    }
-
-    // ========== 日期與手寫簽名 ==========
     const today = new Date();
     const curRocYear = today.getFullYear() - 1911;
     const curMonth = today.getMonth() + 1;
@@ -1117,6 +878,7 @@
         document.getElementById('sign-day').value = curDay;
     }
 
+    // ========== 手寫簽名（Canvas 原生支援離線） ==========
     let currentRole = '';
     const modal = document.getElementById('sigModal');
     const modalCanvas = document.getElementById('modalCanvas');
@@ -1211,7 +973,7 @@
         autoSave();
     }
 
-    // ========== LocalStorage 本地背景自動儲存與還原 ==========
+    // ========== LocalStorage 本地儲存（原生離線功能） ==========
     const STORAGE_KEY = 'HOUSING_HANDOVER_FORM_DRAFT';
 
     function autoSave() {
@@ -1253,7 +1015,6 @@
 
             items: [],
             customRows: [],
-            photos: [],
             sigLandlord: document.getElementById('sig-img-landlord').src,
             sigTenant: document.getElementById('sig-img-tenant').src
         };
@@ -1274,19 +1035,6 @@
                 status: tr.querySelector('.status-select').value,
                 note: tr.querySelector('.note-input').value
             });
-        });
-
-        document.querySelectorAll('#galleryGrid .photo-card').forEach(card => {
-            const img = card.querySelector('img');
-            const sel = card.querySelector('.photo-card-select');
-            const note = card.querySelector('.photo-card-note');
-            if (img && img.src) {
-                data.photos.push({
-                    src: img.src,
-                    target: sel ? sel.value : '',
-                    note: note ? note.value : ''
-                });
-            }
         });
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -1370,10 +1118,6 @@
                 data.customRows.forEach(row => addCustomRow(row));
             }
 
-            if (data.photos && Array.isArray(data.photos)) {
-                data.photos.forEach(p => addPhotoCard(p.src, p.target, p.note));
-            }
-
             if (data.sigLandlord && data.sigLandlord.startsWith('data:image')) {
                 const img = document.getElementById('sig-img-landlord');
                 img.src = data.sigLandlord;
@@ -1395,7 +1139,7 @@
     }
 
     function clearSavedData() {
-        if (confirm('確定要清空目前填寫的所有資料、照片與簽名嗎？清空後無法復原。')) {
+        if (confirm('確定要清空目前填寫的所有資料與簽名嗎？清空後無法復原。')) {
             localStorage.removeItem(STORAGE_KEY);
             location.reload();
         }
@@ -1403,49 +1147,24 @@
 
     restoreFromStorage();
 
-    // ========== 匯出 PDF 功能（無照片時自動隱藏第六區附冊） ==========
+    // ========== 離線匯出：自動動態標題 + 喚起系統另存 PDF ==========
     function exportToPDF() {
-        const element = document.getElementById('document-content');
-        const photoSection = document.getElementById('photoGallerySection');
-        const hasPhotos = photoSection.querySelectorAll('.photo-card').length > 0;
-        
-        // 若完全沒有上傳照片，匯出時隱藏第六區以節省紙張
-        if (!hasPhotos) {
-            photoSection.style.display = 'none';
-        }
-
         const address = document.getElementById('address-input').value.trim() || '未填地址';
         const type = document.querySelector('input[name="handover_type"]:checked')?.value || '點交';
         const y = document.getElementById('handover-year').value;
         const m = String(document.getElementById('handover-month').value).padStart(2, '0');
         const d = String(document.getElementById('handover-day').value).padStart(2, '0');
         const dateTag = `${y}${m}${d}`;
-        const pdfFileName = `${address}_${type}_屋況設備點交單_${dateTag}.pdf`;
+        
+        // 更改 document.title，瀏覽器在另存為 PDF 時會自動帶入此檔名
+        const originalTitle = document.title;
+        document.title = `${address}_${type}_屋況設備點交單_${dateTag}`;
 
-        element.classList.add('rendering-pdf');
+        window.print();
 
-        const opt = {
-            margin:       [10, 10, 10, 10],
-            filename:     pdfFileName,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, logging: false },
-            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        const restoreUi = () => {
-            element.classList.remove('rendering-pdf');
-            if (!hasPhotos) {
-                photoSection.style.display = ''; // 恢復畫面上第六區的顯示
-            }
-        };
-
-        html2pdf().set(opt).from(element).save().then(() => {
-            restoreUi();
-        }).catch(err => {
-            restoreUi();
-            window.print();
-        });
+        setTimeout(() => {
+            document.title = originalTitle;
+        }, 1000);
     }
 </script>
 
