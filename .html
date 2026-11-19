@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>匯勝｜業務獎金試算器 </title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #dd6b20;
+            --bg-page: #f0f4f8;
+            --bg-card: #ffffff;
+            --border: #cbd5e0;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --danger: #c53030;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: #ffffff;
+            padding: 20px 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 16pt;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+            font-size: 9.5pt;
+            color: #cbd5e0;
+        }
+
+        .content {
+            padding: 20px 24px;
+        }
+
+        /* 方案切換頁籤 */
+        .role-tabs {
+            display: flex;
+            background: #edf2f7;
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            gap: 6px;
+        }
+
+        .role-tab {
+            flex: 1;
+            padding: 12px 10px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            font-size: 10.5pt;
+            font-weight: bold;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .role-tab.active {
+            background: #ffffff;
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .role-tab small {
+            display: block;
+            font-weight: normal;
+            font-size: 8.5pt;
+            margin-top: 2px;
+        }
+
+        .section-title {
+            font-size: 11pt;
+            font-weight: bold;
+            color: var(--primary);
+            border-left: 4px solid var(--secondary);
+            padding-left: 10px;
+            margin: 18px 0 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 案件輸入表格 */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .case-table {
+            width: 100%;
+            min-width: 680px;
+            border-collapse: collapse;
+            font-size: 9.5pt;
+            margin-bottom: 8px;
+        }
+
+        .case-table th, .case-table td {
+            border: 1px solid var(--border);
+            padding: 9px 6px;
+            text-align: center;
+        }
+
+        .case-table th {
+            background-color: #edf2f7;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .case-table th.th-renewal {
+            background-color: #fefcbf;
+            color: #744210;
+        }
+
+        /* 包租（淺綠色底）與代管（淺藍色底） */
+        .row-baozu {
+            background-color: #f0fdf4;
+        }
+
+        .row-baozu .case-row-label {
+            background-color: #dcfce7;
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .row-daiguan {
+            background-color: #eff6ff;
+        }
+
+        .row-daiguan .case-row-label {
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-weight: bold;
+        }
+
+        .price-sub {
+            display: block;
+            font-size: 8pt;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .qty-control {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .qty-btn {
+            background: #edf2f7;
+            border: none;
+            width: 26px;
+            height: 28px;
+            font-weight: bold;
+            font-size: 11pt;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        .qty-btn:hover {
+            background: #cbd5e0;
+        }
+
+        .qty-input {
+            width: 36px;
+            height: 28px;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            font-size: 10pt;
+            color: var(--primary);
+            outline: none;
+        }
+
+        .table-note {
+            font-size: 8.5pt;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .legend-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            vertical-align: middle;
+            margin-right: 4px;
+            border: 1px solid #cbd5e0;
+        }
+
+        /* 結果試算總覽卡片 */
+        .result-dashboard {
+            background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%);
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tier-badge {
+            background: #fbd38d;
+            color: #1a365d;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 9.5pt;
+        }
+
+        .dash-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .dash-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            font-size: 8.5pt;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 14pt;
+            font-weight: bold;
+        }
+
+        .total-salary-bar {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 14px 18px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .total-label {
+            font-size: 11.5pt;
+            font-weight: bold;
+        }
+
+        .total-amount {
+            font-size: 22pt;
+            font-weight: bold;
+            color: #fbd38d;
+        }
+
+        .breakdown-list {
+            margin-top: 14px;
+            font-size: 9pt;
+            color: #edf2f7;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 12px 14px;
+            border-radius: 8px;
+            line-height: 1.7;
+        }
+
+        .tax-memo-box {
+            margin-top: 10px;
+            background: rgba(251, 211, 141, 0.15);
+            border: 1px solid rgba(251, 211, 141, 0.45);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 9pt;
+            color: #fefcbf;
+            line-height: 1.6;
+        }
+
+        .btn-reset {
+            background: #edf2f7;
+            border: 1px solid #cbd5e0;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 8.5pt;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+
+        .btn-reset:hover {
+            background: #e2e8f0;
+        }
+
+        /* ========== 同業績對比分析表 ========== */
+        .compare-section {
+            margin-top: 24px;
+            border-top: 2px dashed #cbd5e0;
+            padding-top: 10px;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.5pt;
+            margin-bottom: 12px;
+        }
+
+        .compare-table th, .compare-table td {
+            border: 1px solid var(--border);
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        .compare-table th {
+            background-color: #edf2f7;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .compare-table td.row-title {
+            font-weight: bold;
+            background-color: #f8fafc;
+            text-align: left;
+            padding-left: 14px;
+        }
+
+        .compare-table tr.sub-row td {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-size: 9pt;
+        }
+
+        .compare-table tr.total-row td {
+            background-color: #ebf8ff;
+            font-weight: bold;
+            font-size: 11pt;
+            color: var(--primary);
+            border-top: 2px solid var(--secondary);
+        }
+
+        .diff-banner {
+            background-color: #fffaf0;
+            border: 1.5px solid #dd6b20;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .diff-banner.tie {
+            background-color: #f0fff4;
+            border-color: #38a169;
+        }
+
+        .diff-title {
+            font-weight: bold;
+            font-size: 10.5pt;
+            color: #9c4221;
+        }
+
+        .diff-banner.tie .diff-title {
+            color: #22543d;
+        }
+
+        .diff-amount {
+            font-weight: bold;
+            font-size: 14pt;
+            color: #dd6b20;
+        }
+
+        .winner-tag {
+            display: inline-block;
+            background: #dd6b20;
+            color: #ffffff;
+            font-size: 7.5pt;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>匯勝｜業務獎金計算器</h1>
+        <p>支援普專（底薪扣勞健保＋跳階抽成）與高專（實收業績倍率解鎖＋10%業務所得預扣試算）</p>
+    </div>
+
+    <div class="content">
+        <!-- 方案切換 -->
+        <div class="role-tabs">
+            <button type="button" class="role-tab active" id="tab-general" onclick="switchRole('general')">
+                【方案一】普專
+                <small>月薪 $40,000（扣勞健保 $1,624）＋ 30%~50% 跳階抽成</small>
+            </button>
+            <button type="button" class="role-tab" id="tab-senior" onclick="switchRole('senior')">
+                【方案二】高專
+                <small>無底薪 ＋ 100%~300% 倍率（預扣 10% 業務所得稅）</small>
+            </button>
+        </div>
+
+        <!-- 一、當月成交案件與續約件數輸入 -->
+        <div class="section-title">
+            <span>一、當月成交案件輸入</span>
+            <button type="button" class="btn-reset" onclick="resetAll()">↺ 清空件數</button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="case-table">
+                <thead>
+                    <tr>
+                        <th style="width: 18%;">案件類型</th>
+                        <th style="width: 20.5%;">全新件</th>
+                        <th style="width: 20.5%;">既有件</th>
+                        <th style="width: 20.5%;">曾加入件</th>
+                        <th style="width: 20.5%;" class="th-renewal">續約 / 重媒件</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 包租 弱勢戶 (淺綠底) -->
+                    <tr class="row-baozu">
+                        <td class="case-row-label">包租 弱勢戶</td>
+                        <td>
+                            <span class="price-sub">$18,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_new', -1)">-</button>
+                                <input type="number" id="bz_weak_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_new', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$9,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_old', -1)">-</button>
+                                <input type="number" id="bz_weak_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_old', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$4,500 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_re', -1)">-</button>
+                                <input type="number" id="bz_weak_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_re', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$4,500 / 件（不跳階）</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_ren', -1)">-</button>
+                                <input type="number" id="bz_weak_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_ren', 1)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 包租 一般戶 (淺綠底) -->
+                    <tr class="row-baozu">
+                        <td class="case-row-label">包租 一般戶</td>
+                        <td>
+                            <span class="price-sub">$16,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_new', -1)">-</button>
+                                <input type="number" id="bz_norm_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_new', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$8,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_old', -1)">-</button>
+                                <input type="number" id="bz_norm_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_old', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$4,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_re', -1)">-</button>
+                                <input type="number" id="bz_norm_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_re', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$4,000 / 件（不跳階）</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_ren', -1)">-</button>
+                                <input type="number" id="bz_norm_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_ren', 1)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 代管 弱勢戶 (淺藍底) -->
+                    <tr class="row-daiguan">
+                        <td class="case-row-label">代管 弱勢戶</td>
+                        <td>
+                            <span class="price-sub">$13,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_new', -1)">-</button>
+                                <input type="number" id="dg_weak_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_new', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$6,500 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_old', -1)">-</button>
+                                <input type="number" id="dg_weak_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_old', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$3,250 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_re', -1)">-</button>
+                                <input type="number" id="dg_weak_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_re', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$3,250 / 件（不跳階）</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_ren', -1)">-</button>
+                                <input type="number" id="dg_weak_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_ren', 1)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 代管 一般戶 (淺藍底) -->
+                    <tr class="row-daiguan">
+                        <td class="case-row-label">代管 一般戶</td>
+                        <td>
+                            <span class="price-sub">$9,400 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_new', -1)">-</button>
+                                <input type="number" id="dg_norm_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_new', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$4,700 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_old', -1)">-</button>
+                                <input type="number" id="dg_norm_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_old', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$2,350 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_re', -1)">-</button>
+                                <input type="number" id="dg_norm_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_re', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$2,350 / 件（不跳階）</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_ren', -1)">-</button>
+                                <input type="number" id="dg_norm_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_ren', 1)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-note">
+            <span><i class="legend-dot" style="background:#dcfce7;"></i>包租案件（淺綠底）</span>
+            <span><i class="legend-dot" style="background:#dbeafe;"></i>代管案件（淺藍底）</span>
+            <span>※ 「續約 / 重媒件」依 25% 計算業績，計入當月總業績助解鎖高倍率/跳階，但該筆獎金不跳階（普專固定 30%、高專固定 100%）。</span>
+        </div>
+
+        <!-- 二、單一方案薪資試算結果看板 -->
+        <div class="result-dashboard">
+            <div class="dash-header">
+                <span style="font-weight: bold; font-size: 11.5pt;" id="dash-title">【方案一】普專薪資試算結果</span>
+                <span class="tier-badge" id="tier-badge">未滿 3 萬（抽成 30%）</span>
+            </div>
+
+            <div class="dash-grid">
+                <div class="stat-box">
+                    <div class="stat-label">當月累計總業績（含續約）</div>
+                    <div class="stat-value" id="res-total-rev">$0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label" id="label-stat-2">底薪實領（已扣勞健保 $1,624）</div>
+                    <div class="stat-value" id="res-stat-2">$38,376</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label" id="label-stat-3">業績獎金總額（次月25日領）</div>
+                    <div class="stat-value" id="res-stat-3">$0</div>
+                </div>
+            </div>
+
+            <div class="total-salary-bar">
+                <span class="total-label" id="total-bar-label">預估當月實領總薪資</span>
+                <span class="total-amount" id="res-grand-total">$38,376</span>
+            </div>
+
+            <div class="breakdown-list" id="breakdown-detail">
+                <!-- 動態明細 -->
+            </div>
+
+            <!-- 高專五月報稅預留提醒框 -->
+            <div class="tax-memo-box" id="tax-memo-box" style="display: none;">
+                <!-- 動態稅務備註 -->
+            </div>
+        </div>
+
+        <!-- 三、普專 vs 高專 同業績收入對比分析表 -->
+        <div class="compare-section">
+            <div class="section-title">
+                <span>三、普專 vs 高專 同業績收入對比分析表</span>
+                <span style="font-size: 8.5pt; font-weight: normal; color: var(--text-muted);">依目前輸入案件與續約件數自動並排試算</span>
+            </div>
+
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th style="width: 32%;">薪資結構項目</th>
+                        <th style="width: 34%;" id="th-general">【方案一】普專（一般專員）</th>
+                        <th style="width: 34%;" id="th-senior">【方案二】高專（高級專員）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-title">解鎖級距 / 抽成標準</td>
+                        <td id="cmp-gen-tier">未滿 3 萬（抽成 30%）</td>
+                        <td id="cmp-sen-tier">L1 入門階級（未滿 3 萬）</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title">底薪實領（普專已扣勞健保 $1,624）</td>
+                        <td id="cmp-gen-base">$38,376</td>
+                        <td id="cmp-sen-base">$0（高專無底薪）</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title">一般成交案件獎金（稅前）</td>
+                        <td id="cmp-gen-norm-bonus">$0</td>
+                        <td id="cmp-sen-norm-bonus">$0</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title">續約與重新媒合獎金（稅前）</td>
+                        <td id="cmp-gen-ren-bonus">$0（固定 30%）</td>
+                        <td id="cmp-sen-ren-bonus">$0（固定 100%）</td>
+                    </tr>
+                    <tr class="sub-row">
+                        <td class="row-title">高專 10% 業務所得預扣（五月報稅預留）</td>
+                        <td>不適用（薪資所得）</td>
+                        <td id="cmp-sen-tax" style="color: #c53030; font-weight: bold;">-$0（五月報稅可用來扣抵）</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="row-title">當月實際入帳淨額（實領現金）</td>
+                        <td id="cmp-gen-total">$38,376</td>
+                        <td id="cmp-sen-total">$0</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="diff-banner" id="diff-banner">
+                <span class="diff-title" id="diff-text">💡 目前業績下，選擇【方案一】普專比高專多領：</span>
+                <span class="diff-amount" id="diff-value">+$38,376</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentRole = 'general'; // 'general' = 普專, 'senior' = 高專
+    const LABOR_HEALTH_INSURANCE = 1624; // 普專勞健保負擔額
+    const SENIOR_TAX_RATE = 0.10;        // 高專 10% 業務所得預扣率
+
+    // 案件基礎單價表（續約/重媒件均為 25% 單價）
+    const rates = {
+        bz_weak_new: 18000, bz_weak_old: 9000, bz_weak_re: 4500, bz_weak_ren: 4500,
+        bz_norm_new: 16000, bz_norm_old: 8000, bz_norm_re: 4000, bz_norm_ren: 4000,
+        dg_weak_new: 13000, dg_weak_old: 6500, dg_weak_re: 3250, dg_weak_ren: 3250,
+        dg_norm_new: 9400,  dg_norm_old: 4700, dg_norm_re: 2350, dg_norm_ren: 2350
+    };
+
+    function switchRole(role) {
+        currentRole = role;
+        document.getElementById('tab-general').classList.toggle('active', role === 'general');
+        document.getElementById('tab-senior').classList.toggle('active', role === 'senior');
+        calculate();
+    }
+
+    function sanitizeInt(input) {
+        if (input.value === '') return;
+        const cleanVal = parseInt(input.value, 10);
+        input.value = isNaN(cleanVal) || cleanVal < 0 ? 0 : cleanVal;
+    }
+
+    function changeQty(id, delta) {
+        const input = document.getElementById(id);
+        let val = parseInt(input.value, 10) || 0;
+        val = Math.max(0, val + delta);
+        input.value = val;
+        calculate();
+    }
+
+    function resetAll() {
+        Object.keys(rates).forEach(id => {
+            document.getElementById(id).value = 0;
+        });
+        calculate();
+    }
+
+    function fmt(num) {
+        return '$' + Math.round(num).toLocaleString('zh-TW');
+    }
+
+    function calculate() {
+        let revNew = 0;     // 全新件實收業績
+        let revOld = 0;     // 既有件實收業績
+        let revRe  = 0;     // 曾加入件實收業績
+        let renewalRev = 0; // 續約/重媒實收業績
+
+        Object.keys(rates).forEach(id => {
+            const qty = parseInt(document.getElementById(id).value, 10) || 0;
+            const amount = qty * rates[id];
+
+            if (id.endsWith('_new')) revNew += amount;
+            else if (id.endsWith('_old')) revOld += amount;
+            else if (id.endsWith('_re')) revRe += amount;
+            else if (id.endsWith('_ren')) renewalRev += amount;
+        });
+
+        const normalRev = revNew + revOld + revRe;
+        const totalRev = normalRev + renewalRev;
+
+        document.getElementById('res-total-rev').textContent = fmt(totalRev);
+
+        const genData = getGeneralMetrics(normalRev, renewalRev, totalRev);
+        const senData = getSeniorMetrics(revNew, revOld, revRe, renewalRev, totalRev);
+
+        if (currentRole === 'general') {
+            renderGeneralDashboard(genData, normalRev, renewalRev);
+        } else {
+            renderSeniorDashboard(senData, revNew, revOld, revRe, renewalRev, totalRev);
+        }
+
+        renderComparisonTable(genData, senData);
+    }
+
+    // 【方案一】普專計算邏輯（保障月薪 $40,000 - 勞健保 $1,624 = $38,376）
+    function getGeneralMetrics(normalRev, renewalRev, totalRev) {
+        let rate = 0.30;
+        let tierText = '未滿 3 萬（抽成 30%）';
+        if (totalRev >= 45000) {
+            rate = 0.50;
+            tierText = '滿 4.5 萬以上（抽成 50%）';
+        } else if (totalRev >= 30000) {
+            rate = 0.40;
+            tierText = '滿 3 萬以上（抽成 40%）';
+        }
+
+        const normalBonus = normalRev * rate;
+        const renewalBonus = renewalRev * 0.30;
+        const totalBonus = normalBonus + renewalBonus;
+
+        const grossBasePay = 40000;
+        const netBasePay = grossBasePay - LABOR_HEALTH_INSURANCE;
+        const grandTotal = netBasePay + totalBonus;
+
+        return {
+            rate, tierText, normalBonus, renewalBonus, totalBonus,
+            grossBasePay, netBasePay, grandTotal
+        };
+    }
+
+    // 【方案二】高專計算邏輯（含 10% 業務所得預扣計算）
+    function getSeniorMetrics(revNew, revOld, revRe, renewalRev, totalRev) {
+        let multNew = 1.0, multOld = 1.0, multRe = 1.0;
+        let tierText = 'L1 入門階級（未滿 3 萬）';
+
+        if (totalRev >= 45000) {
+            multNew = 1.2;
+            multOld = 2.0;
+            multRe  = 3.0;
+            tierText = 'L3 王牌階級（滿 4.5 萬）';
+        } else if (totalRev >= 30000) {
+            multNew = 1.1;
+            multOld = 1.5;
+            multRe  = 2.0;
+            tierText = 'L2 達標階級（滿 3 萬）';
+        }
+
+        const bonusNew = revNew * multNew;
+        const bonusOld = revOld * multOld;
+        const bonusRe  = revRe * multRe;
+        const normalBonus = bonusNew + bonusOld + bonusRe;
+        const renewalBonus = renewalRev * 1.0;
+        const grossBonus = normalBonus + renewalBonus;
+
+        // 10% 執行業務所得預扣 / 五月報稅預留金
+        const taxWithheld = Math.round(grossBonus * SENIOR_TAX_RATE);
+        const netTakeHome = grossBonus - taxWithheld;
+
+        return {
+            multNew, multOld, multRe, tierText,
+            bonusNew, bonusOld, bonusRe, normalBonus, renewalBonus,
+            grossBonus, taxWithheld, netTakeHome
+        };
+    }
+
+    function renderGeneralDashboard(gen, normalRev, renewalRev) {
+        document.getElementById('dash-title').textContent = '【方案一】普專薪資試算結果';
+        document.getElementById('tier-badge').textContent = gen.tierText;
+
+        document.getElementById('label-stat-2').textContent = '底薪實領（已扣勞健保 $1,624）';
+        document.getElementById('res-stat-2').textContent = fmt(gen.netBasePay);
+
+        document.getElementById('label-stat-3').textContent = '業績獎金總額（次月25日領）';
+        document.getElementById('res-stat-3').textContent = fmt(gen.totalBonus);
+
+        document.getElementById('total-bar-label').textContent = '預估當月實領總薪資';
+        document.getElementById('res-grand-total').textContent = fmt(gen.grandTotal);
+
+        document.getElementById('breakdown-detail').innerHTML = `
+            <strong>【底薪明細】</strong>保障月薪 ${fmt(gen.grossBasePay)}（本薪$30,000＋全勤$3,000＋交通$2,000＋績效$5,000）－ 勞健保自付額 ${fmt(LABOR_HEALTH_INSURANCE)} ＝ <strong>${fmt(gen.netBasePay)}</strong><br>
+            <strong>【獎金明細】</strong>一般件業績 ${fmt(normalRev)} × ${(gen.rate * 100).toFixed(0)}%（${fmt(gen.normalBonus)}）＋ 續約/重媒業績 ${fmt(renewalRev)} × 30%（${fmt(gen.renewalBonus)}）＝ <strong>${fmt(gen.totalBonus)}</strong>
+        `;
+
+        document.getElementById('tax-memo-box').style.display = 'none';
+    }
+
+    function renderSeniorDashboard(sen, revNew, revOld, revRe, renewalRev, totalRev) {
+        document.getElementById('dash-title').textContent = '【方案二】高專薪資試算結果';
+        document.getElementById('tier-badge').textContent = sen.tierText;
+
+        document.getElementById('label-stat-2').textContent = '稅前業績獎金總額';
+        document.getElementById('res-stat-2').textContent = fmt(sen.grossBonus);
+
+        document.getElementById('label-stat-3').textContent = '預扣 10% 業務所得（報稅預留）';
+        document.getElementById('res-stat-3').textContent = '-' + fmt(sen.taxWithheld);
+
+        document.getElementById('total-bar-label').textContent = '扣除 10% 預扣後當月實際入帳';
+        document.getElementById('res-grand-total').textContent = fmt(sen.netTakeHome);
+
+        document.getElementById('breakdown-detail').innerHTML = `
+            <strong>【倍率解鎖明細】</strong>當月總業績 ${fmt(totalRev)}，解鎖 <strong>${sen.tierText}</strong>：<br>
+            • 全新件實收 ${fmt(revNew)} × ${(sen.multNew * 100).toFixed(0)}% ＝ <strong>${fmt(sen.bonusNew)}</strong><br>
+            • 既有件實收 ${fmt(revOld)} × ${(sen.multOld * 100).toFixed(0)}% ＝ <strong>${fmt(sen.bonusOld)}</strong><br>
+            • 曾加入件實收 ${fmt(revRe)} × ${(sen.multRe * 100).toFixed(0)}% ＝ <strong>${fmt(sen.bonusRe)}</strong><br>
+            • 續約/重媒實收 ${fmt(renewalRev)} × 100%（不跳階） ＝ <strong>${fmt(sen.renewalBonus)}</strong>
+        `;
+
+        // 五月報稅貼心預留提醒
+        const taxBox = document.getElementById('tax-memo-box');
+        taxBox.style.display = 'block';
+        taxBox.innerHTML = `
+            📌 <strong>【五月綜合所得稅預留備註】</strong><br>
+            • 本月執行業務所得（9A）預扣 / 建議留存 <strong>10% 稅款 ＝ ${fmt(sen.taxWithheld)}</strong>（已先從上方實領金額扣除）。<br>
+            • <strong>報稅提醒：</strong>隔年五月報稅時，該筆已預扣之 <strong>${fmt(sen.taxWithheld)}</strong> 可直接扣抵綜所稅（若年所得在 5% 稅率級距可退稅，若達 12% 以上級距則需補繳差額；建議業務員將此筆預留金專款專用，避免五月繳稅壓力）。
+        `;
+    }
+
+    function renderComparisonTable(gen, sen) {
+        document.getElementById('cmp-gen-tier').textContent = gen.tierText;
+        document.getElementById('cmp-sen-tier').textContent = sen.tierText;
+
+        document.getElementById('cmp-gen-base').textContent = `${fmt(gen.netBasePay)}（已扣勞健保 $1,624）`;
+        document.getElementById('cmp-sen-base').textContent = '$0（高專無底薪）';
+
+        document.getElementById('cmp-gen-norm-bonus').textContent = fmt(gen.normalBonus);
+        document.getElementById('cmp-sen-norm-bonus').textContent = fmt(sen.normalBonus);
+
+        document.getElementById('cmp-gen-ren-bonus').textContent = `${fmt(gen.renewalBonus)}（固定 30%）`;
+        document.getElementById('cmp-sen-ren-bonus').textContent = `${fmt(sen.renewalBonus)}（固定 100%）`;
+
+        document.getElementById('cmp-sen-tax').textContent = `-${fmt(sen.taxWithheld)}（五月報稅預留扣抵）`;
+
+        const thGen = document.getElementById('th-general');
+        const thSen = document.getElementById('th-senior');
+        const diffBanner = document.getElementById('diff-banner');
+        const diffText = document.getElementById('diff-text');
+        const diffValue = document.getElementById('diff-value');
+
+        thGen.innerHTML = '【方案一】普專（一般專員）';
+        thSen.innerHTML = '【方案二】高專（高級專員）';
+        diffBanner.classList.remove('tie');
+
+        // 依「當月實際入帳淨額」進行比較
+        const diff = gen.grandTotal - sen.netTakeHome;
+
+        if (diff > 0) {
+            thGen.innerHTML += ' <span class="winner-tag">當月實領較高</span>';
+            document.getElementById('cmp-gen-total').textContent = fmt(gen.grandTotal);
+            document.getElementById('cmp-sen-total').textContent = `${fmt(sen.netTakeHome)}（稅前 ${fmt(sen.grossBonus)}）`;
+            diffText.textContent = '💡 扣除勞健保與10%稅務預扣後，目前【方案一】普專當月實際入帳比高專多：';
+            diffValue.textContent = `+${fmt(diff)}`;
+        } else if (diff < 0) {
+            thSen.innerHTML += ' <span class="winner-tag">當月實領較高</span>';
+            document.getElementById('cmp-gen-total').textContent = fmt(gen.grandTotal);
+            document.getElementById('cmp-sen-total').textContent = `${fmt(sen.netTakeHome)}（稅前 ${fmt(sen.grossBonus)}）`;
+            diffText.textContent = '🔥 扣除勞健保與10%稅務預扣後，目前【方案二】高專當月實際入帳比普專多：';
+            diffValue.textContent = `+${fmt(Math.abs(diff))}`;
+        } else {
+            diffBanner.classList.add('tie');
+            document.getElementById('cmp-gen-total').textContent = fmt(gen.grandTotal);
+            document.getElementById('cmp-sen-total').textContent = `${fmt(sen.netTakeHome)}（稅前 ${fmt(sen.grossBonus)}）`;
+            diffText.textContent = '⚖️ 黃金交叉點：目前業績下普專與高專當月實際入帳完全相同！';
+            diffValue.textContent = '$0';
+        }
+    }
+
+    // 初始計算
+    calculate();
+</script>
+
+</body>
+</html>
