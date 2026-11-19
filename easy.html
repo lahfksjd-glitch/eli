@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>匯勝社宅｜業務實領薪資快速試算器</title>
+    <title>匯勝社宅｜薪資試算器</title>
+    
+    <!-- PWA 行動裝置與桌面應用程式設定 -->
+    <meta name="theme-color" content="#1a365d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="社宅薪資試算">
+    <link id="pwa-manifest" rel="manifest">
+    <link id="apple-icon" rel="apple-touch-icon">
+
     <style>
         :root {
             --primary: #1a365d;
@@ -27,6 +36,7 @@
             background-color: var(--bg-page);
             color: var(--text-main);
             line-height: 1.5;
+            user-select: none;
         }
 
         .container {
@@ -42,13 +52,39 @@
             background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
             color: #ffffff;
             padding: 18px 24px;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 16pt;
+            font-size: 15pt;
             letter-spacing: 1px;
+        }
+
+        /* 安裝為 App 按鈕 */
+        .btn-install {
+            background-color: #fbd38d;
+            color: #1a365d;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 9.5pt;
+            font-weight: bold;
+            cursor: pointer;
+            display: none; /* 偵測到支援安裝時自動顯示 */
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.15s;
+        }
+
+        .btn-install:hover {
+            transform: scale(1.04);
+            background-color: #f6ad55;
         }
 
         .content {
@@ -176,6 +212,7 @@
             font-size: 10.5pt;
             color: var(--primary);
             outline: none;
+            user-select: text;
         }
 
         /* 最終當月實際入帳淨額對比卡片 */
@@ -255,6 +292,7 @@
 <div class="container">
     <div class="header">
         <h1>匯勝社宅｜業務實領薪資試算器</h1>
+        <button type="button" class="btn-install" id="installBtn">📲 安裝至桌面捷徑</button>
     </div>
 
     <div class="content">
@@ -283,7 +321,7 @@
                             <span class="price-sub">$18,000 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_weak_new', -1)">-</button>
-                                <input type="number" id="bz_weak_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="bz_weak_new" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_weak_new', 1)">+</button>
                             </div>
                         </td>
@@ -291,7 +329,7 @@
                             <span class="price-sub">$9,000 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_weak_old', -1)">-</button>
-                                <input type="number" id="bz_weak_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="bz_weak_old" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_weak_old', 1)">+</button>
                             </div>
                         </td>
@@ -299,7 +337,7 @@
                             <span class="price-sub">$4,500 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_weak_re', -1)">-</button>
-                                <input type="number" id="bz_weak_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="bz_weak_re" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_weak_re', 1)">+</button>
                             </div>
                         </td>
@@ -307,7 +345,7 @@
                             <span class="price-sub">$4,500 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_weak_ren', -1)">-</button>
-                                <input type="number" id="bz_weak_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="bz_weak_ren" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_weak_ren', 1)">+</button>
                             </div>
                         </td>
@@ -320,7 +358,7 @@
                             <span class="price-sub">$16,000 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_norm_new', -1)">-</button>
-                                <input type="number" id="bz_norm_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="bz_norm_new" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_norm_new', 1)">+</button>
                             </div>
                         </td>
@@ -328,7 +366,7 @@
                             <span class="price-sub">$8,000 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_norm_old', -1)">-</button>
-                                <input type="number" id="bz_norm_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="bz_norm_old" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_norm_old', 1)">+</button>
                             </div>
                         </td>
@@ -336,7 +374,7 @@
                             <span class="price-sub">$4,000 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_norm_re', -1)">-</button>
-                                <input type="number" id="bz_norm_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="bz_norm_re" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_norm_re', 1)">+</button>
                             </div>
                         </td>
@@ -344,7 +382,7 @@
                             <span class="price-sub">$4,000 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_norm_ren', -1)">-</button>
-                                <input type="number" id="bz_norm_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="bz_norm_ren" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('bz_norm_ren', 1)">+</button>
                             </div>
                         </td>
@@ -357,7 +395,7 @@
                             <span class="price-sub">$13,000 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_weak_new', -1)">-</button>
-                                <input type="number" id="dg_weak_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="dg_weak_new" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_weak_new', 1)">+</button>
                             </div>
                         </td>
@@ -365,7 +403,7 @@
                             <span class="price-sub">$6,500 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_weak_old', -1)">-</button>
-                                <input type="number" id="dg_weak_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="dg_weak_old" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_weak_old', 1)">+</button>
                             </div>
                         </td>
@@ -373,7 +411,7 @@
                             <span class="price-sub">$3,250 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_weak_re', -1)">-</button>
-                                <input type="number" id="dg_weak_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="dg_weak_re" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_weak_re', 1)">+</button>
                             </div>
                         </td>
@@ -381,7 +419,7 @@
                             <span class="price-sub">$3,250 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_weak_ren', -1)">-</button>
-                                <input type="number" id="dg_weak_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="dg_weak_ren" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_weak_ren', 1)">+</button>
                             </div>
                         </td>
@@ -394,7 +432,7 @@
                             <span class="price-sub">$9,400 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_norm_new', -1)">-</button>
-                                <input type="number" id="dg_norm_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="dg_norm_new" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_norm_new', 1)">+</button>
                             </div>
                         </td>
@@ -402,7 +440,7 @@
                             <span class="price-sub">$4,700 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_norm_old', -1)">-</button>
-                                <input type="number" id="dg_norm_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="dg_norm_old" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_norm_old', 1)">+</button>
                             </div>
                         </td>
@@ -410,7 +448,7 @@
                             <span class="price-sub">$2,350 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_norm_re', -1)">-</button>
-                                <input type="number" id="dg_norm_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="dg_norm_re" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_norm_re', 1)">+</button>
                             </div>
                         </td>
@@ -418,7 +456,7 @@
                             <span class="price-sub">$2,350 / 件</span>
                             <div class="qty-control">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_norm_ren', -1)">-</button>
-                                <input type="number" id="dg_norm_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <input type="number" id="dg_norm_ren" class="qty-input" inputmode="numeric" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
                                 <button type="button" class="qty-btn" onclick="changeQty('dg_norm_ren', 1)">+</button>
                             </div>
                         </td>
@@ -451,6 +489,7 @@
 </div>
 
 <script>
+    // ==================== 1. 薪資試算核心邏輯 ====================
     const LABOR_HEALTH_INSURANCE = 1624; // 普專勞健保負擔額
     const SENIOR_TAX_RATE = 0.10;        // 高專 10% 業務所得預扣率
 
@@ -505,7 +544,7 @@
         const normalRev = revNew + revOld + revRe;
         const totalRev = normalRev + renewalRev;
 
-        // 1. 普專實領淨額（保障月薪 $40,000 - 勞健保 $1,624 + 獎金）
+        // 普專實領淨額（保障月薪 $40,000 - 勞健保 $1,624 + 獎金）
         let genRate = 0.30;
         if (totalRev >= 45000) genRate = 0.50;
         else if (totalRev >= 30000) genRate = 0.40;
@@ -513,7 +552,7 @@
         const genBonus = (normalRev * genRate) + (renewalRev * 0.30);
         const genNet = (40000 - LABOR_HEALTH_INSURANCE) + genBonus;
 
-        // 2. 高專實領淨額（無底薪，依倍率計算後扣除 10% 預扣）
+        // 高專實領淨額（無底薪，依倍率計算後扣除 10% 預扣）
         let multNew = 1.0, multOld = 1.0, multRe = 1.0;
         if (totalRev >= 45000) {
             multNew = 1.2; multOld = 2.0; multRe = 3.0;
@@ -524,7 +563,6 @@
         const senGross = (revNew * multNew) + (revOld * multOld) + (revRe * multRe) + (renewalRev * 1.0);
         const senNet = senGross - Math.round(senGross * SENIOR_TAX_RATE);
 
-        // 更新畫面
         document.getElementById('net-general').textContent = fmt(genNet);
         document.getElementById('net-senior').textContent = fmt(senNet);
 
@@ -548,6 +586,64 @@
     }
 
     calculate();
+
+    // ==================== 2. PWA 應用程式安裝與捷徑設定 ====================
+    (function setupPWA() {
+        // 產生高質感 SVG App 圖示（深藍底金字「薪」）
+        const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <rect width="512" height="512" rx="108" fill="#1a365d"/>
+            <rect x="28" y="28" width="456" height="456" rx="88" fill="none" stroke="#fbd38d" stroke-width="14"/>
+            <text x="50%" y="54%" font-family="sans-serif" font-weight="bold" font-size="250" fill="#fbd38d" text-anchor="middle" dominant-baseline="middle">薪</text>
+        </svg>`;
+        const iconDataUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgIcon)));
+
+        document.getElementById('apple-icon').href = iconDataUrl;
+
+        // 動態掛載 Web App Manifest
+        const manifest = {
+            name: "匯勝社宅｜業務實領薪資試算器",
+            short_name: "社宅薪資試算",
+            start_url: location.href,
+            display: "standalone",
+            background_color: "#f0f4f8",
+            theme_color: "#1a365d",
+            icons: [
+                {
+                    src: iconDataUrl,
+                    sizes: "512x512",
+                    type: "image/svg+xml",
+                    purpose: "any maskable"
+                }
+            ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+        document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
+
+        // 監聽 Chrome 安裝事件（beforeinstallprompt）
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                installBtn.style.display = 'none';
+            }
+            deferredPrompt = null;
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installBtn.style.display = 'none';
+            deferredPrompt = null;
+        });
+    })();
 </script>
 
 </body>
