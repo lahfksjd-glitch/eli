@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>匯勝社宅｜業務實領薪資快速試算器</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #dd6b20;
+            --bg-page: #f0f4f8;
+            --bg-card: #ffffff;
+            --border: #cbd5e0;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: #ffffff;
+            padding: 18px 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 16pt;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 20px 24px;
+        }
+
+        .section-title {
+            font-size: 11.5pt;
+            font-weight: bold;
+            color: var(--primary);
+            border-left: 4px solid var(--secondary);
+            padding-left: 10px;
+            margin: 0 0 14px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-reset {
+            background: #edf2f7;
+            border: 1px solid #cbd5e0;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 9pt;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: all 0.15s;
+        }
+
+        .btn-reset:hover {
+            background: #e2e8f0;
+        }
+
+        /* 案件輸入表格 */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .case-table {
+            width: 100%;
+            min-width: 660px;
+            border-collapse: collapse;
+            font-size: 9.5pt;
+            margin-bottom: 20px;
+        }
+
+        .case-table th, .case-table td {
+            border: 1px solid var(--border);
+            padding: 10px 6px;
+            text-align: center;
+        }
+
+        .case-table th {
+            background-color: #edf2f7;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .case-table th.th-renewal {
+            background-color: #fefcbf;
+            color: #744210;
+        }
+
+        /* 包租（淺綠色底）與代管（淺藍色底） */
+        .row-baozu {
+            background-color: #f0fdf4;
+        }
+
+        .row-baozu .case-row-label {
+            background-color: #dcfce7;
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .row-daiguan {
+            background-color: #eff6ff;
+        }
+
+        .row-daiguan .case-row-label {
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-weight: bold;
+        }
+
+        .price-sub {
+            display: block;
+            font-size: 8.5pt;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .qty-control {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .qty-btn {
+            background: #edf2f7;
+            border: none;
+            width: 28px;
+            height: 30px;
+            font-weight: bold;
+            font-size: 12pt;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        .qty-btn:hover {
+            background: #cbd5e0;
+        }
+
+        .qty-input {
+            width: 38px;
+            height: 30px;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            font-size: 10.5pt;
+            color: var(--primary);
+            outline: none;
+        }
+
+        /* 最終當月實際入帳淨額對比卡片 */
+        .net-result-box {
+            background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        .net-title {
+            text-align: center;
+            font-size: 11.5pt;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            color: #e2e8f0;
+        }
+
+        .net-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 560px) {
+            .net-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .net-card {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 18px 16px;
+            text-align: center;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .net-card.winner {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: #fbd38d;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .net-role {
+            font-size: 11pt;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .winner-badge {
+            background: #fbd38d;
+            color: #1a365d;
+            font-size: 8pt;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .net-amount {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #fbd38d;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>匯勝社宅｜業務實領薪資試算器</h1>
+    </div>
+
+    <div class="content">
+        <!-- 第一部分：當月成交案件輸入 -->
+        <div class="section-title">
+            <span>當月成交案件輸入</span>
+            <button type="button" class="btn-reset" onclick="resetAll()">↺ 清空件數</button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="case-table">
+                <thead>
+                    <tr>
+                        <th style="width: 18%;">案件類型</th>
+                        <th style="width: 20.5%;">全新件 (100%)</th>
+                        <th style="width: 20.5%;">既有件 (50%)</th>
+                        <th style="width: 20.5%;">曾加入件 (25%)</th>
+                        <th style="width: 20.5%;" class="th-renewal">續約 / 重媒件 (25%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 包租 弱勢戶 -->
+                    <tr class="row-baozu">
+                        <td class="case-row-label">包租 弱勢戶</td>
+                        <td>
+                            <span class="price-sub">$18,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_new', -1)">-</button>
+                                <input type="number" id="bz_weak_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_new', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$9,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_old', -1)">-</button>
+                                <input type="number" id="bz_weak_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_old', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$4,500 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_re', -1)">-</button>
+                                <input type="number" id="bz_weak_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_re', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$4,500 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_ren', -1)">-</button>
+                                <input type="number" id="bz_weak_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_weak_ren', 1)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 包租 一般戶 -->
+                    <tr class="row-baozu">
+                        <td class="case-row-label">包租 一般戶</td>
+                        <td>
+                            <span class="price-sub">$16,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_new', -1)">-</button>
+                                <input type="number" id="bz_norm_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_new', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$8,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_old', -1)">-</button>
+                                <input type="number" id="bz_norm_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_old', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$4,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_re', -1)">-</button>
+                                <input type="number" id="bz_norm_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_re', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$4,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_ren', -1)">-</button>
+                                <input type="number" id="bz_norm_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('bz_norm_ren', 1)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 代管 弱勢戶 -->
+                    <tr class="row-daiguan">
+                        <td class="case-row-label">代管 弱勢戶</td>
+                        <td>
+                            <span class="price-sub">$13,000 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_new', -1)">-</button>
+                                <input type="number" id="dg_weak_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_new', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$6,500 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_old', -1)">-</button>
+                                <input type="number" id="dg_weak_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_old', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$3,250 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_re', -1)">-</button>
+                                <input type="number" id="dg_weak_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_re', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$3,250 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_ren', -1)">-</button>
+                                <input type="number" id="dg_weak_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_weak_ren', 1)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 代管 一般戶 -->
+                    <tr class="row-daiguan">
+                        <td class="case-row-label">代管 一般戶</td>
+                        <td>
+                            <span class="price-sub">$9,400 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_new', -1)">-</button>
+                                <input type="number" id="dg_norm_new" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_new', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$4,700 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_old', -1)">-</button>
+                                <input type="number" id="dg_norm_old" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_old', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$2,350 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_re', -1)">-</button>
+                                <input type="number" id="dg_norm_re" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_re', 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-sub">$2,350 / 件</span>
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_ren', -1)">-</button>
+                                <input type="number" id="dg_norm_ren" class="qty-input" value="0" min="0" onfocus="this.select()" oninput="sanitizeInt(this); calculate();">
+                                <button type="button" class="qty-btn" onclick="changeQty('dg_norm_ren', 1)">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 最後一個欄位：當月實際入帳淨額 -->
+        <div class="net-result-box">
+            <div class="net-title">當月實際入帳淨額</div>
+            <div class="net-grid">
+                <div class="net-card winner" id="card-general">
+                    <div class="net-role">
+                        【方案一】普專（一般專員）
+                        <span class="winner-badge" id="badge-general">較高</span>
+                    </div>
+                    <div class="net-amount" id="net-general">$38,376</div>
+                </div>
+                <div class="net-card" id="card-senior">
+                    <div class="net-role">
+                        【方案二】高專（高級專員）
+                        <span class="winner-badge" id="badge-senior" style="display: none;">較高</span>
+                    </div>
+                    <div class="net-amount" id="net-senior">$0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const LABOR_HEALTH_INSURANCE = 1624; // 普專勞健保負擔額
+    const SENIOR_TAX_RATE = 0.10;        // 高專 10% 業務所得預扣率
+
+    const rates = {
+        bz_weak_new: 18000, bz_weak_old: 9000, bz_weak_re: 4500, bz_weak_ren: 4500,
+        bz_norm_new: 16000, bz_norm_old: 8000, bz_norm_re: 4000, bz_norm_ren: 4000,
+        dg_weak_new: 13000, dg_weak_old: 6500, dg_weak_re: 3250, dg_weak_ren: 3250,
+        dg_norm_new: 9400,  dg_norm_old: 4700, dg_norm_re: 2350, dg_norm_ren: 2350
+    };
+
+    function sanitizeInt(input) {
+        if (input.value === '') return;
+        const cleanVal = parseInt(input.value, 10);
+        input.value = isNaN(cleanVal) || cleanVal < 0 ? 0 : cleanVal;
+    }
+
+    function changeQty(id, delta) {
+        const input = document.getElementById(id);
+        let val = parseInt(input.value, 10) || 0;
+        val = Math.max(0, val + delta);
+        input.value = val;
+        calculate();
+    }
+
+    function resetAll() {
+        Object.keys(rates).forEach(id => {
+            document.getElementById(id).value = 0;
+        });
+        calculate();
+    }
+
+    function fmt(num) {
+        return '$' + Math.round(num).toLocaleString('zh-TW');
+    }
+
+    function calculate() {
+        let revNew = 0;
+        let revOld = 0;
+        let revRe  = 0;
+        let renewalRev = 0;
+
+        Object.keys(rates).forEach(id => {
+            const qty = parseInt(document.getElementById(id).value, 10) || 0;
+            const amount = qty * rates[id];
+
+            if (id.endsWith('_new')) revNew += amount;
+            else if (id.endsWith('_old')) revOld += amount;
+            else if (id.endsWith('_re')) revRe += amount;
+            else if (id.endsWith('_ren')) renewalRev += amount;
+        });
+
+        const normalRev = revNew + revOld + revRe;
+        const totalRev = normalRev + renewalRev;
+
+        // 1. 普專實領淨額（保障月薪 $40,000 - 勞健保 $1,624 + 獎金）
+        let genRate = 0.30;
+        if (totalRev >= 45000) genRate = 0.50;
+        else if (totalRev >= 30000) genRate = 0.40;
+
+        const genBonus = (normalRev * genRate) + (renewalRev * 0.30);
+        const genNet = (40000 - LABOR_HEALTH_INSURANCE) + genBonus;
+
+        // 2. 高專實領淨額（無底薪，依倍率計算後扣除 10% 預扣）
+        let multNew = 1.0, multOld = 1.0, multRe = 1.0;
+        if (totalRev >= 45000) {
+            multNew = 1.2; multOld = 2.0; multRe = 3.0;
+        } else if (totalRev >= 30000) {
+            multNew = 1.1; multOld = 1.5; multRe = 2.0;
+        }
+
+        const senGross = (revNew * multNew) + (revOld * multOld) + (revRe * multRe) + (renewalRev * 1.0);
+        const senNet = senGross - Math.round(senGross * SENIOR_TAX_RATE);
+
+        // 更新畫面
+        document.getElementById('net-general').textContent = fmt(genNet);
+        document.getElementById('net-senior').textContent = fmt(senNet);
+
+        const cardGen = document.getElementById('card-general');
+        const cardSen = document.getElementById('card-senior');
+        const badgeGen = document.getElementById('badge-general');
+        const badgeSen = document.getElementById('badge-senior');
+
+        cardGen.classList.remove('winner');
+        cardSen.classList.remove('winner');
+        badgeGen.style.display = 'none';
+        badgeSen.style.display = 'none';
+
+        if (genNet > senNet) {
+            cardGen.classList.add('winner');
+            badgeGen.style.display = 'inline-block';
+        } else if (senNet > genNet) {
+            cardSen.classList.add('winner');
+            badgeSen.style.display = 'inline-block';
+        }
+    }
+
+    calculate();
+</script>
+
+</body>
+</html>
