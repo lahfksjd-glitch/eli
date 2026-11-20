@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>社會住宅租金評定試算工具</title>
+
+  <!-- PWA 行動裝置與桌面應用程式設定 -->
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="社宅租金評定">
+  <link id="pwa-manifest" rel="manifest">
+  <link id="apple-icon" rel="apple-touch-icon">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts -->
@@ -82,6 +91,9 @@
         </div>
         
         <div class="mt-4 sm:mt-0 flex items-center space-x-2 no-print">
+          <button id="installBtn" class="hidden inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-indigo-950 bg-amber-300 hover:bg-amber-400 shadow-sm transition-colors cursor-pointer">
+            📲 安裝 App
+          </button>
           <button onclick="resetDefaults()" class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18.2" />
@@ -887,6 +899,98 @@
         e.preventDefault();
       }
     });
+
+    // ========== 內嵌 PWA 應用程式安裝與離線快取設定 ==========
+    (function setupPWA() {
+      // 1. 產生高質感 SVG App 圖示（靛藍底白字「租」）
+      const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <rect width="512" height="512" rx="108" fill="#4f46e5"/>
+        <rect x="28" y="28" width="456" height="456" rx="88" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="14"/>
+        <text x="50%" y="54%" font-family="sans-serif" font-weight="bold" font-size="250" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">租</text>
+      </svg>`;
+      const iconDataUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgIcon)));
+
+      document.getElementById('apple-icon').href = iconDataUrl;
+
+      // 2. 動態掛載 Web App Manifest
+      const manifest = {
+        name: "社會住宅租金評定試算工具",
+        short_name: "評定社宅租金",
+        start_url: location.href,
+        display: "standalone",
+        background_color: "#f8fafc",
+        theme_color: "#4f46e5",
+        icons: [
+          {
+            src: iconDataUrl,
+            sizes: "512x512",
+            type: "image/svg+xml",
+            purpose: "any maskable"
+          }
+        ]
+      };
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+      document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
+
+      // 3. 嘗試透過 Blob 註冊內嵌離線快取 Service Worker（HTTPS 環境下自動生效）
+      if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+        const swCode = `
+          const CACHE_NAME = 'rent-eval-cache-v1';
+          self.addEventListener('install', (e) => {
+            self.skipWaiting();
+            e.waitUntil(
+              caches.open(CACHE_NAME).then((cache) => cache.addAll([location.href]).catch(() => {}))
+            );
+          });
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(self.clients.claim());
+          });
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(
+              caches.match(e.request).then((cached) => {
+                return cached || fetch(e.request).then((resp) => {
+                  if (resp && resp.status === 200) {
+                    const copy = resp.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+                  }
+                  return resp;
+                }).catch(() => cached);
+              })
+            );
+          });
+        `;
+        try {
+          const swBlob = new Blob([swCode], { type: 'application/javascript' });
+          const swUrl = URL.createObjectURL(swBlob);
+          navigator.serviceWorker.register(swUrl).catch(() => {});
+        } catch (err) {}
+      }
+
+      // 4. 監聽 Chrome 安裝事件（beforeinstallprompt）
+      let deferredPrompt;
+      const installBtn = document.getElementById('installBtn');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.classList.remove('hidden');
+      });
+
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          installBtn.classList.add('hidden');
+        }
+        deferredPrompt = null;
+      });
+
+      window.addEventListener('appinstalled', () => {
+        installBtn.classList.add('hidden');
+        deferredPrompt = null;
+      });
+    })();
   </script>
 </body>
 </html>
